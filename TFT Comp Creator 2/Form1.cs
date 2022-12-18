@@ -191,8 +191,6 @@ namespace TFT_Comp_Creator_2
                         break;
 
                 }
-
-                if (!bruteAll.Checked) { break; }
             }
             Print("done");
 

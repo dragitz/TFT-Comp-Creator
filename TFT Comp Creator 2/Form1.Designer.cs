@@ -82,7 +82,6 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.bruteAll = new System.Windows.Forms.CheckBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetNodes)).BeginInit();
@@ -526,7 +525,7 @@ namespace TFT_Comp_Creator_2
             this.filtersTab.Controls.Add(this.disable_champions_cost_1);
             this.filtersTab.Location = new System.Drawing.Point(4, 22);
             this.filtersTab.Name = "filtersTab";
-            this.filtersTab.Size = new System.Drawing.Size(768, 226);
+            this.filtersTab.Size = new System.Drawing.Size(768, 222);
             this.filtersTab.TabIndex = 2;
             this.filtersTab.Text = "Filters";
             this.filtersTab.UseVisualStyleBackColor = true;
@@ -667,23 +666,12 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // bruteAll
-            // 
-            this.bruteAll.AutoSize = true;
-            this.bruteAll.Location = new System.Drawing.Point(651, 293);
-            this.bruteAll.Name = "bruteAll";
-            this.bruteAll.Size = new System.Drawing.Size(104, 17);
-            this.bruteAll.TabIndex = 22;
-            this.bruteAll.Text = "Brute all champs";
-            this.bruteAll.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label14);
-            this.Controls.Add(this.bruteAll);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.CreateButton);
@@ -765,7 +753,6 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.ListBox include_champion;
         public System.Windows.Forms.Label label14;
         public System.Windows.Forms.CheckBox limit_champions_cost_5;
-        public System.Windows.Forms.CheckBox bruteAll;
     }
 }
 
