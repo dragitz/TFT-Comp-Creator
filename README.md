@@ -2,7 +2,7 @@
 
 This is a WIP project that I've been working for a while. With many tests I decided that it was stable enough to be released.
 
-But testing is required !
+Bug testing is required !
 
 ## Features
 * #### Pet algorithm --> Fast hashing
