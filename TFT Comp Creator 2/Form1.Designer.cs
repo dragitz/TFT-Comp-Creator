@@ -104,12 +104,11 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
-            this.MenuTab.Size = new System.Drawing.Size(776, 271);
+            this.MenuTab.Size = new System.Drawing.Size(776, 248);
             this.MenuTab.TabIndex = 0;
             // 
             // main
             // 
-            this.main.Controls.Add(this.label14);
             this.main.Controls.Add(this.targetNodes);
             this.main.Controls.Add(this.label15);
             this.main.Controls.Add(this.addAlgorithm);
@@ -122,7 +121,7 @@ namespace TFT_Comp_Creator_2
             this.main.Location = new System.Drawing.Point(4, 22);
             this.main.Name = "main";
             this.main.Padding = new System.Windows.Forms.Padding(3);
-            this.main.Size = new System.Drawing.Size(768, 245);
+            this.main.Size = new System.Drawing.Size(768, 222);
             this.main.TabIndex = 0;
             this.main.Text = "Main";
             this.main.UseVisualStyleBackColor = true;
@@ -130,7 +129,7 @@ namespace TFT_Comp_Creator_2
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(131, 149);
+            this.label14.Location = new System.Drawing.Point(271, 263);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(69, 13);
             this.label14.TabIndex = 28;
@@ -158,7 +157,7 @@ namespace TFT_Comp_Creator_2
             this.targetNodes.Size = new System.Drawing.Size(120, 20);
             this.targetNodes.TabIndex = 27;
             this.targetNodes.Value = new decimal(new int[] {
-            16,
+            28,
             0,
             0,
             0});
@@ -262,7 +261,7 @@ namespace TFT_Comp_Creator_2
             this.incEx.Location = new System.Drawing.Point(4, 22);
             this.incEx.Name = "incEx";
             this.incEx.Padding = new System.Windows.Forms.Padding(3);
-            this.incEx.Size = new System.Drawing.Size(768, 245);
+            this.incEx.Size = new System.Drawing.Size(768, 222);
             this.incEx.TabIndex = 1;
             this.incEx.Text = "Include / Exclude";
             this.incEx.UseVisualStyleBackColor = true;
@@ -527,7 +526,7 @@ namespace TFT_Comp_Creator_2
             this.filtersTab.Controls.Add(this.disable_champions_cost_1);
             this.filtersTab.Location = new System.Drawing.Point(4, 22);
             this.filtersTab.Name = "filtersTab";
-            this.filtersTab.Size = new System.Drawing.Size(768, 245);
+            this.filtersTab.Size = new System.Drawing.Size(768, 226);
             this.filtersTab.TabIndex = 2;
             this.filtersTab.Text = "Filters";
             this.filtersTab.UseVisualStyleBackColor = true;
@@ -617,7 +616,7 @@ namespace TFT_Comp_Creator_2
             this.debugTab.Controls.Add(this.debug);
             this.debugTab.Location = new System.Drawing.Point(4, 22);
             this.debugTab.Name = "debugTab";
-            this.debugTab.Size = new System.Drawing.Size(768, 245);
+            this.debugTab.Size = new System.Drawing.Size(768, 226);
             this.debugTab.TabIndex = 3;
             this.debugTab.Text = "debug";
             this.debugTab.UseVisualStyleBackColor = true;
@@ -683,6 +682,7 @@ namespace TFT_Comp_Creator_2
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.bruteAll);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.StopButton);

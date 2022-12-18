@@ -80,7 +80,10 @@ namespace TFT_Comp_Creator_2
         {
             formObj.AppendText(data.ToString() + Environment.NewLine);
         }
+        public static void PrintDebug(dynamic data)
+        {
 
+        }
         public static void PrintComp(List<string> comp)
         {
             if (comp.Count <= 0) { return; }
@@ -205,10 +208,11 @@ namespace TFT_Comp_Creator_2
                 //PrintComp(comp);
 
                 // Evaluate score
-                int Score = GetScore(comp, 0);
+                //int Score = GetScore(comp, 0);
+
                 int Synergy = CalculateSynergy(comp);
 
-                if (Synergy > Pet_SynergyBest && Score > 0)
+                if (Synergy > Pet_SynergyBest && CheckCompValidity(comp))
                 {
                     Pet_SynergyBest = Synergy;
 

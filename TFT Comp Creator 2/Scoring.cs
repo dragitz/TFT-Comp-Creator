@@ -131,7 +131,7 @@ namespace TFT_Comp_Creator_2
             // Fill TraitsInComp
             // Loop through the comp
             List<string> TraitsInComp = new List<string>();
-            JObject JTraitsInComp = new JObject();
+            JObject JTraits = new JObject();
 
             for (int i = 0; i < comp.Count; i++)
             {
@@ -160,7 +160,7 @@ namespace TFT_Comp_Creator_2
 
                         TraitsInComp.Add(CurrentTrait);
                         JProperty item_properties = new JProperty(CurrentTrait, 0);
-                        JTraitsInComp.Add(item_properties);
+                        JTraits.Add(item_properties);
                     }
                 }
                 for (int k = 0; k < TraitsAmount; k++)
@@ -169,7 +169,7 @@ namespace TFT_Comp_Creator_2
 
                     if (TraitsInComp.Contains(CurrentTrait))
                     {
-                        JTraitsInComp[CurrentTrait] = (int)JTraitsInComp[CurrentTrait] + 1;
+                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
 
                     }
 
@@ -184,7 +184,7 @@ namespace TFT_Comp_Creator_2
             }
             //
             // Active traits is calculated separately for a different reason
-            foreach (dynamic item in JTraitsInComp)
+            foreach (dynamic item in JTraits)
             {
                 int BreakpointAmount = Master["TraitList"][item.Key]["Breakpoints"].Count;
                 int Step = (int)item.Value;
@@ -220,7 +220,7 @@ namespace TFT_Comp_Creator_2
             }
 
             // Calculate stats
-            foreach (dynamic item in JTraitsInComp)
+            foreach (dynamic item in JTraits)
             {
                 int BreakpointAmount = Master["TraitList"][item.Key]["Breakpoints"].Count;
                 int Step = (int)item.Value;
@@ -303,7 +303,7 @@ namespace TFT_Comp_Creator_2
             // debugging
             if (debug == 1)
             {
-                Print(JTraitsInComp.ToString());
+                Print(JTraits.ToString());
 
                 Print("ActiveTraits: " + ActiveTraits);
                 Print("InactiveTraits: " + InactiveTraits);
@@ -359,6 +359,142 @@ namespace TFT_Comp_Creator_2
             return Score;
         }
 
+
+
+        public static bool CheckCompValidity(List<string> comp)
+        {
+            JObject JTraits = new JObject();
+
+            int cost5Amount = 0;
+
+            List<string> TraitsInComp = new List<string>();
+            foreach (var champion in comp)
+            {
+                int cost = (int)Master["Champions"][champion]["cost"];
+
+                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+
+                // Count the amount of 5 cost champions
+                switch (cost)
+                {
+                    case 1:
+                        if (disable_champions_cost_1.Checked) { return false; }
+                        break;
+                    case 2:
+                        if (disable_champions_cost_2.Checked) { return false; }
+                        break;
+                    case 3:
+                        if (disable_champions_cost_3.Checked) { return false; }
+                        break;
+                    case 4:
+                        if (disable_champions_cost_4.Checked) { return false; }
+                        break;
+                    case 5:
+                        if (disable_champions_cost_5.Checked) { return false; }
+                        cost5Amount++;
+                        break;
+                }
+                if (cost > 5 && disable_champions_cost_5_more.Checked)
+                    return false;
+
+
+                // Add the trait to the list
+                dynamic Traits = Master["Champions"][champion]["Traits"];
+                foreach (string Trait in Traits)
+                {
+                    if (TraitsInComp.Contains(Trait))
+                        continue;
+
+                    TraitsInComp.Add(Trait);
+                    JProperty item_properties = new JProperty(Trait, 0);
+                    JTraits.Add(item_properties);
+                }
+
+                // Populate JTraits
+                for (int k = 0; k < ChampionTraitsAmount; k++)
+                {
+                    string CurrentTrait = (string)Master["Champions"][champion]["Traits"][k];
+
+                    if (TraitsInComp.Contains(CurrentTrait))
+                    {
+                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
+                    }
+                }
+
+            }
+
+
+            // Size can't be higher than 1
+            if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
+
+            // Included / Excluded traits check
+            List<string> IncludedTraitFoundLIst = new List<string>();
+            foreach (string Trait in TraitsInComp)
+            {
+                // Check if trait appears in the excluded list, as well as the included list
+                for (int i = 0; i < exclude_trait.Items.Count; i++)
+                {
+                    if (Trait == exclude_trait.Items[i].ToString())
+                        return false;
+                }
+
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
+                        IncludedTraitFoundLIst.Add(Trait);
+                }
+            }
+            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+
+
+            // Included / Excluded champion check
+            List<string> IncludedChampsFoundLIst = new List<string>();
+            foreach (string champion in comp)
+            {
+                // Check if champ appears in the excluded list, as well as the included list
+                for (int i = 0; i < exclude_champion.Items.Count; i++)
+                {
+                    if (champion == exclude_champion.Items[i].ToString())
+                        return false;
+                }
+
+                for (int i = 0; i < include_champion.Items.Count; i++)
+                {
+                    if (champion == include_champion.Items[i].ToString() && !IncludedChampsFoundLIst.Contains(champion))
+                        IncludedChampsFoundLIst.Add(champion);
+                }
+            }
+            if (include_champion.Items.Count != IncludedChampsFoundLIst.Count) { return false; }
+
+
+            // Let's check if the comp is balanced
+            if (no_error.Checked)
+            {
+                // Iterate through all 
+                foreach (string Trait in TraitsInComp)
+                {
+                    int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+
+                    // Make sure the trait is active
+                    if ((int)JTraits[Trait] > minBreakPoint)
+                    {
+                        int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
+
+                        bool isBalanced = false;
+                        for (int i = 0; i < BreakpointAmount; i++)
+                        {
+                            if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
+                                isBalanced = true;
+                        }
+
+                        if (!isBalanced) { return false; }
+                    }
+                }
+            }
+
+
+            return true;
+        }
         // Unused function that I keep in case I need it
         public static int ComputePowerLevel(List<string> comp)
         {
