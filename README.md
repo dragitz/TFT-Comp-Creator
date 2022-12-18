@@ -44,4 +44,6 @@ As long as it's minimalistic, I'm happy with it !
 
 ## LICENSE
 
-[LICENSE]: https://github.com/dragitz/TFT-Comp-Creator/blob/main/LICENSE
+[LICENSE]: 
+
+[I'm a relative reference to a repository file]([../blob/master/LICENSE](https://github.com/dragitz/TFT-Comp-Creator/blob/main/LICENSE))
