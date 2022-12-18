@@ -6,6 +6,10 @@ Bug testing is required !
 
 Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
 
+[Example output 1](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjcwM8QLdGVtcyI6W10sImxldmVsIjowfSzNMTLIMTY3ON8xxjHFV8Zi3zHHMTTJYjb~AJPHMTXKYsU83zE6IjbJYjjfYscxN8liMjDfMcYx5QDqxWI2+ACTXSwiY2hvc2VuIjpmYWxzZSwic2V0xTt9)
+
+[Example output 2](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjcwMsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxDE2N8U83zE6IjPJMTg13zHGMTTKYjnfMcYxxVfEMTcx32LHMTbKMcVt3zE6IjfJMTD~AJPHMTjIMTY3~wFXxzHFV8UxNtgxXSwiY2hvc2VuIjpmYWxzZSwic2V0xWx9)
+
 ## Features
 * #### Pet algorithm --> Fast hashing
 
