@@ -41,3 +41,7 @@ This is a WIP project that I've been working for a while. With many tests I deci
 It sucks I know, but it has never been my objective.
 
 As long as it's minimalistic, I'm happy with it !
+
+## LICENSE
+
+[LICENSE]: https://github.com/dragitz/TFT-Comp-Creator/blob/main/LICENSE
