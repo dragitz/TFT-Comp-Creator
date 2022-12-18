@@ -4,6 +4,8 @@ This is a WIP project that I've been working for a while. With many tests I deci
 
 Bug testing is required !
 
+Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
+
 ## Features
 * #### Pet algorithm --> Fast hashing
 
