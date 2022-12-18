@@ -10,6 +10,8 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 
 [Example output 2](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjcwMsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxDE2N8U83zE6IjPJMTg13zHGMTTKYjnfMcYxxVfEMTcx32LHMTbKMcVt3zE6IjfJMTD~AJPHMTjIMTY3~wFXxzHFV8UxNtgxXSwiY2hvc2VuIjpmYWxzZSwic2V0xWx9) 9 champions
 
+[Example output 3](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjY2MsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxjEz3zHGMcUmxjE03zHGMcUmxTE3Nd8xxjHFJsYxNt8xxjHFJsYxON8xxjE3yTE4~wD1xzHFV8YxxTzTMV0sImNob3NlbiI6ZmFsc2UsInNldMU7fQ==)
+
 ## Features
 * #### Pet algorithm --> Fast hashing
 
