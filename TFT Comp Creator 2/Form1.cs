@@ -40,7 +40,6 @@ namespace TFT_Comp_Creator_2
 
             try
             {
-
                 // Setup part 1
                 SetFormUtility(
                     output, targetNodes, label14,
@@ -112,15 +111,8 @@ namespace TFT_Comp_Creator_2
                 if(ForceStop )
                 CreateButton.Enabled = false;
 
-
                 // Empty comp
                 List<string> comp = new List<string>();
-
-                // Always add the included champions first
-                //for (int i = 0; i < include_champion.Items.Count; i++)
-                //{
-                //    comp.Add(include_champion.Items[i].ToString());
-                //}
 
                 // Fill missing slots with blank spots
                 if (comp.Count() < min_comp_size.Value)
@@ -171,15 +163,8 @@ namespace TFT_Comp_Creator_2
                         break;
 
                     case ("Pet"):
-                        // final = GetCombination(comp, Convert.ToInt32(min_comp_size.Value), GetNodes(comp, 1)); // old one
-                        // if (bestComp.Count() == Convert.ToInt32(min_comp_size.Value)) { PrintComp(bestComp); }
 
-                        // Also compute each comp synergy score
-                        //GetAllUniqueCombinations(comp, nodes, usedChampions);
-                        //bestComp = GetCombination5(comp, 0, usedChampions, GetNodes(comp), bestComp);
-
-
-                        int size = Convert.ToInt32(min_comp_size.Value); // The target size of the combinations
+                        int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
 
                         // Call the helper function with the empty defaultComp
                         FindCombinations(nodes, size, new HashSet<string>(), new List<string>());

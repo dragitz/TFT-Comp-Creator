@@ -204,12 +204,6 @@ namespace TFT_Comp_Creator_2
                 string combinationString = string.Join("-", comp);
                 alreadySeenCombinations.Add(combinationString);
 
-                // Print the combination
-                //PrintComp(comp);
-
-                // Evaluate score
-                //int Score = GetScore(comp, 0);
-
                 int Synergy = CalculateSynergy(comp);
 
                 if (Synergy > Pet_SynergyBest && CheckCompValidity(comp))

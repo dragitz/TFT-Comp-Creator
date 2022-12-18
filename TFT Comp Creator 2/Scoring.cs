@@ -90,8 +90,7 @@ namespace TFT_Comp_Creator_2
         }
 
         // Important function that returns a score.
-        // Hard to summarize what it does without creating a twitlonger.
-
+        // It's an outdated function, but I want to keep it in case I need some of its functionalities.
         /// <summary>
         /// 
         /// The GetScore function takes in a List of strings representing champions and an integer called debug, and returns a score 
@@ -360,7 +359,20 @@ namespace TFT_Comp_Creator_2
         }
 
 
-
+        /// <summary>
+        /// 
+        /// This CheckCompValidity method checks the validity of a list of champions (comp) based on various criteria.
+        /// 
+        /// It does this by creating a list of traits for each champion in the list and then counting the number of champions with each trait.
+        /// It also checks whether the list of champions meets certain criteria, such as:
+        ///     * whether it must include or exclude certain champions 
+        ///     * whether the number of champions of certain costs is within certain limits.
+        ///     
+        /// If the list of champions meets all of the specified criteria, the method returns true, otherwise it returns false.
+        /// 
+        /// </summary>
+        /// <param name="comp"></param>
+        /// <returns></returns>
         public static bool CheckCompValidity(List<string> comp)
         {
             JObject JTraits = new JObject();
@@ -422,7 +434,6 @@ namespace TFT_Comp_Creator_2
                 }
 
             }
-
 
             // Size can't be higher than 1
             if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
