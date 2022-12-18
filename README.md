@@ -39,11 +39,12 @@ Bug testing is required !
     
 ## Bugs n' stuff
 * Random algorithm does not work, yet.
-* A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)
-* Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.
 * Can't specify an initial champion.
  	
     I recommend checking "Brute all champs" and specify in the champ inclusion, your desired champions.
+
+* Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.
+* A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)
 
 ## Design
 
