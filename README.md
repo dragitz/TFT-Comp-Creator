@@ -1,6 +1,6 @@
 # TFT Comp Creator
 
-This is a project that I've been working for a while. With many tests I decided that it was stable enough to be released.
+This is a project that I've been working on for a while. With many tests I decided that it was stable enough to be released.
 
 Bug testing is required !
 
