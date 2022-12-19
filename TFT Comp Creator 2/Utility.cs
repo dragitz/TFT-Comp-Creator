@@ -244,21 +244,6 @@ namespace TFT_Comp_Creator_2
             FindCombinations(remainingElements, TargetCompSize, alreadySeenCombinations, comp);
         }
 
-
-        public static string EncodeJsonToBase64(string json)
-        {
-            // Serialize the JSON string to a byte array
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
-
-            // Convert the byte array to a base64 string
-            string base64String = Convert.ToBase64String(jsonBytes);
-
-            // Replace any forward slashes in the base64 string with a tilde
-            base64String = base64String.Replace("/", "~");
-
-            return "https://tftactics.gg/team-builder/" + base64String;
-        }
-
         public static string PrintCompLink(List<string> comp)
         {
             JObject TFStructure = new JObject(
