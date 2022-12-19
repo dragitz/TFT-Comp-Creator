@@ -55,7 +55,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 * Random algorithm does not work, yet.
 * ~~Can't specify an initial champion.~~
 * Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.
-* A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)
+* ~~A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)~~
 
 ## Design
 
