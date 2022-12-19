@@ -65,7 +65,7 @@ namespace TFT_Comp_Creator_2
             // If our custom file already exists, then load it
             if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
 
-            Print("Downloading " + url + Environment.NewLine);
+            Print("Downloaded " + url + Environment.NewLine);
 
             // If our file does not exist, we download it (this is the link for the most recent update)
             //var downloaded = new WebClient().DownloadString("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json");

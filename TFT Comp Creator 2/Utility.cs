@@ -184,7 +184,7 @@ namespace TFT_Comp_Creator_2
         /// checks whether each combination is valid. 
         /// 
         /// A combination is considered valid if it has not been seen before (determined by checking whether it is present in the alreadySeenCombinations set) and
-        /// if it meets certain criteria (determined by the GetScore and CalculateSynergy functions).
+        /// if it meets certain criteria (determined by the CheckCompValidity and CalculateSynergy functions).
         /// 
         /// </summary>
         /// <param name="nodes"></param>
