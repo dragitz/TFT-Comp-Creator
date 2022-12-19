@@ -108,8 +108,8 @@ namespace TFT_Comp_Creator_2
             for (int k = 0; k < default_champion.Items.Count - 1; k++)
             {
 
-                if(ForceStop )
-                CreateButton.Enabled = false;
+                if (ForceStop)
+                    CreateButton.Enabled = false;
 
                 // Empty comp
                 List<string> comp = new List<string>();
@@ -223,6 +223,8 @@ namespace TFT_Comp_Creator_2
         private void ClearButton_Click(object sender, EventArgs e)
         {
             output.Text = "";
+
+            PrintCompLink(new List<string> { "Taliyah", "Yuumi", "Syndra", "Ekko", "Rell", "KaiSa", "Nilah", "Lux" });
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -230,8 +232,17 @@ namespace TFT_Comp_Creator_2
             ForceStop = true;
             Utility.ForceStop = true;
             Scoring.ForceStop = true;
-    }
+        }
 
+        private void TLink_Click(object sender, EventArgs e)
+        {
+            linkBox.Text = PrintCompLink(compBox.Text.Split('-').Select(x => x).ToList());
+        }
 
+        private void linkBox_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if(linkBox.Text.Contains("tft"))
+                System.Diagnostics.Process.Start(linkBox.Text);
+        }
     }
 }

@@ -33,7 +33,11 @@ namespace TFT_Comp_Creator_2
         {
             this.MenuTab = new System.Windows.Forms.TabControl();
             this.main = new System.Windows.Forms.TabPage();
-            this.label14 = new System.Windows.Forms.Label();
+            this.linkBox = new System.Windows.Forms.LinkLabel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TLink = new System.Windows.Forms.Button();
+            this.compBox = new System.Windows.Forms.TextBox();
             this.targetNodes = new System.Windows.Forms.NumericUpDown();
             this.label15 = new System.Windows.Forms.Label();
             this.addAlgorithm = new System.Windows.Forms.ComboBox();
@@ -78,6 +82,7 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
             this.debugTab = new System.Windows.Forms.TabPage();
             this.debug = new System.Windows.Forms.RichTextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
@@ -108,6 +113,11 @@ namespace TFT_Comp_Creator_2
             // 
             // main
             // 
+            this.main.Controls.Add(this.linkBox);
+            this.main.Controls.Add(this.label9);
+            this.main.Controls.Add(this.label1);
+            this.main.Controls.Add(this.TLink);
+            this.main.Controls.Add(this.compBox);
             this.main.Controls.Add(this.targetNodes);
             this.main.Controls.Add(this.label15);
             this.main.Controls.Add(this.addAlgorithm);
@@ -125,14 +135,51 @@ namespace TFT_Comp_Creator_2
             this.main.Text = "Main";
             this.main.UseVisualStyleBackColor = true;
             // 
-            // label14
+            // linkBox
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(271, 263);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(69, 13);
-            this.label14.TabIndex = 28;
-            this.label14.Text = "Best score: 0";
+            this.linkBox.AutoSize = true;
+            this.linkBox.Location = new System.Drawing.Point(167, 179);
+            this.linkBox.Name = "linkBox";
+            this.linkBox.Size = new System.Drawing.Size(10, 13);
+            this.linkBox.TabIndex = 32;
+            this.linkBox.TabStop = true;
+            this.linkBox.Text = "-";
+            this.linkBox.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBox_LinkClicked);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(134, 179);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(27, 13);
+            this.label9.TabIndex = 31;
+            this.label9.Text = "Link";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(134, 121);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 13);
+            this.label1.TabIndex = 30;
+            this.label1.Text = "Paste Comp here";
+            // 
+            // TLink
+            // 
+            this.TLink.Location = new System.Drawing.Point(321, 144);
+            this.TLink.Name = "TLink";
+            this.TLink.Size = new System.Drawing.Size(90, 23);
+            this.TLink.TabIndex = 29;
+            this.TLink.Text = "Conver to link";
+            this.TLink.UseVisualStyleBackColor = true;
+            this.TLink.Click += new System.EventHandler(this.TLink_Click);
+            // 
+            // compBox
+            // 
+            this.compBox.Location = new System.Drawing.Point(134, 146);
+            this.compBox.Name = "compBox";
+            this.compBox.Size = new System.Drawing.Size(181, 20);
+            this.compBox.TabIndex = 28;
             // 
             // targetNodes
             // 
@@ -615,7 +662,7 @@ namespace TFT_Comp_Creator_2
             this.debugTab.Controls.Add(this.debug);
             this.debugTab.Location = new System.Drawing.Point(4, 22);
             this.debugTab.Name = "debugTab";
-            this.debugTab.Size = new System.Drawing.Size(768, 226);
+            this.debugTab.Size = new System.Drawing.Size(768, 222);
             this.debugTab.TabIndex = 3;
             this.debugTab.Text = "debug";
             this.debugTab.UseVisualStyleBackColor = true;
@@ -627,6 +674,15 @@ namespace TFT_Comp_Creator_2
             this.debug.Size = new System.Drawing.Size(552, 149);
             this.debug.TabIndex = 2;
             this.debug.Text = "";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(271, 263);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(69, 13);
+            this.label14.TabIndex = 28;
+            this.label14.Text = "Best score: 0";
             // 
             // output
             // 
@@ -753,6 +809,11 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.ListBox include_champion;
         public System.Windows.Forms.Label label14;
         public System.Windows.Forms.CheckBox limit_champions_cost_5;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button TLink;
+        private System.Windows.Forms.TextBox compBox;
+        private System.Windows.Forms.LinkLabel linkBox;
     }
 }
 

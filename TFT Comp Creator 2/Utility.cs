@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Scoring;
 
@@ -9,6 +12,9 @@ namespace TFT_Comp_Creator_2
 {
     class Utility
     {
+        public static JArray TFData = JArray.Parse("[\n{ name: \"Alistar\", id: \"662\" }\n,{ name: \"Annie\", id: \"663\" }\n,{ name: \"Aphelios\", id: \"664\" }\n,{ name: \"Ashe\", id: \"665\" }\n,{ name: \"Aurelion Sol\", id: \"666\" }\n,{ name: \"Belveth\", id: \"667\" }\n,{ name: \"Blitzcrank\", id: \"668\" }\n,{ name: \"Camille\", id: \"669\" }\n,{ name: \"Chogath\", id: \"670\" }\n,{ name: \"Draven\", id: \"671\" }\n,{ name: \"Ekko\", id: \"672\" }\n,{ name: \"Ezreal\", id: \"673\" }\n,{ name: \"Fiddlesticks\", id: \"674\" }\n,{ name: \"Fiora\", id: \"675\" }\n,{ name: \"Galio\", id: \"676\" }\n,{ name: \"Gangplank\", id: \"677\" }\n,{ name: \"Janna\", id: \"678\" }\n,{ name: \"Jax\", id: \"679\" }\n,{ name: \"Jinx\", id: \"680\" }\n,{ name: \"Kaisa\", id: \"681\" }\n,{ name: \"Kayle\", id: \"682\" }\n,{ name: \"Leblanc\", id: \"683\" }\n,{ name: \"Lee Sin\", id: \"684\" }\n,{ name: \"Leona\", id: \"685\" }\n,{ name: \"Lulu\", id: \"686\" }\n,{ name: \"Lux\", id: \"687\" }\n,{ name: \"Malphite\", id: \"688\" }\n,{ name: \"Miss Fortune\", id: \"689\" }\n,{ name: \"Mordekaiser\", id: \"690\" }\n,{ name: \"Nasus\", id: \"691\" }\n,{ name: \"Nilah\", id: \"692\" }\n,{ name: \"Nunu\", id: \"693\" }\n,{ name: \"Poppy\", id: \"694\" }\n,{ name: \"Rammus\", id: \"695\" }\n,{ name: \"Rell\", id: \"696\" }\n,{ name: \"Renekton\", id: \"697\" }\n,{ name: \"Riven\", id: \"698\" }\n,{ name: \"Samira\", id: \"699\" }\n,{ name: \"Sejuani\", id: \"700\" }\n,{ name: \"Senna\", id: \"701\" }\n,{ name: \"Sett\", id: \"702\" }\n,{ name: \"Sivir\", id: \"703\" }\n,{ name: \"Sona\", id: \"704\" }\n,{ name: \"Soraka\", id: \"705\" }\n,{ name: \"Sylas\", id: \"706\" }\n,{ name: \"Syndra\", id: \"707\" }\n,{ name: \"Taliyah\", id: \"708\" }\n,{ name: \"Talon\", id: \"709\" }\n,{ name: \"Urgot\", id: \"710\" }\n,{ name: \"Vayne\", id: \"711\" }\n,{ name: \"Velkoz\", id: \"712\" }\n,{ name: \"Vi\", id: \"713\" }\n,{ name: \"Viego\", id: \"714\" }\n,{ name: \"Wukong\", id: \"715\" }\n,{ name: \"Yasuo\", id: \"716\" }\n,{ name: \"Yuumi\", id: \"717\" }\n,{ name: \"Zac\", id: \"718\" }\n,{ name: \"Zed\", id: \"719\" }\n,{ name: \"Zoe\", id: \"720\" }\n]\n");
+
+
         public static RichTextBox formObj = new RichTextBox();
         public static NumericUpDown targetNodes = new NumericUpDown();
         public static Label label14 = new Label();
@@ -80,10 +86,7 @@ namespace TFT_Comp_Creator_2
         {
             formObj.AppendText(data.ToString() + Environment.NewLine);
         }
-        public static void PrintDebug(dynamic data)
-        {
 
-        }
         public static void PrintComp(List<string> comp)
         {
             if (comp.Count <= 0) { return; }
@@ -211,6 +214,7 @@ namespace TFT_Comp_Creator_2
                     Pet_SynergyBest = Synergy;
 
                     PrintComp(comp);
+                    //PrintCompLink(comp);
 
                     label14.Text = "Synergy: " + Pet_SynergyBest;
                 }
@@ -241,8 +245,74 @@ namespace TFT_Comp_Creator_2
         }
 
 
+        public static string EncodeJsonToBase64(string json)
+        {
+            // Serialize the JSON string to a byte array
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+
+            // Convert the byte array to a base64 string
+            string base64String = Convert.ToBase64String(jsonBytes);
+
+            // Replace any forward slashes in the base64 string with a tilde
+            base64String = base64String.Replace("/", "~");
+
+            return "https://tftactics.gg/team-builder/" + base64String;
+        }
+
+        public static string PrintCompLink(List<string> comp)
+        {
+            JObject TFStructure = new JObject(
+
+                new JProperty("chosen", true),
+                new JProperty("set", 8),
+                new JProperty("team", new JArray(// { position: "1", id: "1234", level: 0, items: []}
+                                                 )
+                )
+            );
+
+            // Add obj to the team array
+            JArray arr = (JArray)TFStructure["team"];
+            int i = 0;
+
+            foreach (string champion in comp)
+            {
+                i++;
+                string id = "";
+
+                // Get the id of the champion
+                foreach (var currentChampionObj in TFData)
+                {
+                    // Find the champion id
+                    string ch = (string)currentChampionObj["name"];
+                    if (ch.ToLower() == champion.ToLower()) { id = (string)currentChampionObj["id"]; }
+                }
+
+                // Make sure id is valid
+                if (id == "") { continue; }
+
+                // Create team
+                JObject obj = new JObject();
+                obj["id"] = id;
+                obj["items"] = new JArray();
+                obj["level"] = 0;
+                obj["position"] = i.ToString();
+
+                arr.Add(obj);
+            }
 
 
+            // Serialize the JSON string to a byte array
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(TFStructure.ToString());
+
+            // Convert the byte array to a base64 string
+            string base64String = Convert.ToBase64String(jsonBytes);
+
+            // Replace any forward slashes in the base64 string with a tilde
+            base64String = base64String.Replace("/", "~");
+
+            return "https://tftactics.gg/team-builder/" + base64String;
+
+        }
 
 
 
