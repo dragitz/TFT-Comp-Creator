@@ -80,8 +80,6 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_3 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
-            this.debugTab = new System.Windows.Forms.TabPage();
-            this.debug = new System.Windows.Forms.RichTextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
@@ -96,7 +94,6 @@ namespace TFT_Comp_Creator_2
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.filtersTab.SuspendLayout();
-            this.debugTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -104,7 +101,6 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.Controls.Add(this.main);
             this.MenuTab.Controls.Add(this.incEx);
             this.MenuTab.Controls.Add(this.filtersTab);
-            this.MenuTab.Controls.Add(this.debugTab);
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
@@ -184,7 +180,7 @@ namespace TFT_Comp_Creator_2
             // targetNodes
             // 
             this.targetNodes.Increment = new decimal(new int[] {
-            2,
+            4,
             0,
             0,
             0});
@@ -657,24 +653,6 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_1.Text = "Disable cost 1 champions";
             this.disable_champions_cost_1.UseVisualStyleBackColor = true;
             // 
-            // debugTab
-            // 
-            this.debugTab.Controls.Add(this.debug);
-            this.debugTab.Location = new System.Drawing.Point(4, 22);
-            this.debugTab.Name = "debugTab";
-            this.debugTab.Size = new System.Drawing.Size(768, 222);
-            this.debugTab.TabIndex = 3;
-            this.debugTab.Text = "debug";
-            this.debugTab.UseVisualStyleBackColor = true;
-            // 
-            // debug
-            // 
-            this.debug.Location = new System.Drawing.Point(27, 68);
-            this.debug.Name = "debug";
-            this.debug.Size = new System.Drawing.Size(552, 149);
-            this.debug.TabIndex = 2;
-            this.debug.Text = "";
-            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -750,7 +728,6 @@ namespace TFT_Comp_Creator_2
             this.tabPage5.PerformLayout();
             this.filtersTab.ResumeLayout(false);
             this.filtersTab.PerformLayout();
-            this.debugTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -764,7 +741,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.TabPage filtersTab;
-        private System.Windows.Forms.TabPage debugTab;
         private System.Windows.Forms.NumericUpDown targetNodes;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox addAlgorithm;
@@ -798,7 +774,6 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox disable_champions_cost_3;
         public System.Windows.Forms.CheckBox disable_champions_cost_2;
         public System.Windows.Forms.CheckBox disable_champions_cost_1;
-        private System.Windows.Forms.RichTextBox debug;
         public System.Windows.Forms.Button CreateButton;
         public System.Windows.Forms.RichTextBox output;
         public System.Windows.Forms.ListBox exclude_trait;

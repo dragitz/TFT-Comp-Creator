@@ -478,19 +478,25 @@ namespace TFT_Comp_Creator_2
             if (include_champion.Items.Count != IncludedChampsFoundLIst.Count) { return false; }
 
 
+            int ActiveTraits = 0;
+
             // Let's check if the comp is balanced
-            if (no_error.Checked)
+
+            // Iterate through all 
+            foreach (string Trait in TraitsInComp)
             {
-                // Iterate through all 
-                foreach (string Trait in TraitsInComp)
+                int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+
+                // Make sure the trait is active
+                if ((int)JTraits[Trait] >= minBreakPoint)
                 {
-                    int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+                    ActiveTraits++;
 
-                    // Make sure the trait is active
-                    if ((int)JTraits[Trait] > minBreakPoint)
+                    int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
+
+                    // Checkbox must be toggled
+                    if (no_error.Checked)
                     {
-                        int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
-
                         bool isBalanced = false;
                         for (int i = 0; i < BreakpointAmount; i++)
                         {
@@ -503,6 +509,8 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
+            // less than two traits makes the comp invalid
+            if(ActiveTraits < 2) { return false; }
 
             return true;
         }
