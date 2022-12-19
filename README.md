@@ -12,6 +12,9 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 
 [Example output 3](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjY2MsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxjEz3zHGMcUmxjE03zHGMcUmxTE3Nd8xxjHFJsYxNt8xxjHFJsYxON8xxjE3yTE4~wD1xzHFV8YxxTzTMV0sImNob3NlbiI6ZmFsc2UsInNldMU7fQ==)
 
+![immagine](https://user-images.githubusercontent.com/8062792/208540253-251eccbb-3ec2-465e-8e07-37d4a19dee6e.png)
+
+
 ## Features
 * #### Pet algorithm --> Fast hashing
 
@@ -44,7 +47,9 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 * #### Brute All Champs
 	
     Brute force every possible comp
-    
+
+* #### Convert text comp to a valid tftactics.gg team
+
 ## Bugs n' stuff
 * Random algorithm does not work, yet.
 * ~~Can't specify an initial champion.~~
