@@ -179,6 +179,12 @@ namespace TFT_Comp_Creator_2
             }
             Print("done");
 
+            System.Threading.Thread.Sleep(100);
+
+            ForceStop = false;
+            Utility.ForceStop = false;
+            Scoring.ForceStop = false;
+
             CreateButton.Enabled = true;
 
         }
