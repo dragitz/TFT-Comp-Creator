@@ -13,14 +13,16 @@ namespace TFT_Comp_Creator_2
         private static ComboBox scoringAlgo = new ComboBox();
         private static CheckBox no_error = new CheckBox();
         private static CheckBox limit_champions_cost_5 = new CheckBox();
+        private static NumericUpDown minActiveTRaits = new NumericUpDown();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, ComboBox S, CheckBox NO, CheckBox limit_champions_cost_5_)
+        public static void SetFromScoring(dynamic M, ComboBox S, CheckBox NO, CheckBox limit_champions_cost_5_, NumericUpDown minActiveTRaits_)
         {
             Master = M;
             scoringAlgo = S;
             no_error = NO;
             limit_champions_cost_5 = limit_champions_cost_5_;
+            minActiveTRaits = minActiveTRaits_;
         }
 
         /// <summary>
@@ -510,7 +512,7 @@ namespace TFT_Comp_Creator_2
             }
 
             // less than two traits makes the comp invalid
-            if(ActiveTraits < 2) { return false; }
+            if(ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }
 
             return true;
         }

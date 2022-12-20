@@ -85,6 +85,8 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.minTraits = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetNodes)).BeginInit();
@@ -94,6 +96,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.filtersTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).BeginInit();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -558,6 +561,8 @@ namespace TFT_Comp_Creator_2
             // 
             // filtersTab
             // 
+            this.filtersTab.Controls.Add(this.label10);
+            this.filtersTab.Controls.Add(this.minTraits);
             this.filtersTab.Controls.Add(this.limit_champions_cost_5);
             this.filtersTab.Controls.Add(this.no_error);
             this.filtersTab.Controls.Add(this.disable_champions_cost_5_more);
@@ -700,6 +705,37 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // minTraits
+            // 
+            this.minTraits.Location = new System.Drawing.Point(291, 17);
+            this.minTraits.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.minTraits.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.minTraits.Name = "minTraits";
+            this.minTraits.Size = new System.Drawing.Size(120, 20);
+            this.minTraits.TabIndex = 29;
+            this.minTraits.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(204, 19);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(81, 13);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "Min active traits";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -728,6 +764,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage5.PerformLayout();
             this.filtersTab.ResumeLayout(false);
             this.filtersTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -789,6 +826,8 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Button TLink;
         private System.Windows.Forms.TextBox compBox;
         private System.Windows.Forms.LinkLabel linkBox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown minTraits;
     }
 }
 

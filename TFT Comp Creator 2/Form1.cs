@@ -73,7 +73,7 @@ namespace TFT_Comp_Creator_2
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, scoringAlgo, no_error, limit_champions_cost_5);
+                SetFromScoring(Master, scoringAlgo, no_error, limit_champions_cost_5, minTraits);
 
                 Populate(Master);
 
