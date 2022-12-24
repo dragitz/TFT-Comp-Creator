@@ -209,7 +209,7 @@ namespace TFT_Comp_Creator_2
 
                 int Synergy = CalculateSynergy(comp);
 
-                if (Synergy > Pet_SynergyBest && CheckCompValidity(comp))
+                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
                 {
                     Pet_SynergyBest = Synergy;
 

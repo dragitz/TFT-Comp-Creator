@@ -440,25 +440,6 @@ namespace TFT_Comp_Creator_2
             // Size can't be higher than 1
             if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
 
-            // Included / Excluded traits check
-            List<string> IncludedTraitFoundLIst = new List<string>();
-            foreach (string Trait in TraitsInComp)
-            {
-                // Check if trait appears in the excluded list, as well as the included list
-                for (int i = 0; i < exclude_trait.Items.Count; i++)
-                {
-                    if (Trait == exclude_trait.Items[i].ToString())
-                        return false;
-                }
-
-                for (int i = 0; i < include_trait.Items.Count; i++)
-                {
-                    if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
-                        IncludedTraitFoundLIst.Add(Trait);
-                }
-            }
-            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
-
 
             // Included / Excluded champion check
             List<string> IncludedChampsFoundLIst = new List<string>();
@@ -483,6 +464,7 @@ namespace TFT_Comp_Creator_2
             int ActiveTraits = 0;
 
             // Let's check if the comp is balanced
+            List<string> IncludedTraitFoundLIst = new List<string>();
 
             // Iterate through all 
             foreach (string Trait in TraitsInComp)
@@ -508,11 +490,32 @@ namespace TFT_Comp_Creator_2
 
                         if (!isBalanced) { return false; }
                     }
+
+
+                    // Included / Excluded traits check
+
+                    // Check if trait appears in the excluded list, as well as the included list
+                    for (int i = 0; i < exclude_trait.Items.Count; i++)
+                    {
+                        if (Trait == exclude_trait.Items[i].ToString())
+                            return false;
+                    }
+
+                    for (int i = 0; i < include_trait.Items.Count; i++)
+                    {
+                        if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
+                            IncludedTraitFoundLIst.Add(Trait);
+                    }
+
+
+
                 }
             }
 
-            // less than two traits makes the comp invalid
-            if(ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }
+            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+
+            // less than x traits makes the comp invalid
+            if (ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }
 
             return true;
         }
