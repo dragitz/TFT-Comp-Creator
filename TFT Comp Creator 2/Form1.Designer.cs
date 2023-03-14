@@ -31,6 +31,7 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         public void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.MenuTab = new System.Windows.Forms.TabControl();
             this.main = new System.Windows.Forms.TabPage();
             this.linkBox = new System.Windows.Forms.LinkLabel();
@@ -38,12 +39,6 @@ namespace TFT_Comp_Creator_2
             this.label1 = new System.Windows.Forms.Label();
             this.TLink = new System.Windows.Forms.Button();
             this.compBox = new System.Windows.Forms.TextBox();
-            this.targetNodes = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
-            this.addAlgorithm = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.scoringAlgo = new System.Windows.Forms.ComboBox();
             this.error = new System.Windows.Forms.Label();
             this.min_comp_size = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -72,6 +67,11 @@ namespace TFT_Comp_Creator_2
             this.include_champion = new System.Windows.Forms.ListBox();
             this.label8 = new System.Windows.Forms.Label();
             this.filtersTab = new System.Windows.Forms.TabPage();
+            this.traitFocusValue = new System.Windows.Forms.ComboBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.traitFocusNames = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.minTraits = new System.Windows.Forms.NumericUpDown();
             this.limit_champions_cost_5 = new System.Windows.Forms.CheckBox();
             this.no_error = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_5_more = new System.Windows.Forms.CheckBox();
@@ -80,16 +80,25 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_3 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
+            this.quickActions = new System.Windows.Forms.TabPage();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.FineTune = new System.Windows.Forms.Button();
+            this.BadCompsBox = new System.Windows.Forms.RichTextBox();
+            this.GoodCompsBox = new System.Windows.Forms.RichTextBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.ratio2_5 = new System.Windows.Forms.RadioButton();
+            this.ratio2_4 = new System.Windows.Forms.RadioButton();
+            this.ratio1_4 = new System.Windows.Forms.RadioButton();
+            this.ratio1_3 = new System.Windows.Forms.RadioButton();
+            this.label11 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.minTraits = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.targetNodes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).BeginInit();
             this.incEx.SuspendLayout();
             this.tabControl2.SuspendLayout();
@@ -97,6 +106,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage5.SuspendLayout();
             this.filtersTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minTraits)).BeginInit();
+            this.quickActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -104,6 +114,7 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.Controls.Add(this.main);
             this.MenuTab.Controls.Add(this.incEx);
             this.MenuTab.Controls.Add(this.filtersTab);
+            this.MenuTab.Controls.Add(this.quickActions);
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
@@ -117,12 +128,6 @@ namespace TFT_Comp_Creator_2
             this.main.Controls.Add(this.label1);
             this.main.Controls.Add(this.TLink);
             this.main.Controls.Add(this.compBox);
-            this.main.Controls.Add(this.targetNodes);
-            this.main.Controls.Add(this.label15);
-            this.main.Controls.Add(this.addAlgorithm);
-            this.main.Controls.Add(this.label13);
-            this.main.Controls.Add(this.label12);
-            this.main.Controls.Add(this.scoringAlgo);
             this.main.Controls.Add(this.error);
             this.main.Controls.Add(this.min_comp_size);
             this.main.Controls.Add(this.label5);
@@ -179,86 +184,6 @@ namespace TFT_Comp_Creator_2
             this.compBox.Name = "compBox";
             this.compBox.Size = new System.Drawing.Size(181, 20);
             this.compBox.TabIndex = 28;
-            // 
-            // targetNodes
-            // 
-            this.targetNodes.Increment = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.targetNodes.Location = new System.Drawing.Point(321, 20);
-            this.targetNodes.Maximum = new decimal(new int[] {
-            64,
-            0,
-            0,
-            0});
-            this.targetNodes.Minimum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-            this.targetNodes.Name = "targetNodes";
-            this.targetNodes.Size = new System.Drawing.Size(120, 20);
-            this.targetNodes.TabIndex = 27;
-            this.targetNodes.Value = new decimal(new int[] {
-            28,
-            0,
-            0,
-            0});
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(277, 22);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(38, 13);
-            this.label15.TabIndex = 26;
-            this.label15.Text = "Nodes";
-            // 
-            // addAlgorithm
-            // 
-            this.addAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.addAlgorithm.FormattingEnabled = true;
-            this.addAlgorithm.Items.AddRange(new object[] {
-            "Pet",
-            "Random"});
-            this.addAlgorithm.Location = new System.Drawing.Point(134, 73);
-            this.addAlgorithm.Name = "addAlgorithm";
-            this.addAlgorithm.Size = new System.Drawing.Size(121, 21);
-            this.addAlgorithm.Sorted = true;
-            this.addAlgorithm.TabIndex = 25;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(7, 76);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(121, 13);
-            this.label13.TabIndex = 24;
-            this.label13.Text = "Add champion Algorithm";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(39, 49);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(89, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Scoring Algorithm";
-            // 
-            // scoringAlgo
-            // 
-            this.scoringAlgo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.scoringAlgo.FormattingEnabled = true;
-            this.scoringAlgo.Items.AddRange(new object[] {
-            "Reward",
-            "Balanced",
-            "Punish"});
-            this.scoringAlgo.Location = new System.Drawing.Point(134, 46);
-            this.scoringAlgo.Name = "scoringAlgo";
-            this.scoringAlgo.Size = new System.Drawing.Size(121, 21);
-            this.scoringAlgo.TabIndex = 22;
             // 
             // error
             // 
@@ -392,6 +317,7 @@ namespace TFT_Comp_Creator_2
             this.exclude_trait.Name = "exclude_trait";
             this.exclude_trait.Size = new System.Drawing.Size(174, 160);
             this.exclude_trait.TabIndex = 0;
+            this.exclude_trait.DoubleClick += new System.EventHandler(this.Trait_exclude_to_default_Click);
             // 
             // label4
             // 
@@ -429,6 +355,7 @@ namespace TFT_Comp_Creator_2
             this.include_trait.Name = "include_trait";
             this.include_trait.Size = new System.Drawing.Size(174, 160);
             this.include_trait.TabIndex = 2;
+            this.include_trait.DoubleClick += new System.EventHandler(this.Trait_include_to_default_Click);
             // 
             // label2
             // 
@@ -511,6 +438,7 @@ namespace TFT_Comp_Creator_2
             this.exclude_champion.Name = "exclude_champion";
             this.exclude_champion.Size = new System.Drawing.Size(174, 160);
             this.exclude_champion.TabIndex = 6;
+            this.exclude_champion.DoubleClick += new System.EventHandler(this.Champion_exclude_to_default_Click);
             // 
             // label6
             // 
@@ -548,6 +476,7 @@ namespace TFT_Comp_Creator_2
             this.include_champion.Name = "include_champion";
             this.include_champion.Size = new System.Drawing.Size(174, 160);
             this.include_champion.TabIndex = 8;
+            this.include_champion.DoubleClick += new System.EventHandler(this.Champion_include_to_default_Click);
             // 
             // label8
             // 
@@ -561,6 +490,9 @@ namespace TFT_Comp_Creator_2
             // 
             // filtersTab
             // 
+            this.filtersTab.Controls.Add(this.traitFocusValue);
+            this.filtersTab.Controls.Add(this.label18);
+            this.filtersTab.Controls.Add(this.traitFocusNames);
             this.filtersTab.Controls.Add(this.label10);
             this.filtersTab.Controls.Add(this.minTraits);
             this.filtersTab.Controls.Add(this.limit_champions_cost_5);
@@ -578,10 +510,73 @@ namespace TFT_Comp_Creator_2
             this.filtersTab.Text = "Filters";
             this.filtersTab.UseVisualStyleBackColor = true;
             // 
+            // traitFocusValue
+            // 
+            this.traitFocusValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.traitFocusValue.FormattingEnabled = true;
+            this.traitFocusValue.Items.AddRange(new object[] {
+            "NONE"});
+            this.traitFocusValue.Location = new System.Drawing.Point(417, 43);
+            this.traitFocusValue.Name = "traitFocusValue";
+            this.traitFocusValue.Size = new System.Drawing.Size(121, 21);
+            this.traitFocusValue.TabIndex = 33;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(233, 46);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(51, 13);
+            this.label18.TabIndex = 32;
+            this.label18.Text = "Focus on";
+            // 
+            // traitFocusNames
+            // 
+            this.traitFocusNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.traitFocusNames.FormattingEnabled = true;
+            this.traitFocusNames.Items.AddRange(new object[] {
+            "NONE"});
+            this.traitFocusNames.Location = new System.Drawing.Point(290, 43);
+            this.traitFocusNames.Name = "traitFocusNames";
+            this.traitFocusNames.Size = new System.Drawing.Size(121, 21);
+            this.traitFocusNames.TabIndex = 31;
+            this.traitFocusNames.SelectedIndexChanged += new System.EventHandler(this.traitFocusNames_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(204, 19);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(81, 13);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "Min active traits";
+            // 
+            // minTraits
+            // 
+            this.minTraits.Location = new System.Drawing.Point(291, 17);
+            this.minTraits.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.minTraits.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.minTraits.Name = "minTraits";
+            this.minTraits.Size = new System.Drawing.Size(120, 20);
+            this.minTraits.TabIndex = 29;
+            this.minTraits.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // limit_champions_cost_5
             // 
             this.limit_champions_cost_5.AutoSize = true;
-            this.limit_champions_cost_5.Location = new System.Drawing.Point(207, 133);
+            this.limit_champions_cost_5.Location = new System.Drawing.Point(170, 110);
             this.limit_champions_cost_5.Name = "limit_champions_cost_5";
             this.limit_champions_cost_5.Size = new System.Drawing.Size(154, 17);
             this.limit_champions_cost_5.TabIndex = 28;
@@ -591,6 +586,8 @@ namespace TFT_Comp_Creator_2
             // no_error
             // 
             this.no_error.AutoSize = true;
+            this.no_error.Checked = true;
+            this.no_error.CheckState = System.Windows.Forms.CheckState.Checked;
             this.no_error.Location = new System.Drawing.Point(14, 178);
             this.no_error.Name = "no_error";
             this.no_error.Size = new System.Drawing.Size(149, 17);
@@ -658,6 +655,135 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_1.Text = "Disable cost 1 champions";
             this.disable_champions_cost_1.UseVisualStyleBackColor = true;
             // 
+            // quickActions
+            // 
+            this.quickActions.Controls.Add(this.label17);
+            this.quickActions.Controls.Add(this.label16);
+            this.quickActions.Controls.Add(this.FineTune);
+            this.quickActions.Controls.Add(this.BadCompsBox);
+            this.quickActions.Controls.Add(this.GoodCompsBox);
+            this.quickActions.Controls.Add(this.radioButton1);
+            this.quickActions.Controls.Add(this.ratio2_5);
+            this.quickActions.Controls.Add(this.ratio2_4);
+            this.quickActions.Controls.Add(this.ratio1_4);
+            this.quickActions.Controls.Add(this.ratio1_3);
+            this.quickActions.Controls.Add(this.label11);
+            this.quickActions.Location = new System.Drawing.Point(4, 22);
+            this.quickActions.Name = "quickActions";
+            this.quickActions.Padding = new System.Windows.Forms.Padding(3);
+            this.quickActions.Size = new System.Drawing.Size(768, 222);
+            this.quickActions.TabIndex = 3;
+            this.quickActions.Text = "Quick Actions";
+            this.quickActions.UseVisualStyleBackColor = true;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(476, 140);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(60, 13);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "Bad comps";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(91, 137);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(67, 13);
+            this.label16.TabIndex = 9;
+            this.label16.Text = "Good comps";
+            // 
+            // FineTune
+            // 
+            this.FineTune.Location = new System.Drawing.Point(285, 175);
+            this.FineTune.Name = "FineTune";
+            this.FineTune.Size = new System.Drawing.Size(75, 23);
+            this.FineTune.TabIndex = 8;
+            this.FineTune.Text = "FineTune";
+            this.FineTune.UseVisualStyleBackColor = true;
+            this.FineTune.Click += new System.EventHandler(this.FineTune_Click);
+            // 
+            // BadCompsBox
+            // 
+            this.BadCompsBox.Location = new System.Drawing.Point(366, 156);
+            this.BadCompsBox.Name = "BadCompsBox";
+            this.BadCompsBox.Size = new System.Drawing.Size(273, 60);
+            this.BadCompsBox.TabIndex = 7;
+            this.BadCompsBox.Text = resources.GetString("BadCompsBox.Text");
+            // 
+            // GoodCompsBox
+            // 
+            this.GoodCompsBox.Location = new System.Drawing.Point(6, 156);
+            this.GoodCompsBox.Name = "GoodCompsBox";
+            this.GoodCompsBox.Size = new System.Drawing.Size(273, 60);
+            this.GoodCompsBox.TabIndex = 6;
+            this.GoodCompsBox.Text = resources.GetString("GoodCompsBox.Text");
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(214, 35);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(46, 17);
+            this.radioButton1.TabIndex = 5;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "2 - 5";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // ratio2_5
+            // 
+            this.ratio2_5.AutoSize = true;
+            this.ratio2_5.Location = new System.Drawing.Point(162, 35);
+            this.ratio2_5.Name = "ratio2_5";
+            this.ratio2_5.Size = new System.Drawing.Size(46, 17);
+            this.ratio2_5.TabIndex = 4;
+            this.ratio2_5.TabStop = true;
+            this.ratio2_5.Text = "2 - 5";
+            this.ratio2_5.UseVisualStyleBackColor = true;
+            // 
+            // ratio2_4
+            // 
+            this.ratio2_4.AutoSize = true;
+            this.ratio2_4.Location = new System.Drawing.Point(110, 35);
+            this.ratio2_4.Name = "ratio2_4";
+            this.ratio2_4.Size = new System.Drawing.Size(46, 17);
+            this.ratio2_4.TabIndex = 3;
+            this.ratio2_4.TabStop = true;
+            this.ratio2_4.Text = "2 - 4";
+            this.ratio2_4.UseVisualStyleBackColor = true;
+            // 
+            // ratio1_4
+            // 
+            this.ratio1_4.AutoSize = true;
+            this.ratio1_4.Location = new System.Drawing.Point(58, 35);
+            this.ratio1_4.Name = "ratio1_4";
+            this.ratio1_4.Size = new System.Drawing.Size(46, 17);
+            this.ratio1_4.TabIndex = 2;
+            this.ratio1_4.TabStop = true;
+            this.ratio1_4.Text = "1 - 4";
+            this.ratio1_4.UseVisualStyleBackColor = true;
+            // 
+            // ratio1_3
+            // 
+            this.ratio1_3.AutoSize = true;
+            this.ratio1_3.Location = new System.Drawing.Point(6, 35);
+            this.ratio1_3.Name = "ratio1_3";
+            this.ratio1_3.Size = new System.Drawing.Size(46, 17);
+            this.ratio1_3.TabIndex = 1;
+            this.ratio1_3.TabStop = true;
+            this.ratio1_3.Text = "1 - 3";
+            this.ratio1_3.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(88, 19);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(88, 13);
+            this.label11.TabIndex = 0;
+            this.label11.Text = "Champion Levels";
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -705,37 +831,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // minTraits
-            // 
-            this.minTraits.Location = new System.Drawing.Point(291, 17);
-            this.minTraits.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
-            this.minTraits.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.minTraits.Name = "minTraits";
-            this.minTraits.Size = new System.Drawing.Size(120, 20);
-            this.minTraits.TabIndex = 29;
-            this.minTraits.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(204, 19);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(81, 13);
-            this.label10.TabIndex = 30;
-            this.label10.Text = "Min active traits";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -754,7 +849,6 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.ResumeLayout(false);
             this.main.ResumeLayout(false);
             this.main.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.targetNodes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).EndInit();
             this.incEx.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
@@ -765,6 +859,8 @@ namespace TFT_Comp_Creator_2
             this.filtersTab.ResumeLayout(false);
             this.filtersTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minTraits)).EndInit();
+            this.quickActions.ResumeLayout(false);
+            this.quickActions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -778,12 +874,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.TabPage filtersTab;
-        private System.Windows.Forms.NumericUpDown targetNodes;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.ComboBox addAlgorithm;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label12;
-        public System.Windows.Forms.ComboBox scoringAlgo;
         private System.Windows.Forms.Label error;
         private System.Windows.Forms.NumericUpDown min_comp_size;
         private System.Windows.Forms.Label label5;
@@ -828,6 +918,21 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.LinkLabel linkBox;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown minTraits;
+        private System.Windows.Forms.TabPage quickActions;
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton ratio2_5;
+        private System.Windows.Forms.RadioButton ratio2_4;
+        private System.Windows.Forms.RadioButton ratio1_4;
+        private System.Windows.Forms.RadioButton ratio1_3;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        public System.Windows.Forms.Button FineTune;
+        public System.Windows.Forms.RichTextBox BadCompsBox;
+        public System.Windows.Forms.RichTextBox GoodCompsBox;
+        private System.Windows.Forms.Label label18;
+        public System.Windows.Forms.ComboBox traitFocusNames;
+        public System.Windows.Forms.ComboBox traitFocusValue;
     }
 }
 

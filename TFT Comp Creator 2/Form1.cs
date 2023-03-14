@@ -60,8 +60,7 @@ namespace TFT_Comp_Creator_2
                     );
 
                 SetFormSetup(
-                    scoringAlgo,
-                    addAlgorithm,
+                    traitFocusNames,
                     exclude_trait,
                     default_trait,
                     include_trait,
@@ -73,7 +72,7 @@ namespace TFT_Comp_Creator_2
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, scoringAlgo, no_error, limit_champions_cost_5, minTraits);
+                SetFromScoring(Master, no_error, limit_champions_cost_5, traitFocusNames, traitFocusValue, minTraits);
 
                 Populate(Master);
 
@@ -83,13 +82,50 @@ namespace TFT_Comp_Creator_2
             catch (Exception ex) { Print(ex); }
         }
 
+        // Test
+        private static void GenerateCombinationsThread()
+        {
+            int[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 
+            int combinationLength = 8;
+            GenerateCombinations(array, combinationLength);
+
+            Print("done..");
+        }
 
         public void CreateButton_Click(object sender, EventArgs e)
         {
-            Pet_SynergyBest = 0;
+            CreateButton.Enabled = false;
+
+            Pet_SynergyBest = 10;
+            Pet_PowerBest = -999;
 
             label14.Text = "Synergy: " + Pet_SynergyBest;
+
+            if (traitFocusNames.Text != "NONE")
+            {
+
+                bool isThere = false;
+
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    if (include_trait.Items[i] == traitFocusNames.Text) { isThere = true; break; }
+                }
+
+                if (!isThere)
+                {
+                    for (int q = 0; q < default_trait.Items.Count; q++)
+                    {
+                        if (default_trait.Items[q].ToString() == traitFocusNames.Text)
+                        {
+                            default_trait.SelectedItem = q;
+                            default_trait.SelectedIndex = q;
+                            moveData(default_trait.SelectedItem, default_trait, include_trait);
+                            break;
+                        }
+                    }
+                }
+            }
 
             Thread t = new Thread(new ThreadStart(Creation))
             {
@@ -102,8 +138,6 @@ namespace TFT_Comp_Creator_2
 
         public void Creation()
         {
-            // Define random
-            Random rnd = new Random();
 
             for (int k = 0; k < default_champion.Items.Count - 1; k++)
             {
@@ -114,23 +148,24 @@ namespace TFT_Comp_Creator_2
                 // Empty comp
                 List<string> comp = new List<string>();
 
-                // Fill missing slots with blank spots
-                if (comp.Count() < min_comp_size.Value)
+                // null comp check - will use the first champion in the default list
+                if (comp.Count <= 0) { comp.Add(default_champion.Items[k].ToString()); }
+
+                // setup comp with initial champions
+                for (int i = 0; i < include_champion.Items.Count; i++)
                 {
-                    while (comp.Count() < min_comp_size.Value)
-                    {
-                        comp.Add("");
-                    }
+                    comp.Add(include_champion.Items[i].ToString());
                 }
 
-                // null comp check - will use the first champion in the default list
-                if (comp[0] == "") { comp[0] = default_champion.Items[k].ToString(); }
 
                 // Get nodes
-                List<string> nodes = GetNodes(comp);
+                List<string> nodes = GetNodes2(comp);
 
+                //PrintComp(nodes);
                 // Failsafe check
-                if (nodes.Count <= Convert.ToInt32(min_comp_size.Value) + 1) { continue; }
+                if (nodes.Count < Convert.ToInt32(min_comp_size.Value)) { continue; }
+
+                //PrintComp(nodes);
 
                 // Fill blank spots
                 int q = 0;
@@ -138,44 +173,21 @@ namespace TFT_Comp_Creator_2
                 {
                     if (comp[i] == "")
                     {
-
+                
                         if (comp.Contains(nodes[q])) // DEV NOTE: This does not check for nodes size, might cause out of bound crashes (in specific cases)
                             q++;
-
+                
                         comp[i] = nodes[q];
                         q++;
                     }
                 }
 
 
-                switch (addAlgorithm.Text)
-                {
-                    case ("Random"):
-                        for (int i = comp.Count(); i < min_comp_size.Value; i++)
-                        {
-                            int random = rnd.Next(0, default_champion.Items.Count);
+                int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
 
-                            if (!comp.Contains(default_champion.Items[random].ToString()))
-                            {
-                                comp.Add(default_champion.Items[random].ToString());
-                            }
-                        }
-                        break;
+                // Call the helper function with the empty defaultComp
+                FindCombinations(nodes, size, new HashSet<string>(), new List<string>());
 
-                    case ("Pet"):
-
-                        int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
-
-                        // Call the helper function with the empty defaultComp
-                        FindCombinations(nodes, size, new HashSet<string>(), new List<string>());
-
-
-                        break;
-
-                    default:
-                        break;
-
-                }
             }
             Print("done");
 
@@ -186,6 +198,8 @@ namespace TFT_Comp_Creator_2
             Scoring.ForceStop = false;
 
             CreateButton.Enabled = true;
+
+            //ThreadsRunning--;
 
         }
 
@@ -230,7 +244,6 @@ namespace TFT_Comp_Creator_2
         {
             output.Text = "";
 
-            PrintCompLink(new List<string> { "Taliyah", "Yuumi", "Syndra", "Ekko", "Rell", "KaiSa", "Nilah", "Lux" });
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -243,12 +256,66 @@ namespace TFT_Comp_Creator_2
         private void TLink_Click(object sender, EventArgs e)
         {
             linkBox.Text = PrintCompLink(compBox.Text.Split('-').Select(x => x).ToList());
+
+            compBox.Text = "";
         }
 
         private void linkBox_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if(linkBox.Text.Contains("tft"))
+            if (linkBox.Text.Contains("tft"))
                 System.Diagnostics.Process.Start(linkBox.Text);
+        }
+
+        private void FineTune_Click(object sender, EventArgs e)
+        {
+            List<List<string>> goodComps = new List<List<string>>();
+            List<List<string>> badComps = new List<List<string>>();
+
+            for (int i = 0; i < GoodCompsBox.Lines.Count(); i++)
+            {
+                goodComps.Add(GoodCompsBox.Lines[i].Split('-').ToList());
+            }
+
+
+            for (int i = 0; i < BadCompsBox.Lines.Count(); i++)
+            {
+                badComps.Add(BadCompsBox.Lines[i].Split('-').ToList());
+            }
+
+
+
+            FineTunePowerLevel(goodComps, badComps);
+
+        }
+
+        private void traitFocusNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (traitFocusNames.Text != "NONE")
+            {
+                traitFocusValue.Items.Clear();
+
+                dynamic bp = Master["TraitList"][traitFocusNames.Text]["Breakpoints"];
+
+                for (int i = 0; i < bp.Count; i++)
+                {
+                    traitFocusValue.Items.Add(bp[i].ToString());
+                }
+
+                traitFocusValue.SelectedIndex = 0;
+            }
+            else
+            {
+
+                traitFocusValue.Items.Clear();
+            }
+        }
+
+
+        private void GetNodes2_Click(object sender, EventArgs e)
+        {
+
+
+
         }
     }
 }

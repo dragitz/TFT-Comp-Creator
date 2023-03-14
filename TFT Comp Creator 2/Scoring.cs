@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -10,18 +12,20 @@ namespace TFT_Comp_Creator_2
     public class Scoring
     {
         public static dynamic Master = new JObject();
-        private static ComboBox scoringAlgo = new ComboBox();
         private static CheckBox no_error = new CheckBox();
         private static CheckBox limit_champions_cost_5 = new CheckBox();
+        private static ComboBox traitFocusNames = new ComboBox();
+        private static ComboBox traitFocusValue = new ComboBox();
         private static NumericUpDown minActiveTRaits = new NumericUpDown();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, ComboBox S, CheckBox NO, CheckBox limit_champions_cost_5_, NumericUpDown minActiveTRaits_)
+        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, ComboBox traitFocusNames_, ComboBox traitFocusValue_, NumericUpDown minActiveTRaits_)
         {
             Master = M;
-            scoringAlgo = S;
             no_error = NO;
             limit_champions_cost_5 = limit_champions_cost_5_;
+            traitFocusNames = traitFocusNames_;
+            traitFocusValue = traitFocusValue_;
             minActiveTRaits = minActiveTRaits_;
         }
 
@@ -58,9 +62,14 @@ namespace TFT_Comp_Creator_2
 
                     List<string> champTraitList = new List<string>();
 
-                    for (int i = 0; i < champTraitsAmount; i++)
+                    //for (int i = 0; i < champTraitsAmount; i++)
+                    //{
+                    //    champTraitList.Add((string)Master["Champions"][champ]["Traits"][i]);
+                    //}
+
+                    foreach (var trait in Master["Champions"][champ]["Traits"])
                     {
-                        champTraitList.Add((string)Master["Champions"][champ]["Traits"][i]);
+                        champTraitList.Add((string)trait);
                     }
 
                     championsData.Add(champ, champTraitList);
@@ -75,11 +84,26 @@ namespace TFT_Comp_Creator_2
                     // Get the list of categories for the current fruit
                     var traits = championsData[champ];
 
+
+
                     // Loop through each category and calculate its contribution to the synergy score
                     foreach (var trait in traits)
                     {
                         // Each category contributes the number of fruits in the fruitNames list that belong to that category
                         synergyScore += comp.Count(f => championsData[f].Contains(trait));
+
+                        //cachedResults = comp.ToDictionary(f => f, f => championsData[f].Contains(trait));
+                        //synergyScore += cachedResults.Count(kv => kv.Value);
+
+                        //var count = 0;
+                        //Parallel.ForEach(comp, f =>
+                        //{
+                        //    if (championsData[f].Contains(trait))
+                        //    {
+                        //        Interlocked.Increment(ref count);
+                        //    }
+                        //});
+                        //synergyScore += count;
                     }
 
                 }
@@ -334,25 +358,6 @@ namespace TFT_Comp_Creator_2
 
             // Scoring
             int Score = 0;
-            switch (scoringAlgo.Text)
-            {
-                case ("Balanced"):
-                    //Score = ActiveTraits * 2 - InactiveTraits * 1 + BalancedTraits * 5 - UnbalancedTraits * 5 + BestBreakPoint * 1 + BreakPoints * 2; //bad
-
-                    Score = ActiveTraits * 3 - InactiveTraits * 1 + BreakPoints * 4 + TraitsWithUpgrades * 3 + Opportunities * 1;
-                    break;
-
-                case ("Punish"):
-                    Score = ActiveTraits * 3 - InactiveTraits * 3 + BreakPoints * 3 + TraitsWithUpgrades * 2 + Opportunities * 1;
-                    break;
-
-                case ("Reward"):
-                    Score = ActiveTraits * 4 - InactiveTraits * 0 + BreakPoints * 1 + TraitsWithUpgrades * 2 - Opportunities * 1;
-                    break;
-
-                default:
-                    break;
-            }
             if (debug == 1)
             {
                 Print("Score: " + Score);
@@ -381,12 +386,15 @@ namespace TFT_Comp_Creator_2
 
             int cost5Amount = 0;
 
+            int specificTraitAmount = 0;
+
             List<string> TraitsInComp = new List<string>();
+
+            string traitFocusValueString = traitFocusValue.Text;
+
             foreach (var champion in comp)
             {
                 int cost = (int)Master["Champions"][champion]["cost"];
-
-                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
 
                 // Count the amount of 5 cost champions
                 switch (cost)
@@ -411,6 +419,9 @@ namespace TFT_Comp_Creator_2
                 if (cost > 5 && disable_champions_cost_5_more.Checked)
                     return false;
 
+                // Size can't be higher than 1
+                if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
+
 
                 // Add the trait to the list
                 dynamic Traits = Master["Champions"][champion]["Traits"];
@@ -425,9 +436,15 @@ namespace TFT_Comp_Creator_2
                 }
 
                 // Populate JTraits
+                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+
+                dynamic TraitsArray = Master["Champions"][champion]["Traits"];
+
                 for (int k = 0; k < ChampionTraitsAmount; k++)
                 {
-                    string CurrentTrait = (string)Master["Champions"][champion]["Traits"][k];
+                    string CurrentTrait = (string)TraitsArray[k];
+
+                    if (CurrentTrait == traitFocusValueString && traitFocusValueString != "NONE") { specificTraitAmount++; }
 
                     if (TraitsInComp.Contains(CurrentTrait))
                     {
@@ -435,10 +452,20 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
+
+            }
+            // min heart DEV
+
+            if (traitFocusValueString != "")
+            {
+                if (specificTraitAmount < int.Parse(traitFocusValue.Text))
+                {
+                    return false;
+                }
             }
 
-            // Size can't be higher than 1
-            if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
+
+
 
 
             // Included / Excluded champion check
@@ -459,6 +486,7 @@ namespace TFT_Comp_Creator_2
                 }
             }
             if (include_champion.Items.Count != IncludedChampsFoundLIst.Count) { return false; }
+
 
 
             int ActiveTraits = 0;
@@ -517,6 +545,7 @@ namespace TFT_Comp_Creator_2
             // less than x traits makes the comp invalid
             if (ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }
 
+
             return true;
         }
         // Unused function that I keep in case I need it
@@ -525,21 +554,16 @@ namespace TFT_Comp_Creator_2
             if (ForceStop) { return 0; }
 
             // Define weights for each stat, based on its relative importance in determining the character's power level
-            float damageWeight = 0.08f;
-
-            float armorWeight = 0.07f;
-            float magicResistanceWeight = 0.07f;
-
-            float critChanceWeight = 0.05f;
-            float critMultiplierWeight = 0.05f;
-
-            float maxManaWeight = 0.04f;
-
-            float hpWeight = 0.03f;
-            float attackSpeedWeight = 0.03f;
-            float initialManaWeight = 0.03f;
-
-            float attackDistanceWeight = 0.01f;
+            float damageWeight = 0.052f;
+            float armorWeight = 0.0025f;
+            float magicResistanceWeight = -0.0025f;
+            float critChanceWeight = 0.025f;
+            float critMultiplierWeight = 0.0013f;
+            float maxManaWeight = -0.0023f;
+            float hpWeight = 0.007f;
+            float attackSpeedWeight = -131.1f;
+            float initialManaWeight = 1.001f;
+            float attackDistanceWeight = 0.0014f;
 
             ////////////////////////////////////
 
@@ -561,7 +585,18 @@ namespace TFT_Comp_Creator_2
                 float critMultiplier = (float)Master["Champions"][championName]["stats"]["critMultiplier"];
 
                 // Compute the power level as a weighted sum of the character's stats
-                powerLevel += attackSpeed * attackSpeedWeight + armor * armorWeight + magicResistance * magicResistanceWeight + attackDistance * attackDistanceWeight + damage * damageWeight + maxMana * maxManaWeight + initialMana * initialManaWeight + hp * hpWeight + critChance * critChanceWeight + critMultiplier * critMultiplierWeight;
+                //powerLevel += attackSpeed * attackSpeedWeight + armor * armorWeight + magicResistance * magicResistanceWeight + attackDistance * attackDistanceWeight + damage * damageWeight + maxMana * maxManaWeight + initialMana * initialManaWeight + hp * hpWeight + critChance * critChanceWeight + critMultiplier * critMultiplierWeight;
+                powerLevel +=
+                    attackSpeed * attackSpeedWeight +
+                    armor * armorWeight +
+                    magicResistance * magicResistanceWeight +
+                    attackDistance * attackDistanceWeight +
+                    damage * damageWeight +
+                    maxMana * maxManaWeight +
+                    initialMana * initialManaWeight +
+                    hp * hpWeight +
+                    critChance * critChanceWeight +
+                    critMultiplier * critMultiplierWeight;
 
                 // Alistar-Aphelios-Fiddlesticks-Janna-Leona-Mordekaiser-Nunu-Syndra
             }

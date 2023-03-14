@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,6 +19,7 @@ namespace TFT_Comp_Creator_2
 
         public static dynamic Master = new JObject();
         public static int Pet_SynergyBest = 0;
+        public static int Pet_PowerBest = 0;
         public static bool ForceStop = false;
 
         public static CheckBox limit_champions_cost_5 = new CheckBox();
@@ -89,7 +88,9 @@ namespace TFT_Comp_Creator_2
 
         public static void PrintComp(List<string> comp)
         {
-            if (comp.Count <= 0) { return; }
+            if (comp.Count < 1) { return; }
+
+            comp = comp.OrderBy(x => x).ToList();
 
             Print(String.Join("-", comp));
 
@@ -182,6 +183,68 @@ namespace TFT_Comp_Creator_2
             return list;
         }
 
+
+        public static List<string> GetNodes2(List<string> comp)
+        {
+            // Now get the nodes into a list, list must contain traits
+            List<string> traits = new List<string>();
+
+            for (int i = 0; i < comp.Count; i++)
+            {
+                // Get the champions's traits
+                int numberOfTraits = Master["Champions"][comp[i]]["Traits"].Count;
+                for (int k = 0; k < numberOfTraits; k++)
+                {
+                    // Check if trait can be added (exclusion)
+
+                    string trait = Master["Champions"][comp[i]]["Traits"][k].ToString();
+
+                    if (!exclude_trait.Items.Contains(trait))
+                    {
+                        traits.Add(trait);
+                    }
+
+                }
+            }
+
+            traits = traits.Distinct().ToList();
+
+            //Print("Initial nodes: ");
+            //PrintComp(traits);
+
+
+            // Now initiate a list of champions that have that trait
+            List<string> championNodes = new List<string>();
+
+            for (int i = 0; i < traits.Count; i++)
+            {
+                int ChampionsInTrait = Master["TraitChampions"][traits[i]].Count;
+
+                for (int k = 0; k < ChampionsInTrait; k++)
+                {
+                    // Check filters
+                    string champion = Master["TraitChampions"][traits[i]][k];
+                    int cost = Master["Champions"][champion]["cost"];
+
+                    if (disable_champions_cost_1.Checked && cost == 1) { continue; }
+                    else if (disable_champions_cost_2.Checked && cost == 2) { continue; }
+                    else if (disable_champions_cost_3.Checked && cost == 3) { continue; }
+                    else if (disable_champions_cost_4.Checked && cost == 4) { continue; }
+                    else if (disable_champions_cost_5.Checked && cost == 5) { continue; }
+                    else if (disable_champions_cost_5_more.Checked && cost > 5) { continue; }
+
+                    championNodes.Add(champion);
+                }
+
+            }
+
+            championNodes = championNodes.Distinct().ToList();
+            List<string> championNodeStrings = championNodes.Distinct().Select(node => node.ToString()).ToList();
+
+            return championNodeStrings;
+
+        }
+
         /// <summary>
         /// This is a recursive function that generates all possible combinations of a given size from a list of elements (nodes) and 
         /// checks whether each combination is valid. 
@@ -208,15 +271,18 @@ namespace TFT_Comp_Creator_2
                 alreadySeenCombinations.Add(combinationString);
 
                 int Synergy = CalculateSynergy(comp);
+                //int Power = ComputePowerLevel(comp);
 
-                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
+                //if (Synergy < 20 && CheckCompValidity(comp))
+                if (Synergy > Pet_SynergyBest && CheckCompValidity(comp))
                 {
                     Pet_SynergyBest = Synergy;
+                    //Pet_PowerBest = Power;
 
                     PrintComp(comp);
                     //PrintCompLink(comp);
 
-                    label14.Text = "Synergy: " + Pet_SynergyBest;
+                    label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
                 }
 
                 return;
@@ -300,6 +366,210 @@ namespace TFT_Comp_Creator_2
         }
 
 
+        public static void GenerateCombinations(int[] array, int combinationLength)
+        {
+            int[] combination = new int[combinationLength];
+            GenerateCombinationsRecursive(array, combination, 0, 0);
+        }
 
+        private static void GenerateCombinationsRecursive(int[] array, int[] combination, int currentIndex, int currentCombinationLength)
+        {
+            if (currentCombinationLength == combination.Length)
+            {
+                //Print(string.Join(", ", combination));
+                return;
+            }
+
+            for (int i = currentIndex; i < array.Length; i++)
+            {
+                if (i > currentIndex && array[i] == array[i - 1])
+                {
+                    continue;
+                }
+
+                combination[currentCombinationLength] = array[i];
+                GenerateCombinationsRecursive(array, combination, i + 1, currentCombinationLength + 1);
+            }
+
+        }
+
+        public static void FineTunePowerLevel(List<List<string>> goodComps, List<List<string>> badComps)
+        {
+
+            int averageSize = 50;
+
+            float[] averageDamage = new float[averageSize];
+            float[] averagearmorWeight = new float[averageSize];
+            float[] averagemagicResistanceWeight = new float[averageSize];
+            float[] averagecritChanceWeight = new float[averageSize];
+            float[] averagecritMultiplierWeight = new float[averageSize];
+            float[] averagemaxManaWeight = new float[averageSize];
+            float[] averagehpWeight = new float[averageSize];
+            float[] averageattackSpeedWeight = new float[averageSize];
+            float[] averageinitialManaWeight = new float[averageSize];
+            float[] averageattackDistanceWeight = new float[averageSize];
+
+            for (int times = 0; times < averageSize; times++)
+            {
+
+                //Print(times);
+
+                Random random = new Random();
+                // Define weights for each stat, based on its relative importance in determining the character's power level
+                float damageWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float armorWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float magicResistanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float critChanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float critMultiplierWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float maxManaWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float hpWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float attackSpeedWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float initialManaWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                float attackDistanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+
+
+
+                float averageGood = -1.0f;
+                float averageBad = 1.0f;
+
+                while ((averageGood - 1.0f) < averageBad)
+                {
+                    float[] powerGood = new float[goodComps.Count];
+                    float[] powerBad = new float[badComps.Count];
+
+                    for (int compID = 0; compID < goodComps.Count(); compID++)
+                    {
+
+                        // Create comp
+                        List<string> comp = goodComps[compID];
+
+                        //PrintComp(goodComps[compID]);
+
+
+                        for (int i = 0; i < comp.Count(); i++)
+                        {
+
+                            string championName = comp[i];
+
+
+
+                            int attackSpeed = (int)Master["Champions"][championName]["stats"]["attackSpeed"];
+                            int armor = (int)Master["Champions"][championName]["stats"]["armor"];
+                            int magicResistance = (int)Master["Champions"][championName]["stats"]["magicResist"];
+                            int attackDistance = (int)Master["Champions"][championName]["stats"]["range"];
+                            int damage = (int)Master["Champions"][championName]["stats"]["damage"];
+                            int maxMana = (int)Master["Champions"][championName]["stats"]["mana"];
+                            int initialMana = (int)Master["Champions"][championName]["stats"]["initialMana"];
+                            int hp = (int)Master["Champions"][championName]["stats"]["hp"];
+                            float critChance = (float)Master["Champions"][championName]["stats"]["critChance"];
+                            float critMultiplier = (float)Master["Champions"][championName]["stats"]["critMultiplier"];
+
+                            // 
+                            // Compute the power level as a weighted sum of the character's stats
+                            powerGood[compID] =
+                                attackSpeed * attackSpeedWeight +
+                                armor * armorWeight +
+                                magicResistance * magicResistanceWeight +
+                                attackDistance * attackDistanceWeight +
+                                damage * damageWeight +
+                                maxMana * maxManaWeight +
+                                initialMana * initialManaWeight +
+                                hp * hpWeight +
+                                critChance * critChanceWeight +
+                                critMultiplier * critMultiplierWeight;
+
+                            //Print(powerGood[compID]);
+
+                            //Print(championName);
+                        }
+                    }
+
+                    for (int compID = 0; compID < badComps.Count(); compID++)
+                    {
+                        // Create comp
+                        List<string> comp = badComps[compID];
+
+                        for (int i = 0; i < comp.Count(); i++)
+                        {
+                            string championName = comp[i];
+
+                            int attackSpeed = (int)Master["Champions"][championName]["stats"]["attackSpeed"];
+                            int armor = (int)Master["Champions"][championName]["stats"]["armor"];
+                            int magicResistance = (int)Master["Champions"][championName]["stats"]["magicResist"];
+                            int attackDistance = (int)Master["Champions"][championName]["stats"]["range"];
+                            int damage = (int)Master["Champions"][championName]["stats"]["damage"];
+                            int maxMana = (int)Master["Champions"][championName]["stats"]["mana"];
+                            int initialMana = (int)Master["Champions"][championName]["stats"]["initialMana"];
+                            int hp = (int)Master["Champions"][championName]["stats"]["hp"];
+                            float critChance = (float)Master["Champions"][championName]["stats"]["critChance"];
+                            float critMultiplier = (float)Master["Champions"][championName]["stats"]["critMultiplier"];
+
+                            // 
+                            // Compute the power level as a weighted sum of the character's stats
+                            powerBad[compID] =
+                                attackSpeed * attackSpeedWeight +
+                                armor * armorWeight +
+                                magicResistance * magicResistanceWeight +
+                                attackDistance * attackDistanceWeight +
+                                damage * damageWeight +
+                                maxMana * maxManaWeight +
+                                initialMana * initialManaWeight +
+                                hp * hpWeight +
+                                critChance * critChanceWeight +
+                                critMultiplier * critMultiplierWeight;
+                        }
+                    }
+
+
+                    //averageGood = powerGood.Average();
+                    //averageBad = powerBad.Average();
+
+                    averageGood = (float)powerGood.Average();
+                    averageBad = (float)powerBad.Average();
+
+                    damageWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    armorWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    magicResistanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    critChanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    critMultiplierWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    maxManaWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    hpWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    attackSpeedWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    initialManaWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                    attackDistanceWeight = (float)(random.NextDouble() * 0.14 - 0.07);
+                }
+
+                if (hpWeight > averagehpWeight.Average())
+                {
+                    averageDamage[times] = damageWeight;
+                    averagearmorWeight[times] = armorWeight;
+                    averagemagicResistanceWeight[times] = magicResistanceWeight;
+                    averagecritChanceWeight[times] = critChanceWeight;
+                    averagecritMultiplierWeight[times] = critMultiplierWeight;
+                    averagemaxManaWeight[times] = maxManaWeight;
+                    averagehpWeight[times] = hpWeight;
+                    averageattackSpeedWeight[times] = attackSpeedWeight;
+                    averageinitialManaWeight[times] = initialManaWeight;
+                    averageattackDistanceWeight[times] = attackDistanceWeight;
+                }
+
+
+
+            }
+
+            Print(
+                "damageWeight = " + averageDamage.Average() + "f;" + Environment.NewLine +
+                "armorWeight = " + averagearmorWeight.Average() + "f;" + Environment.NewLine +
+                "magicResistanceWeight = " + averagemagicResistanceWeight.Average() + "f;" + Environment.NewLine +
+                "critChanceWeight = " + averagecritChanceWeight.Average() + "f;" + Environment.NewLine +
+                "critMultiplierWeight = " + averagecritMultiplierWeight.Average() + "f;" + Environment.NewLine +
+                "maxManaWeight = " + averagemaxManaWeight.Average() + "f;" + Environment.NewLine +
+                "hpWeight = " + averagehpWeight.Average() + "f;" + Environment.NewLine +
+                "attackSpeedWeight = " + averageattackSpeedWeight.Average() + "f;" + Environment.NewLine +
+                "initialManaWeight = " + averageinitialManaWeight.Average() + "f;" + Environment.NewLine +
+                "attackDistanceWeight = " + averageattackDistanceWeight.Average() + "f;" + Environment.NewLine
+                );
+            return;
+        }
     }
 }
