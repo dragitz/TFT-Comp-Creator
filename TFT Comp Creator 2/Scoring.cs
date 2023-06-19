@@ -14,19 +14,17 @@ namespace TFT_Comp_Creator_2
         public static dynamic Master = new JObject();
         private static CheckBox no_error = new CheckBox();
         private static CheckBox limit_champions_cost_5 = new CheckBox();
-        private static ComboBox traitFocusNames = new ComboBox();
-        private static ComboBox traitFocusValue = new ComboBox();
         private static NumericUpDown minActiveTRaits = new NumericUpDown();
+        private static NumericUpDown minUpgrades = new NumericUpDown();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, ComboBox traitFocusNames_, ComboBox traitFocusValue_, NumericUpDown minActiveTRaits_)
+        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_)
         {
             Master = M;
             no_error = NO;
             limit_champions_cost_5 = limit_champions_cost_5_;
-            traitFocusNames = traitFocusNames_;
-            traitFocusValue = traitFocusValue_;
             minActiveTRaits = minActiveTRaits_;
+            minUpgrades = minUpgrades_;
         }
 
         /// <summary>
@@ -62,11 +60,6 @@ namespace TFT_Comp_Creator_2
 
                     List<string> champTraitList = new List<string>();
 
-                    //for (int i = 0; i < champTraitsAmount; i++)
-                    //{
-                    //    champTraitList.Add((string)Master["Champions"][champ]["Traits"][i]);
-                    //}
-
                     foreach (var trait in Master["Champions"][champ]["Traits"])
                     {
                         champTraitList.Add((string)trait);
@@ -84,29 +77,18 @@ namespace TFT_Comp_Creator_2
                     // Get the list of categories for the current fruit
                     var traits = championsData[champ];
 
-
-
                     // Loop through each category and calculate its contribution to the synergy score
                     foreach (var trait in traits)
                     {
                         // Each category contributes the number of fruits in the fruitNames list that belong to that category
                         synergyScore += comp.Count(f => championsData[f].Contains(trait));
-
-                        //cachedResults = comp.ToDictionary(f => f, f => championsData[f].Contains(trait));
-                        //synergyScore += cachedResults.Count(kv => kv.Value);
-
-                        //var count = 0;
-                        //Parallel.ForEach(comp, f =>
-                        //{
-                        //    if (championsData[f].Contains(trait))
-                        //    {
-                        //        Interlocked.Increment(ref count);
-                        //    }
-                        //});
-                        //synergyScore += count;
                     }
 
                 }
+
+
+                // ... increase synergy score for each upgrade ...
+                // for each trait
 
                 // Return the total synergy score
                 return synergyScore;
@@ -386,11 +368,7 @@ namespace TFT_Comp_Creator_2
 
             int cost5Amount = 0;
 
-            int specificTraitAmount = 0;
-
             List<string> TraitsInComp = new List<string>();
-
-            string traitFocusValueString = traitFocusValue.Text;
 
             foreach (var champion in comp)
             {
@@ -444,29 +422,12 @@ namespace TFT_Comp_Creator_2
                 {
                     string CurrentTrait = (string)TraitsArray[k];
 
-                    if (CurrentTrait == traitFocusValueString && traitFocusValueString != "NONE") { specificTraitAmount++; }
-
                     if (TraitsInComp.Contains(CurrentTrait))
                     {
                         JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
                     }
                 }
-
-
             }
-            // min heart DEV
-
-            if (traitFocusValueString != "")
-            {
-                if (specificTraitAmount < int.Parse(traitFocusValue.Text))
-                {
-                    return false;
-                }
-            }
-
-
-
-
 
             // Included / Excluded champion check
             List<string> IncludedChampsFoundLIst = new List<string>();
@@ -494,6 +455,9 @@ namespace TFT_Comp_Creator_2
             // Let's check if the comp is balanced
             List<string> IncludedTraitFoundLIst = new List<string>();
 
+            int TotalUpgrades = 0;
+            int[] UpgradeLevels = { };
+
             // Iterate through all 
             foreach (string Trait in TraitsInComp)
             {
@@ -506,18 +470,26 @@ namespace TFT_Comp_Creator_2
 
                     int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
 
-                    // Checkbox must be toggled
-                    if (no_error.Checked)
-                    {
-                        bool isBalanced = false;
-                        for (int i = 0; i < BreakpointAmount; i++)
-                        {
-                            if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
-                                isBalanced = true;
-                        }
 
-                        if (!isBalanced) { return false; }
+                    bool isBalanced = false;
+                    for (int i = 0; i < BreakpointAmount; i++)
+                    {
+                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
+                        {
+                            
+                            isBalanced = true;
+
+                            if (BreakpointAmount > 1 && i > 0)
+                            {
+                                TotalUpgrades++;
+                                UpgradeLevels.Append(i);
+                            }
+                            
+                        }
                     }
+
+                    if (!isBalanced && no_error.Checked) { return false; }
+                    
 
 
                     // Included / Excluded traits check
@@ -535,12 +507,13 @@ namespace TFT_Comp_Creator_2
                             IncludedTraitFoundLIst.Add(Trait);
                     }
 
-
-
                 }
             }
 
             if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+
+            // Ensure minimum amount of upgrades
+            if (TotalUpgrades < minUpgrades.Value) { return false; }
 
             // less than x traits makes the comp invalid
             if (ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }

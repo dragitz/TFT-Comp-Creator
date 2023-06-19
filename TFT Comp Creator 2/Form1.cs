@@ -60,7 +60,6 @@ namespace TFT_Comp_Creator_2
                     );
 
                 SetFormSetup(
-                    traitFocusNames,
                     exclude_trait,
                     default_trait,
                     include_trait,
@@ -72,7 +71,7 @@ namespace TFT_Comp_Creator_2
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, no_error, limit_champions_cost_5, traitFocusNames, traitFocusValue, minTraits);
+                SetFromScoring(Master, no_error, limit_champions_cost_5, minTraits, minUpgrades);
 
                 Populate(Master);
 
@@ -82,50 +81,17 @@ namespace TFT_Comp_Creator_2
             catch (Exception ex) { Print(ex); }
         }
 
-        // Test
-        private static void GenerateCombinationsThread()
-        {
-            int[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-
-            int combinationLength = 8;
-            GenerateCombinations(array, combinationLength);
-
-            Print("done..");
-        }
 
         public void CreateButton_Click(object sender, EventArgs e)
         {
             CreateButton.Enabled = false;
+            StopButton.Enabled = true;
 
-            Pet_SynergyBest = 10;
+            Pet_SynergyBest = 1;
             Pet_PowerBest = -999;
 
             label14.Text = "Synergy: " + Pet_SynergyBest;
 
-            if (traitFocusNames.Text != "NONE")
-            {
-
-                bool isThere = false;
-
-                for (int i = 0; i < include_trait.Items.Count; i++)
-                {
-                    if (include_trait.Items[i] == traitFocusNames.Text) { isThere = true; break; }
-                }
-
-                if (!isThere)
-                {
-                    for (int q = 0; q < default_trait.Items.Count; q++)
-                    {
-                        if (default_trait.Items[q].ToString() == traitFocusNames.Text)
-                        {
-                            default_trait.SelectedItem = q;
-                            default_trait.SelectedIndex = q;
-                            moveData(default_trait.SelectedItem, default_trait, include_trait);
-                            break;
-                        }
-                    }
-                }
-            }
 
             Thread t = new Thread(new ThreadStart(Creation))
             {
@@ -173,10 +139,10 @@ namespace TFT_Comp_Creator_2
                 {
                     if (comp[i] == "")
                     {
-                
+
                         if (comp.Contains(nodes[q])) // DEV NOTE: This does not check for nodes size, might cause out of bound crashes (in specific cases)
                             q++;
-                
+
                         comp[i] = nodes[q];
                         q++;
                     }
@@ -198,6 +164,7 @@ namespace TFT_Comp_Creator_2
             Scoring.ForceStop = false;
 
             CreateButton.Enabled = true;
+            StopButton.Enabled = false;
 
             //ThreadsRunning--;
 
@@ -206,7 +173,6 @@ namespace TFT_Comp_Creator_2
 
 
 
-        // Will move this stuff later
         private void Trait_default_to_exclude_Click(object sender, EventArgs e)
         {
             moveData(default_trait.SelectedItem, default_trait, exclude_trait);
@@ -253,69 +219,72 @@ namespace TFT_Comp_Creator_2
             Scoring.ForceStop = true;
         }
 
-        private void TLink_Click(object sender, EventArgs e)
+        private void OptimizeComp_Click(object sender, EventArgs e)
         {
-            linkBox.Text = PrintCompLink(compBox.Text.Split('-').Select(x => x).ToList());
+            List<string> comp = compBox.Text.Split('-').ToList();
+            List<string> Optimizedcomp = new List<string>(comp);
 
-            compBox.Text = "";
-        }
+            int score = CalculateSynergy(comp);
+            int possibleBest = score;
 
-        private void linkBox_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (linkBox.Text.Contains("tft"))
-                System.Diagnostics.Process.Start(linkBox.Text);
-        }
-
-        private void FineTune_Click(object sender, EventArgs e)
-        {
-            List<List<string>> goodComps = new List<List<string>>();
-            List<List<string>> badComps = new List<List<string>>();
-
-            for (int i = 0; i < GoodCompsBox.Lines.Count(); i++)
+            Print("initial score: " + score);
+            // Create our list of champions based on the remainign list of available champions
+            List<string> championList = new List<string>();
+            foreach (var item in default_champion.Items)
             {
-                goodComps.Add(GoodCompsBox.Lines[i].Split('-').ToList());
+                if (!comp.Contains(item.ToString())) { championList.Add(item.ToString()); }
             }
 
 
-            for (int i = 0; i < BadCompsBox.Lines.Count(); i++)
+            for (int q = 0; q < comp.Count; q++)
             {
-                badComps.Add(BadCompsBox.Lines[i].Split('-').ToList());
-            }
+                // Ignore champions we want in the comp
+                if (include_champion.Items.Contains(comp[q])) { continue; }
 
+                List<string> tempComp = new List<string>(comp);
 
-
-            FineTunePowerLevel(goodComps, badComps);
-
-        }
-
-        private void traitFocusNames_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (traitFocusNames.Text != "NONE")
-            {
-                traitFocusValue.Items.Clear();
-
-                dynamic bp = Master["TraitList"][traitFocusNames.Text]["Breakpoints"];
-
-                for (int i = 0; i < bp.Count; i++)
+                for (int i = 0; i < championList.Count; i++)
                 {
-                    traitFocusValue.Items.Add(bp[i].ToString());
-                }
+                    if (tempComp.Contains(championList[i])) { continue; } // weird bug happens if I don't add this. 19 june 2023
 
-                traitFocusValue.SelectedIndex = 0;
+                    tempComp[q] = championList[i];
+
+                    // ensure validity
+                    if (CheckCompValidity(tempComp))
+                    {
+                        possibleBest = CalculateSynergy(tempComp);
+
+                        if (possibleBest >= score)
+                        {
+                            if (score > possibleBest)
+                            {
+                                Print("[+] " + score + " [+] Alternative: " + String.Join("-", tempComp));
+                            }
+                            else 
+                            {
+                                Print("[+] " + score + " [+] Probable best: " + String.Join("-", tempComp));
+                            }
+                            
+                            Optimizedcomp = tempComp;
+                            score = possibleBest;
+                        }
+                    }
+                }
+            }
+
+            if (!comp.SequenceEqual(Optimizedcomp))
+            {
+                Print("Optimized comp score: " + score);
+                PrintComp(Optimizedcomp);
+                Print("[+] Probable best: " + String.Join("-", Optimizedcomp));
             }
             else
             {
-
-                traitFocusValue.Items.Clear();
+                Print("Couldn't improve comp");
             }
-        }
-
-
-        private void GetNodes2_Click(object sender, EventArgs e)
-        {
-
 
 
         }
+
     }
 }

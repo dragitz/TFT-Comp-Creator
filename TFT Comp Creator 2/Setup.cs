@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,6 @@ namespace TFT_Comp_Creator_2
 {
     public class Setup
     {
-        public static ComboBox traitFocusNames = new ComboBox();
         public static ListBox exclude_trait = new ListBox();
         public static ListBox default_trait = new ListBox();
         public static ListBox include_trait = new ListBox();
@@ -20,7 +19,6 @@ namespace TFT_Comp_Creator_2
 
 
         public static void SetFormSetup(
-            ComboBox traitFocusNames_,
             ListBox exclude_trait_,
             ListBox default_trait_,
             ListBox include_trait_,
@@ -29,7 +27,6 @@ namespace TFT_Comp_Creator_2
             ListBox include_champion_
         )
         {
-            traitFocusNames = traitFocusNames_;
             exclude_trait = exclude_trait_;
             default_trait = default_trait_;
             include_trait = include_trait_;
@@ -238,12 +235,9 @@ namespace TFT_Comp_Creator_2
                 string name = n.Name;
 
                 default_trait.Items.Add(name);
-                traitFocusNames.Items.Add(name);
             }
             default_trait.SelectedIndex = 0;
 
-            
-            traitFocusNames.SelectedIndex = 0;
         }
 
     }

@@ -31,17 +31,31 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         public void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.MenuTab = new System.Windows.Forms.TabControl();
             this.main = new System.Windows.Forms.TabPage();
-            this.linkBox = new System.Windows.Forms.LinkLabel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabRules = new System.Windows.Forms.TabPage();
+            this.minUpgrades = new System.Windows.Forms.NumericUpDown();
+            this.limit_champions_cost_5 = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.no_error = new System.Windows.Forms.CheckBox();
+            this.min_comp_size = new System.Windows.Forms.NumericUpDown();
+            this.disable_champions_cost_5_more = new System.Windows.Forms.CheckBox();
+            this.disable_champions_cost_5 = new System.Windows.Forms.CheckBox();
+            this.minTraits = new System.Windows.Forms.NumericUpDown();
+            this.disable_champions_cost_4 = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.disable_champions_cost_3 = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
+            this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
+            this.tabOptimize = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.OptimizeComp = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.TLink = new System.Windows.Forms.Button();
             this.compBox = new System.Windows.Forms.TextBox();
             this.error = new System.Windows.Forms.Label();
-            this.min_comp_size = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
             this.incEx = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -66,32 +80,6 @@ namespace TFT_Comp_Creator_2
             this.label7 = new System.Windows.Forms.Label();
             this.include_champion = new System.Windows.Forms.ListBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.filtersTab = new System.Windows.Forms.TabPage();
-            this.traitFocusValue = new System.Windows.Forms.ComboBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.traitFocusNames = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.minTraits = new System.Windows.Forms.NumericUpDown();
-            this.limit_champions_cost_5 = new System.Windows.Forms.CheckBox();
-            this.no_error = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_5_more = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_5 = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_4 = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_3 = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
-            this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
-            this.quickActions = new System.Windows.Forms.TabPage();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.FineTune = new System.Windows.Forms.Button();
-            this.BadCompsBox = new System.Windows.Forms.RichTextBox();
-            this.GoodCompsBox = new System.Windows.Forms.RichTextBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.ratio2_5 = new System.Windows.Forms.RadioButton();
-            this.ratio2_4 = new System.Windows.Forms.RadioButton();
-            this.ratio1_4 = new System.Windows.Forms.RadioButton();
-            this.ratio1_3 = new System.Windows.Forms.RadioButton();
-            this.label11 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
@@ -99,22 +87,22 @@ namespace TFT_Comp_Creator_2
             this.ClearButton = new System.Windows.Forms.Button();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).BeginInit();
+            this.tabOptimize.SuspendLayout();
             this.incEx.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            this.filtersTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).BeginInit();
-            this.quickActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuTab
             // 
             this.MenuTab.Controls.Add(this.main);
             this.MenuTab.Controls.Add(this.incEx);
-            this.MenuTab.Controls.Add(this.filtersTab);
-            this.MenuTab.Controls.Add(this.quickActions);
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
@@ -123,14 +111,8 @@ namespace TFT_Comp_Creator_2
             // 
             // main
             // 
-            this.main.Controls.Add(this.linkBox);
-            this.main.Controls.Add(this.label9);
-            this.main.Controls.Add(this.label1);
-            this.main.Controls.Add(this.TLink);
-            this.main.Controls.Add(this.compBox);
+            this.main.Controls.Add(this.tabControl1);
             this.main.Controls.Add(this.error);
-            this.main.Controls.Add(this.min_comp_size);
-            this.main.Controls.Add(this.label5);
             this.main.Location = new System.Drawing.Point(4, 22);
             this.main.Name = "main";
             this.main.Padding = new System.Windows.Forms.Padding(3);
@@ -139,64 +121,86 @@ namespace TFT_Comp_Creator_2
             this.main.Text = "Main";
             this.main.UseVisualStyleBackColor = true;
             // 
-            // linkBox
+            // tabControl1
             // 
-            this.linkBox.AutoSize = true;
-            this.linkBox.Location = new System.Drawing.Point(167, 179);
-            this.linkBox.Name = "linkBox";
-            this.linkBox.Size = new System.Drawing.Size(10, 13);
-            this.linkBox.TabIndex = 32;
-            this.linkBox.TabStop = true;
-            this.linkBox.Text = "-";
-            this.linkBox.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBox_LinkClicked);
+            this.tabControl1.Controls.Add(this.tabRules);
+            this.tabControl1.Controls.Add(this.tabOptimize);
+            this.tabControl1.Location = new System.Drawing.Point(3, 2);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(762, 210);
+            this.tabControl1.TabIndex = 48;
             // 
-            // label9
+            // tabRules
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(134, 179);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(27, 13);
-            this.label9.TabIndex = 31;
-            this.label9.Text = "Link";
+            this.tabRules.Controls.Add(this.minUpgrades);
+            this.tabRules.Controls.Add(this.limit_champions_cost_5);
+            this.tabRules.Controls.Add(this.label5);
+            this.tabRules.Controls.Add(this.no_error);
+            this.tabRules.Controls.Add(this.min_comp_size);
+            this.tabRules.Controls.Add(this.disable_champions_cost_5_more);
+            this.tabRules.Controls.Add(this.disable_champions_cost_5);
+            this.tabRules.Controls.Add(this.minTraits);
+            this.tabRules.Controls.Add(this.disable_champions_cost_4);
+            this.tabRules.Controls.Add(this.label10);
+            this.tabRules.Controls.Add(this.disable_champions_cost_3);
+            this.tabRules.Controls.Add(this.label12);
+            this.tabRules.Controls.Add(this.disable_champions_cost_2);
+            this.tabRules.Controls.Add(this.disable_champions_cost_1);
+            this.tabRules.Location = new System.Drawing.Point(4, 22);
+            this.tabRules.Name = "tabRules";
+            this.tabRules.Padding = new System.Windows.Forms.Padding(3);
+            this.tabRules.Size = new System.Drawing.Size(754, 184);
+            this.tabRules.TabIndex = 0;
+            this.tabRules.Text = "Rules";
+            this.tabRules.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // minUpgrades
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(134, 121);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
-            this.label1.TabIndex = 30;
-            this.label1.Text = "Paste Comp here";
+            this.minUpgrades.Location = new System.Drawing.Point(99, 74);
+            this.minUpgrades.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.minUpgrades.Name = "minUpgrades";
+            this.minUpgrades.Size = new System.Drawing.Size(120, 20);
+            this.minUpgrades.TabIndex = 38;
             // 
-            // TLink
+            // limit_champions_cost_5
             // 
-            this.TLink.Location = new System.Drawing.Point(321, 144);
-            this.TLink.Name = "TLink";
-            this.TLink.Size = new System.Drawing.Size(90, 23);
-            this.TLink.TabIndex = 29;
-            this.TLink.Text = "Conver to link";
-            this.TLink.UseVisualStyleBackColor = true;
-            this.TLink.Click += new System.EventHandler(this.TLink_Click);
+            this.limit_champions_cost_5.AutoSize = true;
+            this.limit_champions_cost_5.Checked = true;
+            this.limit_champions_cost_5.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.limit_champions_cost_5.Location = new System.Drawing.Point(560, 103);
+            this.limit_champions_cost_5.Name = "limit_champions_cost_5";
+            this.limit_champions_cost_5.Size = new System.Drawing.Size(154, 17);
+            this.limit_champions_cost_5.TabIndex = 47;
+            this.limit_champions_cost_5.Text = "Limit cost 5 champions to 1";
+            this.limit_champions_cost_5.UseVisualStyleBackColor = true;
             // 
-            // compBox
+            // label5
             // 
-            this.compBox.Location = new System.Drawing.Point(134, 146);
-            this.compBox.Name = "compBox";
-            this.compBox.Size = new System.Drawing.Size(181, 20);
-            this.compBox.TabIndex = 28;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(38, 15);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "Comp size";
             // 
-            // error
+            // no_error
             // 
-            this.error.AutoSize = true;
-            this.error.ForeColor = System.Drawing.Color.Red;
-            this.error.Location = new System.Drawing.Point(305, 2);
-            this.error.Name = "error";
-            this.error.Size = new System.Drawing.Size(0, 13);
-            this.error.TabIndex = 21;
+            this.no_error.AutoSize = true;
+            this.no_error.Location = new System.Drawing.Point(404, 149);
+            this.no_error.Name = "no_error";
+            this.no_error.Size = new System.Drawing.Size(149, 17);
+            this.no_error.TabIndex = 46;
+            this.no_error.Text = "Disallow unbalanced traits";
+            this.no_error.UseVisualStyleBackColor = true;
             // 
             // min_comp_size
             // 
-            this.min_comp_size.Location = new System.Drawing.Point(134, 20);
+            this.min_comp_size.Location = new System.Drawing.Point(99, 13);
             this.min_comp_size.Maximum = new decimal(new int[] {
             10,
             0,
@@ -216,14 +220,175 @@ namespace TFT_Comp_Creator_2
             0,
             0});
             // 
-            // label5
+            // disable_champions_cost_5_more
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(73, 22);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 19;
-            this.label5.Text = "Comp size";
+            this.disable_champions_cost_5_more.AutoSize = true;
+            this.disable_champions_cost_5_more.Checked = true;
+            this.disable_champions_cost_5_more.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.disable_champions_cost_5_more.Location = new System.Drawing.Point(404, 126);
+            this.disable_champions_cost_5_more.Name = "disable_champions_cost_5_more";
+            this.disable_champions_cost_5_more.Size = new System.Drawing.Size(153, 17);
+            this.disable_champions_cost_5_more.TabIndex = 45;
+            this.disable_champions_cost_5_more.Text = "Disable cost >5 champions";
+            this.disable_champions_cost_5_more.UseVisualStyleBackColor = true;
+            // 
+            // disable_champions_cost_5
+            // 
+            this.disable_champions_cost_5.AutoSize = true;
+            this.disable_champions_cost_5.Location = new System.Drawing.Point(404, 103);
+            this.disable_champions_cost_5.Name = "disable_champions_cost_5";
+            this.disable_champions_cost_5.Size = new System.Drawing.Size(147, 17);
+            this.disable_champions_cost_5.TabIndex = 44;
+            this.disable_champions_cost_5.Text = "Disable cost 5 champions";
+            this.disable_champions_cost_5.UseVisualStyleBackColor = true;
+            // 
+            // minTraits
+            // 
+            this.minTraits.Location = new System.Drawing.Point(99, 48);
+            this.minTraits.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.minTraits.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.minTraits.Name = "minTraits";
+            this.minTraits.Size = new System.Drawing.Size(120, 20);
+            this.minTraits.TabIndex = 36;
+            this.minTraits.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // disable_champions_cost_4
+            // 
+            this.disable_champions_cost_4.AutoSize = true;
+            this.disable_champions_cost_4.Location = new System.Drawing.Point(404, 80);
+            this.disable_champions_cost_4.Name = "disable_champions_cost_4";
+            this.disable_champions_cost_4.Size = new System.Drawing.Size(147, 17);
+            this.disable_champions_cost_4.TabIndex = 43;
+            this.disable_champions_cost_4.Text = "Disable cost 4 champions";
+            this.disable_champions_cost_4.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 50);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(81, 13);
+            this.label10.TabIndex = 37;
+            this.label10.Text = "Min active traits";
+            // 
+            // disable_champions_cost_3
+            // 
+            this.disable_champions_cost_3.AutoSize = true;
+            this.disable_champions_cost_3.Location = new System.Drawing.Point(404, 57);
+            this.disable_champions_cost_3.Name = "disable_champions_cost_3";
+            this.disable_champions_cost_3.Size = new System.Drawing.Size(147, 17);
+            this.disable_champions_cost_3.TabIndex = 42;
+            this.disable_champions_cost_3.Text = "Disable cost 3 champions";
+            this.disable_champions_cost_3.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(22, 76);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(71, 13);
+            this.label12.TabIndex = 39;
+            this.label12.Text = "Min upgrades";
+            // 
+            // disable_champions_cost_2
+            // 
+            this.disable_champions_cost_2.AutoSize = true;
+            this.disable_champions_cost_2.Location = new System.Drawing.Point(404, 34);
+            this.disable_champions_cost_2.Name = "disable_champions_cost_2";
+            this.disable_champions_cost_2.Size = new System.Drawing.Size(147, 17);
+            this.disable_champions_cost_2.TabIndex = 41;
+            this.disable_champions_cost_2.Text = "Disable cost 2 champions";
+            this.disable_champions_cost_2.UseVisualStyleBackColor = true;
+            // 
+            // disable_champions_cost_1
+            // 
+            this.disable_champions_cost_1.AutoSize = true;
+            this.disable_champions_cost_1.Location = new System.Drawing.Point(404, 11);
+            this.disable_champions_cost_1.Name = "disable_champions_cost_1";
+            this.disable_champions_cost_1.Size = new System.Drawing.Size(147, 17);
+            this.disable_champions_cost_1.TabIndex = 40;
+            this.disable_champions_cost_1.Text = "Disable cost 1 champions";
+            this.disable_champions_cost_1.UseVisualStyleBackColor = true;
+            // 
+            // tabOptimize
+            // 
+            this.tabOptimize.Controls.Add(this.label11);
+            this.tabOptimize.Controls.Add(this.label9);
+            this.tabOptimize.Controls.Add(this.OptimizeComp);
+            this.tabOptimize.Controls.Add(this.label1);
+            this.tabOptimize.Controls.Add(this.compBox);
+            this.tabOptimize.Location = new System.Drawing.Point(4, 22);
+            this.tabOptimize.Name = "tabOptimize";
+            this.tabOptimize.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOptimize.Size = new System.Drawing.Size(754, 184);
+            this.tabOptimize.TabIndex = 1;
+            this.tabOptimize.Text = "Optimizer";
+            this.tabOptimize.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(16, 41);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(190, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Note: Include / Exclude rules still apply";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(16, 18);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(361, 13);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "This tool will try to optimize the inserted comp by bruteforcing all champions.";
+            // 
+            // OptimizeComp
+            // 
+            this.OptimizeComp.Location = new System.Drawing.Point(19, 142);
+            this.OptimizeComp.Name = "OptimizeComp";
+            this.OptimizeComp.Size = new System.Drawing.Size(75, 23);
+            this.OptimizeComp.TabIndex = 5;
+            this.OptimizeComp.Text = "Optimize";
+            this.OptimizeComp.UseVisualStyleBackColor = true;
+            this.OptimizeComp.Click += new System.EventHandler(this.OptimizeComp_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 90);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Paste comp here";
+            // 
+            // compBox
+            // 
+            this.compBox.Location = new System.Drawing.Point(19, 116);
+            this.compBox.Name = "compBox";
+            this.compBox.Size = new System.Drawing.Size(282, 20);
+            this.compBox.TabIndex = 3;
+            // 
+            // error
+            // 
+            this.error.AutoSize = true;
+            this.error.ForeColor = System.Drawing.Color.Red;
+            this.error.Location = new System.Drawing.Point(305, 2);
+            this.error.Name = "error";
+            this.error.Size = new System.Drawing.Size(0, 13);
+            this.error.TabIndex = 21;
             // 
             // incEx
             // 
@@ -488,302 +653,6 @@ namespace TFT_Comp_Creator_2
             this.label8.TabIndex = 9;
             this.label8.Text = "Exclude";
             // 
-            // filtersTab
-            // 
-            this.filtersTab.Controls.Add(this.traitFocusValue);
-            this.filtersTab.Controls.Add(this.label18);
-            this.filtersTab.Controls.Add(this.traitFocusNames);
-            this.filtersTab.Controls.Add(this.label10);
-            this.filtersTab.Controls.Add(this.minTraits);
-            this.filtersTab.Controls.Add(this.limit_champions_cost_5);
-            this.filtersTab.Controls.Add(this.no_error);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_5_more);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_5);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_4);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_3);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_2);
-            this.filtersTab.Controls.Add(this.disable_champions_cost_1);
-            this.filtersTab.Location = new System.Drawing.Point(4, 22);
-            this.filtersTab.Name = "filtersTab";
-            this.filtersTab.Size = new System.Drawing.Size(768, 222);
-            this.filtersTab.TabIndex = 2;
-            this.filtersTab.Text = "Filters";
-            this.filtersTab.UseVisualStyleBackColor = true;
-            // 
-            // traitFocusValue
-            // 
-            this.traitFocusValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.traitFocusValue.FormattingEnabled = true;
-            this.traitFocusValue.Items.AddRange(new object[] {
-            "NONE"});
-            this.traitFocusValue.Location = new System.Drawing.Point(417, 43);
-            this.traitFocusValue.Name = "traitFocusValue";
-            this.traitFocusValue.Size = new System.Drawing.Size(121, 21);
-            this.traitFocusValue.TabIndex = 33;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(233, 46);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(51, 13);
-            this.label18.TabIndex = 32;
-            this.label18.Text = "Focus on";
-            // 
-            // traitFocusNames
-            // 
-            this.traitFocusNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.traitFocusNames.FormattingEnabled = true;
-            this.traitFocusNames.Items.AddRange(new object[] {
-            "NONE"});
-            this.traitFocusNames.Location = new System.Drawing.Point(290, 43);
-            this.traitFocusNames.Name = "traitFocusNames";
-            this.traitFocusNames.Size = new System.Drawing.Size(121, 21);
-            this.traitFocusNames.TabIndex = 31;
-            this.traitFocusNames.SelectedIndexChanged += new System.EventHandler(this.traitFocusNames_SelectedIndexChanged);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(204, 19);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(81, 13);
-            this.label10.TabIndex = 30;
-            this.label10.Text = "Min active traits";
-            // 
-            // minTraits
-            // 
-            this.minTraits.Location = new System.Drawing.Point(291, 17);
-            this.minTraits.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
-            this.minTraits.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.minTraits.Name = "minTraits";
-            this.minTraits.Size = new System.Drawing.Size(120, 20);
-            this.minTraits.TabIndex = 29;
-            this.minTraits.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // limit_champions_cost_5
-            // 
-            this.limit_champions_cost_5.AutoSize = true;
-            this.limit_champions_cost_5.Location = new System.Drawing.Point(170, 110);
-            this.limit_champions_cost_5.Name = "limit_champions_cost_5";
-            this.limit_champions_cost_5.Size = new System.Drawing.Size(154, 17);
-            this.limit_champions_cost_5.TabIndex = 28;
-            this.limit_champions_cost_5.Text = "Limit cost 5 champions to 1";
-            this.limit_champions_cost_5.UseVisualStyleBackColor = true;
-            // 
-            // no_error
-            // 
-            this.no_error.AutoSize = true;
-            this.no_error.Checked = true;
-            this.no_error.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.no_error.Location = new System.Drawing.Point(14, 178);
-            this.no_error.Name = "no_error";
-            this.no_error.Size = new System.Drawing.Size(149, 17);
-            this.no_error.TabIndex = 27;
-            this.no_error.Text = "Disallow unbalanced traits";
-            this.no_error.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_5_more
-            // 
-            this.disable_champions_cost_5_more.AutoSize = true;
-            this.disable_champions_cost_5_more.Location = new System.Drawing.Point(14, 133);
-            this.disable_champions_cost_5_more.Name = "disable_champions_cost_5_more";
-            this.disable_champions_cost_5_more.Size = new System.Drawing.Size(153, 17);
-            this.disable_champions_cost_5_more.TabIndex = 26;
-            this.disable_champions_cost_5_more.Text = "Disable cost >5 champions";
-            this.disable_champions_cost_5_more.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_5
-            // 
-            this.disable_champions_cost_5.AutoSize = true;
-            this.disable_champions_cost_5.Location = new System.Drawing.Point(14, 110);
-            this.disable_champions_cost_5.Name = "disable_champions_cost_5";
-            this.disable_champions_cost_5.Size = new System.Drawing.Size(147, 17);
-            this.disable_champions_cost_5.TabIndex = 25;
-            this.disable_champions_cost_5.Text = "Disable cost 5 champions";
-            this.disable_champions_cost_5.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_4
-            // 
-            this.disable_champions_cost_4.AutoSize = true;
-            this.disable_champions_cost_4.Location = new System.Drawing.Point(14, 87);
-            this.disable_champions_cost_4.Name = "disable_champions_cost_4";
-            this.disable_champions_cost_4.Size = new System.Drawing.Size(147, 17);
-            this.disable_champions_cost_4.TabIndex = 24;
-            this.disable_champions_cost_4.Text = "Disable cost 4 champions";
-            this.disable_champions_cost_4.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_3
-            // 
-            this.disable_champions_cost_3.AutoSize = true;
-            this.disable_champions_cost_3.Location = new System.Drawing.Point(14, 64);
-            this.disable_champions_cost_3.Name = "disable_champions_cost_3";
-            this.disable_champions_cost_3.Size = new System.Drawing.Size(147, 17);
-            this.disable_champions_cost_3.TabIndex = 23;
-            this.disable_champions_cost_3.Text = "Disable cost 3 champions";
-            this.disable_champions_cost_3.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_2
-            // 
-            this.disable_champions_cost_2.AutoSize = true;
-            this.disable_champions_cost_2.Location = new System.Drawing.Point(14, 41);
-            this.disable_champions_cost_2.Name = "disable_champions_cost_2";
-            this.disable_champions_cost_2.Size = new System.Drawing.Size(147, 17);
-            this.disable_champions_cost_2.TabIndex = 22;
-            this.disable_champions_cost_2.Text = "Disable cost 2 champions";
-            this.disable_champions_cost_2.UseVisualStyleBackColor = true;
-            // 
-            // disable_champions_cost_1
-            // 
-            this.disable_champions_cost_1.AutoSize = true;
-            this.disable_champions_cost_1.Location = new System.Drawing.Point(14, 18);
-            this.disable_champions_cost_1.Name = "disable_champions_cost_1";
-            this.disable_champions_cost_1.Size = new System.Drawing.Size(147, 17);
-            this.disable_champions_cost_1.TabIndex = 21;
-            this.disable_champions_cost_1.Text = "Disable cost 1 champions";
-            this.disable_champions_cost_1.UseVisualStyleBackColor = true;
-            // 
-            // quickActions
-            // 
-            this.quickActions.Controls.Add(this.label17);
-            this.quickActions.Controls.Add(this.label16);
-            this.quickActions.Controls.Add(this.FineTune);
-            this.quickActions.Controls.Add(this.BadCompsBox);
-            this.quickActions.Controls.Add(this.GoodCompsBox);
-            this.quickActions.Controls.Add(this.radioButton1);
-            this.quickActions.Controls.Add(this.ratio2_5);
-            this.quickActions.Controls.Add(this.ratio2_4);
-            this.quickActions.Controls.Add(this.ratio1_4);
-            this.quickActions.Controls.Add(this.ratio1_3);
-            this.quickActions.Controls.Add(this.label11);
-            this.quickActions.Location = new System.Drawing.Point(4, 22);
-            this.quickActions.Name = "quickActions";
-            this.quickActions.Padding = new System.Windows.Forms.Padding(3);
-            this.quickActions.Size = new System.Drawing.Size(768, 222);
-            this.quickActions.TabIndex = 3;
-            this.quickActions.Text = "Quick Actions";
-            this.quickActions.UseVisualStyleBackColor = true;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(476, 140);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(60, 13);
-            this.label17.TabIndex = 10;
-            this.label17.Text = "Bad comps";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(91, 137);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(67, 13);
-            this.label16.TabIndex = 9;
-            this.label16.Text = "Good comps";
-            // 
-            // FineTune
-            // 
-            this.FineTune.Location = new System.Drawing.Point(285, 175);
-            this.FineTune.Name = "FineTune";
-            this.FineTune.Size = new System.Drawing.Size(75, 23);
-            this.FineTune.TabIndex = 8;
-            this.FineTune.Text = "FineTune";
-            this.FineTune.UseVisualStyleBackColor = true;
-            this.FineTune.Click += new System.EventHandler(this.FineTune_Click);
-            // 
-            // BadCompsBox
-            // 
-            this.BadCompsBox.Location = new System.Drawing.Point(366, 156);
-            this.BadCompsBox.Name = "BadCompsBox";
-            this.BadCompsBox.Size = new System.Drawing.Size(273, 60);
-            this.BadCompsBox.TabIndex = 7;
-            this.BadCompsBox.Text = resources.GetString("BadCompsBox.Text");
-            // 
-            // GoodCompsBox
-            // 
-            this.GoodCompsBox.Location = new System.Drawing.Point(6, 156);
-            this.GoodCompsBox.Name = "GoodCompsBox";
-            this.GoodCompsBox.Size = new System.Drawing.Size(273, 60);
-            this.GoodCompsBox.TabIndex = 6;
-            this.GoodCompsBox.Text = resources.GetString("GoodCompsBox.Text");
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(214, 35);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(46, 17);
-            this.radioButton1.TabIndex = 5;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "2 - 5";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // ratio2_5
-            // 
-            this.ratio2_5.AutoSize = true;
-            this.ratio2_5.Location = new System.Drawing.Point(162, 35);
-            this.ratio2_5.Name = "ratio2_5";
-            this.ratio2_5.Size = new System.Drawing.Size(46, 17);
-            this.ratio2_5.TabIndex = 4;
-            this.ratio2_5.TabStop = true;
-            this.ratio2_5.Text = "2 - 5";
-            this.ratio2_5.UseVisualStyleBackColor = true;
-            // 
-            // ratio2_4
-            // 
-            this.ratio2_4.AutoSize = true;
-            this.ratio2_4.Location = new System.Drawing.Point(110, 35);
-            this.ratio2_4.Name = "ratio2_4";
-            this.ratio2_4.Size = new System.Drawing.Size(46, 17);
-            this.ratio2_4.TabIndex = 3;
-            this.ratio2_4.TabStop = true;
-            this.ratio2_4.Text = "2 - 4";
-            this.ratio2_4.UseVisualStyleBackColor = true;
-            // 
-            // ratio1_4
-            // 
-            this.ratio1_4.AutoSize = true;
-            this.ratio1_4.Location = new System.Drawing.Point(58, 35);
-            this.ratio1_4.Name = "ratio1_4";
-            this.ratio1_4.Size = new System.Drawing.Size(46, 17);
-            this.ratio1_4.TabIndex = 2;
-            this.ratio1_4.TabStop = true;
-            this.ratio1_4.Text = "1 - 4";
-            this.ratio1_4.UseVisualStyleBackColor = true;
-            // 
-            // ratio1_3
-            // 
-            this.ratio1_3.AutoSize = true;
-            this.ratio1_3.Location = new System.Drawing.Point(6, 35);
-            this.ratio1_3.Name = "ratio1_3";
-            this.ratio1_3.Size = new System.Drawing.Size(46, 17);
-            this.ratio1_3.TabIndex = 1;
-            this.ratio1_3.TabStop = true;
-            this.ratio1_3.Text = "1 - 3";
-            this.ratio1_3.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(88, 19);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(88, 13);
-            this.label11.TabIndex = 0;
-            this.label11.Text = "Champion Levels";
-            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -813,6 +682,7 @@ namespace TFT_Comp_Creator_2
             // 
             // StopButton
             // 
+            this.StopButton.Enabled = false;
             this.StopButton.Location = new System.Drawing.Point(570, 318);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(75, 23);
@@ -849,18 +719,20 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.ResumeLayout(false);
             this.main.ResumeLayout(false);
             this.main.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabRules.ResumeLayout(false);
+            this.tabRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).EndInit();
+            this.tabOptimize.ResumeLayout(false);
+            this.tabOptimize.PerformLayout();
             this.incEx.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            this.filtersTab.ResumeLayout(false);
-            this.filtersTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minTraits)).EndInit();
-            this.quickActions.ResumeLayout(false);
-            this.quickActions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -873,10 +745,7 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.TabPage incEx;
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.Button ClearButton;
-        private System.Windows.Forms.TabPage filtersTab;
         private System.Windows.Forms.Label error;
-        private System.Windows.Forms.NumericUpDown min_comp_size;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.Button Trait_default_to_exclude;
@@ -894,13 +763,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        public System.Windows.Forms.CheckBox no_error;
-        public System.Windows.Forms.CheckBox disable_champions_cost_5_more;
-        public System.Windows.Forms.CheckBox disable_champions_cost_5;
-        public System.Windows.Forms.CheckBox disable_champions_cost_4;
-        public System.Windows.Forms.CheckBox disable_champions_cost_3;
-        public System.Windows.Forms.CheckBox disable_champions_cost_2;
-        public System.Windows.Forms.CheckBox disable_champions_cost_1;
         public System.Windows.Forms.Button CreateButton;
         public System.Windows.Forms.RichTextBox output;
         public System.Windows.Forms.ListBox exclude_trait;
@@ -910,29 +772,28 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.ListBox default_champion;
         public System.Windows.Forms.ListBox include_champion;
         public System.Windows.Forms.Label label14;
-        public System.Windows.Forms.CheckBox limit_champions_cost_5;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button TLink;
-        private System.Windows.Forms.TextBox compBox;
-        private System.Windows.Forms.LinkLabel linkBox;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.NumericUpDown minTraits;
-        private System.Windows.Forms.TabPage quickActions;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton ratio2_5;
-        private System.Windows.Forms.RadioButton ratio2_4;
-        private System.Windows.Forms.RadioButton ratio1_4;
-        private System.Windows.Forms.RadioButton ratio1_3;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabOptimize;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label16;
-        public System.Windows.Forms.Button FineTune;
-        public System.Windows.Forms.RichTextBox BadCompsBox;
-        public System.Windows.Forms.RichTextBox GoodCompsBox;
-        private System.Windows.Forms.Label label18;
-        public System.Windows.Forms.ComboBox traitFocusNames;
-        public System.Windows.Forms.ComboBox traitFocusValue;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button OptimizeComp;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox compBox;
+        private System.Windows.Forms.TabPage tabRules;
+        private System.Windows.Forms.NumericUpDown minUpgrades;
+        public System.Windows.Forms.CheckBox limit_champions_cost_5;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.CheckBox no_error;
+        private System.Windows.Forms.NumericUpDown min_comp_size;
+        public System.Windows.Forms.CheckBox disable_champions_cost_5_more;
+        public System.Windows.Forms.CheckBox disable_champions_cost_5;
+        private System.Windows.Forms.NumericUpDown minTraits;
+        public System.Windows.Forms.CheckBox disable_champions_cost_4;
+        private System.Windows.Forms.Label label10;
+        public System.Windows.Forms.CheckBox disable_champions_cost_3;
+        private System.Windows.Forms.Label label12;
+        public System.Windows.Forms.CheckBox disable_champions_cost_2;
+        public System.Windows.Forms.CheckBox disable_champions_cost_1;
     }
 }
 
