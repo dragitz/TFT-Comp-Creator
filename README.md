@@ -6,14 +6,9 @@ Bug testing is required !
 
 Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
 
-[Example output 1](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjcwM8QLdGVtcyI6W10sImxldmVsIjowfSzNMTLIMTY3ON8xxjHFV8Zi3zHHMTTJYjb~AJPHMTXKYsU83zE6IjbJYjjfYscxN8liMjDfMcYx5QDqxWI2+ACTXSwiY2hvc2VuIjpmYWxzZSwic2V0xTt9)
+![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/a61fc0f0-8cb8-455d-8dc3-cda50f8d81b8)
 
-[Example output 2](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjcwMsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxDE2N8U83zE6IjPJMTg13zHGMTTKYjnfMcYxxVfEMTcx32LHMTbKMcVt3zE6IjfJMTD~AJPHMTjIMTY3~wFXxzHFV8UxNtgxXSwiY2hvc2VuIjpmYWxzZSwic2V0xWx9)
-
-[Example output 3](https://tftactics.gg/team-builder/eyJ0ZWFtIjpbeyJwb3NpdGlvbiI6IjEiLCJpZCI6IjY2MsQLdGVtcyI6W10sImxldmVsIjowfSzNMcUmxjEz3zHGMcUmxjE03zHGMcUmxTE3Nd8xxjHFJsYxNt8xxjHFJsYxON8xxjE3yTE4~wD1xzHFV8YxxTzTMV0sImNob3NlbiI6ZmFsc2UsInNldMU7fQ==)
-
-![immagine](https://user-images.githubusercontent.com/8062792/208544584-219a034c-2f2a-4825-84a4-37e2005dd6c7.png)
-
+![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/faac1751-1a65-4986-a6b9-19e9bbd4e1ee)
 
 
 ## Features
@@ -52,9 +47,9 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 * #### Convert text comp to a valid tftactics.gg team
 
 ## Bugs n' stuff
-* Random algorithm does not work, yet.
+* ~~Random algorithm does not work, yet.~~
 * ~~Can't specify an initial champion.~~
-* Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.
+* ~~Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.~~
 * ~~A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)~~
 
 ## Design
