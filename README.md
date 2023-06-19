@@ -6,9 +6,9 @@ Bug testing is required !
 
 Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
 
-![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/a61fc0f0-8cb8-455d-8dc3-cda50f8d81b8)
+![imagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/a61fc0f0-8cb8-455d-8dc3-cda50f8d81b8)
 
-![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/faac1751-1a65-4986-a6b9-19e9bbd4e1ee)
+![imagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/faac1751-1a65-4986-a6b9-19e9bbd4e1ee)
 
 
 ## Features
