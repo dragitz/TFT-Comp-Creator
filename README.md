@@ -42,7 +42,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 	
     Brute force every possible comp
 
-* #### Convert text comp to a valid tftactics.gg team
+* ~~#### Convert text comp to a valid tftactics.gg team~~ not anymore
 
 ## Bugs n' stuff
 * ~~Random algorithm does not work, yet.~~
