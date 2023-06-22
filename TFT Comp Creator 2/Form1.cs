@@ -221,6 +221,9 @@ namespace TFT_Comp_Creator_2
 
         private void OptimizeComp_Click(object sender, EventArgs e)
         {
+            if (compBox.Text.Length < 1)
+                return;
+
             List<string> comp = compBox.Text.Split('-').ToList();
             List<string> Optimizedcomp = new List<string>(comp);
 
@@ -256,15 +259,9 @@ namespace TFT_Comp_Creator_2
 
                         if (possibleBest >= score)
                         {
-                            if (score > possibleBest)
-                            {
-                                Print("[+] " + score + " [+] Alternative: " + String.Join("-", tempComp));
-                            }
-                            else 
-                            {
-                                Print("[+] " + score + " [+] Probable best: " + String.Join("-", tempComp));
-                            }
-                            
+
+                            Print("[+] " + possibleBest + " [+]: " + String.Join("-", tempComp));
+
                             Optimizedcomp = tempComp;
                             score = possibleBest;
                         }
@@ -272,16 +269,11 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
-            if (!comp.SequenceEqual(Optimizedcomp))
-            {
-                Print("Optimized comp score: " + score);
-                PrintComp(Optimizedcomp);
-                Print("[+] Probable best: " + String.Join("-", Optimizedcomp));
-            }
-            else
+            if (comp.SequenceEqual(Optimizedcomp))
             {
                 Print("Couldn't improve comp");
             }
+            else { Print("done."); }
 
 
         }

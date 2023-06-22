@@ -93,7 +93,7 @@ namespace TFT_Comp_Creator_2
                 // Return the total synergy score
                 return synergyScore;
             }
-            catch (Exception ex) { Print(ex); return 999; } // This should never get hit, in case it happens the search will stop
+            catch (Exception ex) { return 0; } // This should never get hit, in case it happens the search will stop
 
         }
 
@@ -481,7 +481,7 @@ namespace TFT_Comp_Creator_2
 
                             if (BreakpointAmount > 1 && i > 0)
                             {
-                                TotalUpgrades++;
+                                TotalUpgrades += i;
                                 UpgradeLevels.Append(i);
                             }
                             
