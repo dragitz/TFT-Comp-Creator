@@ -6,7 +6,7 @@ Bug testing is required !
 
 Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
 
-![immagine](https://user-images.githubusercontent.com/8062792/208544584-219a034c-2f2a-4825-84a4-37e2005dd6c7.png)
+![immagine](https://i.imgur.com/wWBXBPt.png)
 
 
 
