@@ -15,7 +15,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 
   Hashing is a way to make a unique number, called a "hash," from data. It can be used to quickly compare and find data, which can speed up processes like creating a comp. 
   
-  This allows computing all possible comps in about ~10 seconds (may depend on your computer specs.)
+  This drastically reduces the compute time and allows the program to produce good and fast results
   
 
 * #### Exclusion / Inclusion
@@ -29,8 +29,10 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
     It prioritizes the highest "relativeness" to the lowest and the size can be customized in the GUI.
     
     Higher nodes = better results (but also slightly higher computation time)
+
+   Note: Dominant traits with more breakpoints will have a higher impact
     
-* #### Filters
+* #### Filters (main tab)
 
 	I've added a series of filters that increases customization.
     
@@ -46,10 +48,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 * #### Convert text comp to a valid tftactics.gg team
 
 ## Bugs n' stuff
-* Random algorithm does not work, yet.
-* ~~Can't specify an initial champion.~~
-* Scoring algorithm, not used right now. Will probably add a functionality later that will make use of it.
-* ~~A debug tab is there, but actually never used. You can use it as a notepad, lol. (will probably remove it)~~
+Optimizer tab will not obey to the rules set in the inclusion / exclusion tab
 
 ## Design
 
