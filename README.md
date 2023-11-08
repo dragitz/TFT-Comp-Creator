@@ -11,7 +11,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 
 
 ## Features
-* #### Pet algorithm --> Fast hashing
+* #### Pet algorithm --> Fast hashing (aka the Create button)
 
   Hashing is a way to make a unique number, called a "hash," from data. It can be used to quickly compare and find data, which can speed up processes like creating a comp. 
   
@@ -43,7 +43,7 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
         
 * #### Brute All Champs
 	
-    Brute force every possible comp
+    Brute force every possible comp, node depth is ignored
 
 * #### Convert text comp to a valid tftactics.gg team
 
