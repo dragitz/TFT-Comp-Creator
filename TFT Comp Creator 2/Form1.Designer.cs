@@ -35,6 +35,12 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.depthLevel = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.limit_champions_cost_1 = new System.Windows.Forms.CheckBox();
+            this.limit_champions_cost_2 = new System.Windows.Forms.CheckBox();
+            this.limit_champions_cost_3 = new System.Windows.Forms.CheckBox();
+            this.limit_champions_cost_4 = new System.Windows.Forms.CheckBox();
             this.minUpgrades = new System.Windows.Forms.NumericUpDown();
             this.limit_champions_cost_5 = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -85,10 +91,12 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.bruteForce = new System.Windows.Forms.Button();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.depthLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minTraits)).BeginInit();
@@ -133,6 +141,12 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.depthLevel);
+            this.tabRules.Controls.Add(this.label13);
+            this.tabRules.Controls.Add(this.limit_champions_cost_1);
+            this.tabRules.Controls.Add(this.limit_champions_cost_2);
+            this.tabRules.Controls.Add(this.limit_champions_cost_3);
+            this.tabRules.Controls.Add(this.limit_champions_cost_4);
             this.tabRules.Controls.Add(this.minUpgrades);
             this.tabRules.Controls.Add(this.limit_champions_cost_5);
             this.tabRules.Controls.Add(this.label5);
@@ -155,6 +169,77 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             // 
+            // depthLevel
+            // 
+            this.depthLevel.Location = new System.Drawing.Point(99, 123);
+            this.depthLevel.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.depthLevel.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.depthLevel.Name = "depthLevel";
+            this.depthLevel.Size = new System.Drawing.Size(120, 20);
+            this.depthLevel.TabIndex = 54;
+            this.depthLevel.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(38, 125);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(52, 13);
+            this.label13.TabIndex = 55;
+            this.label13.Text = "Depth lvl.";
+            // 
+            // limit_champions_cost_1
+            // 
+            this.limit_champions_cost_1.AutoSize = true;
+            this.limit_champions_cost_1.Location = new System.Drawing.Point(560, 11);
+            this.limit_champions_cost_1.Name = "limit_champions_cost_1";
+            this.limit_champions_cost_1.Size = new System.Drawing.Size(154, 17);
+            this.limit_champions_cost_1.TabIndex = 53;
+            this.limit_champions_cost_1.Text = "Limit cost 1 champions to 2";
+            this.limit_champions_cost_1.UseVisualStyleBackColor = true;
+            // 
+            // limit_champions_cost_2
+            // 
+            this.limit_champions_cost_2.AutoSize = true;
+            this.limit_champions_cost_2.Location = new System.Drawing.Point(560, 34);
+            this.limit_champions_cost_2.Name = "limit_champions_cost_2";
+            this.limit_champions_cost_2.Size = new System.Drawing.Size(154, 17);
+            this.limit_champions_cost_2.TabIndex = 52;
+            this.limit_champions_cost_2.Text = "Limit cost 2 champions to 2";
+            this.limit_champions_cost_2.UseVisualStyleBackColor = true;
+            // 
+            // limit_champions_cost_3
+            // 
+            this.limit_champions_cost_3.AutoSize = true;
+            this.limit_champions_cost_3.Location = new System.Drawing.Point(560, 57);
+            this.limit_champions_cost_3.Name = "limit_champions_cost_3";
+            this.limit_champions_cost_3.Size = new System.Drawing.Size(154, 17);
+            this.limit_champions_cost_3.TabIndex = 51;
+            this.limit_champions_cost_3.Text = "Limit cost 3 champions to 2";
+            this.limit_champions_cost_3.UseVisualStyleBackColor = true;
+            // 
+            // limit_champions_cost_4
+            // 
+            this.limit_champions_cost_4.AutoSize = true;
+            this.limit_champions_cost_4.Location = new System.Drawing.Point(560, 80);
+            this.limit_champions_cost_4.Name = "limit_champions_cost_4";
+            this.limit_champions_cost_4.Size = new System.Drawing.Size(154, 17);
+            this.limit_champions_cost_4.TabIndex = 50;
+            this.limit_champions_cost_4.Text = "Limit cost 4 champions to 2";
+            this.limit_champions_cost_4.UseVisualStyleBackColor = true;
+            // 
             // minUpgrades
             // 
             this.minUpgrades.Location = new System.Drawing.Point(99, 74);
@@ -166,6 +251,11 @@ namespace TFT_Comp_Creator_2
             this.minUpgrades.Name = "minUpgrades";
             this.minUpgrades.Size = new System.Drawing.Size(120, 20);
             this.minUpgrades.TabIndex = 38;
+            this.minUpgrades.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             // 
             // limit_champions_cost_5
             // 
@@ -191,6 +281,8 @@ namespace TFT_Comp_Creator_2
             // no_error
             // 
             this.no_error.AutoSize = true;
+            this.no_error.Checked = true;
+            this.no_error.CheckState = System.Windows.Forms.CheckState.Checked;
             this.no_error.Location = new System.Drawing.Point(404, 149);
             this.no_error.Name = "no_error";
             this.no_error.Size = new System.Drawing.Size(149, 17);
@@ -246,7 +338,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.minTraits.Location = new System.Drawing.Point(99, 48);
             this.minTraits.Maximum = new decimal(new int[] {
-            9,
+            15,
             0,
             0,
             0});
@@ -664,15 +756,16 @@ namespace TFT_Comp_Creator_2
             // 
             // output
             // 
+            this.output.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
             this.output.Location = new System.Drawing.Point(12, 289);
             this.output.Name = "output";
-            this.output.Size = new System.Drawing.Size(552, 149);
+            this.output.Size = new System.Drawing.Size(600, 188);
             this.output.TabIndex = 1;
             this.output.Text = "";
             // 
             // CreateButton
             // 
-            this.CreateButton.Location = new System.Drawing.Point(570, 289);
+            this.CreateButton.Location = new System.Drawing.Point(618, 289);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(75, 23);
             this.CreateButton.TabIndex = 2;
@@ -683,7 +776,7 @@ namespace TFT_Comp_Creator_2
             // StopButton
             // 
             this.StopButton.Enabled = false;
-            this.StopButton.Location = new System.Drawing.Point(570, 318);
+            this.StopButton.Location = new System.Drawing.Point(618, 318);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(75, 23);
             this.StopButton.TabIndex = 3;
@@ -693,7 +786,7 @@ namespace TFT_Comp_Creator_2
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(570, 367);
+            this.ClearButton.Location = new System.Drawing.Point(618, 367);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(75, 23);
             this.ClearButton.TabIndex = 4;
@@ -701,11 +794,22 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // bruteForce
+            // 
+            this.bruteForce.Location = new System.Drawing.Point(699, 289);
+            this.bruteForce.Name = "bruteForce";
+            this.bruteForce.Size = new System.Drawing.Size(75, 23);
+            this.bruteForce.TabIndex = 29;
+            this.bruteForce.Text = "Brute Force";
+            this.bruteForce.UseVisualStyleBackColor = true;
+            this.bruteForce.Click += new System.EventHandler(this.bruteForce_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(797, 489);
+            this.Controls.Add(this.bruteForce);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.StopButton);
@@ -722,6 +826,7 @@ namespace TFT_Comp_Creator_2
             this.tabControl1.ResumeLayout(false);
             this.tabRules.ResumeLayout(false);
             this.tabRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.depthLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minTraits)).EndInit();
@@ -794,6 +899,13 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Label label12;
         public System.Windows.Forms.CheckBox disable_champions_cost_2;
         public System.Windows.Forms.CheckBox disable_champions_cost_1;
+        public System.Windows.Forms.CheckBox limit_champions_cost_1;
+        public System.Windows.Forms.CheckBox limit_champions_cost_2;
+        public System.Windows.Forms.CheckBox limit_champions_cost_3;
+        public System.Windows.Forms.CheckBox limit_champions_cost_4;
+        private System.Windows.Forms.NumericUpDown depthLevel;
+        private System.Windows.Forms.Label label13;
+        public System.Windows.Forms.Button bruteForce;
     }
 }
 

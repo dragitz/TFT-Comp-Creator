@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Scoring;
 
@@ -18,6 +17,7 @@ namespace TFT_Comp_Creator_2
         public static Label label14 = new Label();
 
         public static dynamic Master = new JObject();
+
         public static int Pet_SynergyBest = 0;
         public static int Pet_PowerBest = 0;
         public static bool ForceStop = false;
@@ -183,10 +183,71 @@ namespace TFT_Comp_Creator_2
             return list;
         }
 
+        public static List<string> GetChampionsFromTrait(string trait)
+        {
+            List<string> champions = new List<string>();
+            dynamic array = Master["TraitChampions"][trait];
+
+            foreach (string item in array)
+            {
+                champions.Add(item);
+            }
+
+            return champions;
+        }
+        public static List<string> GetTraitsFromChampion(string champion)
+        {
+            List<string> traits = new List<string>();
+            dynamic array = Master["Champions"][champion]["Traits"];
+
+            foreach (string item in array)
+            {
+                traits.Add(item);
+            }
+
+            return traits;
+        }
+
+        public static List<string> GetTopTraits(List<string> championList, int depthLevel)
+        {
+            Dictionary<string, int> traitCount = new Dictionary<string, int>();
+
+            foreach (string championName in championList)
+            {
+                JObject championData = Master["Champions"][championName];
+
+                if (championData != null)
+                {
+                    JArray traitsArray = (JArray)championData["Traits"];
+
+                    // Count the traits for each champion
+                    foreach (var trait in traitsArray)
+                    {
+                        string traitName = trait.ToString();
+                        if (traitCount.ContainsKey(traitName))
+                        {
+                            traitCount[traitName]++;
+                        }
+                        else
+                        {
+                            traitCount[traitName] = 1;
+                        }
+                    }
+                }
+            }
+
+            // Find the 3 most common traits in the comp
+            var topTraits = traitCount.OrderByDescending(kv => kv.Value)
+                                      .Take(depthLevel)
+                                      .Select(kv => kv.Key)
+                                      .ToList();
+
+            return topTraits;
+        }
 
         public static List<string> GetNodes2(List<string> comp)
         {
-            // Now get the nodes into a list, list must contain traits
+            // Get the nodes into a list, list must contain traits
             List<string> traits = new List<string>();
 
             for (int i = 0; i < comp.Count; i++)
@@ -196,7 +257,6 @@ namespace TFT_Comp_Creator_2
                 for (int k = 0; k < numberOfTraits; k++)
                 {
                     // Check if trait can be added (exclusion)
-
                     string trait = Master["Champions"][comp[i]]["Traits"][k].ToString();
 
                     if (!exclude_trait.Items.Contains(trait))
@@ -208,10 +268,6 @@ namespace TFT_Comp_Creator_2
             }
 
             traits = traits.Distinct().ToList();
-
-            //Print("Initial nodes: ");
-            //PrintComp(traits);
-
 
             // Now initiate a list of champions that have that trait
             List<string> championNodes = new List<string>();
@@ -261,18 +317,19 @@ namespace TFT_Comp_Creator_2
         {
             if (Pet_SynergyBest >= 999 ||
                 ForceStop == true
-                ) { return; }
+                ) { alreadySeenCombinations.Clear(); return;  }
 
             // Base case: if the combination size is 0, then we have found a valid combination
             if (comp.Count == TargetCompSize)
             {
                 // Convert the combination to a string and add it to the set of already seen combinations
                 string combinationString = string.Join("-", comp);
-                alreadySeenCombinations.Add(combinationString);
+
+                //Form1.hashmap.Add(combinationString);
 
                 int Synergy = CalculateSynergy(comp);
 
-                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
+                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp) && !alreadySeenCombinations.Contains(combinationString))
                 {
                     Pet_SynergyBest = Synergy;
                     //Pet_PowerBest = Power;
@@ -283,12 +340,15 @@ namespace TFT_Comp_Creator_2
                     label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
                 }
 
+                alreadySeenCombinations.Add(combinationString);
+
                 return;
             }
 
             // Base case: if the nodes list is empty, then there are no more elements to add to the combination
             if (nodes.Count == 0)
             {
+                //alreadySeenCombinations.Clear(); // should fix the memory leak
                 return;
             }
 
@@ -335,6 +395,6 @@ namespace TFT_Comp_Creator_2
 
         }
 
-        
+
     }
 }

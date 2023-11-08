@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -14,15 +12,23 @@ namespace TFT_Comp_Creator_2
         public static dynamic Master = new JObject();
         private static CheckBox no_error = new CheckBox();
         private static CheckBox limit_champions_cost_5 = new CheckBox();
+        private static CheckBox limit_champions_cost_4 = new CheckBox();
+        private static CheckBox limit_champions_cost_3 = new CheckBox();
+        private static CheckBox limit_champions_cost_2 = new CheckBox();
+        private static CheckBox limit_champions_cost_1 = new CheckBox();
         private static NumericUpDown minActiveTRaits = new NumericUpDown();
         private static NumericUpDown minUpgrades = new NumericUpDown();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_)
+        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, CheckBox limit_champions_cost_4_, CheckBox limit_champions_cost_3_, CheckBox limit_champions_cost_2_, CheckBox limit_champions_cost_1_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_)
         {
             Master = M;
             no_error = NO;
             limit_champions_cost_5 = limit_champions_cost_5_;
+            limit_champions_cost_4 = limit_champions_cost_4_;
+            limit_champions_cost_3 = limit_champions_cost_3_;
+            limit_champions_cost_2 = limit_champions_cost_2_;
+            limit_champions_cost_1 = limit_champions_cost_1_;
             minActiveTRaits = minActiveTRaits_;
             minUpgrades = minUpgrades_;
         }
@@ -86,7 +92,6 @@ namespace TFT_Comp_Creator_2
 
                 }
 
-
                 // ... increase synergy score for each upgrade ...
                 // for each trait
 
@@ -130,6 +135,10 @@ namespace TFT_Comp_Creator_2
             int TraitsWithUpgrades = 0;
 
             int cost5Amount = 0;
+            int cost4Amount = 0;
+            int cost3Amount = 0;
+            int cost2Amount = 0;
+            int cost1Amount = 0;
 
             int includedTraitsScore = 0;
             int includedChampionsScore = 0;
@@ -145,8 +154,17 @@ namespace TFT_Comp_Creator_2
                 string ChampionName = comp[i].ToString();
 
                 int cost = Master["Champions"][ChampionName]["cost"];
+
                 if (cost == 5)
                     cost5Amount += 1;
+                if (cost == 4)
+                    cost4Amount += 1;
+                if (cost == 3)
+                    cost3Amount += 1;
+                if (cost == 2)
+                    cost2Amount += 1;
+                if (cost == 1)
+                    cost1Amount += 1;
 
                 // Make sure that champion has been added, by checking user specified champion inclusion
                 for (int qq = 0; qq < include_champion.Items.Count; qq++)
@@ -331,7 +349,13 @@ namespace TFT_Comp_Creator_2
             //if (InactiveTraits > 10) { return 0; }
             if (UnbalancedTraits > 0 && no_error.Checked) { return 0; }
             if (Opportunities > 20) { return 0; }
+
+            // Cost limiter
             if (cost5Amount > 1 && limit_champions_cost_5.Checked) { return 0; }
+            if (cost4Amount > 2 && limit_champions_cost_4.Checked) { return 0; }
+            if (cost3Amount > 2 && limit_champions_cost_3.Checked) { return 0; }
+            if (cost2Amount > 2 && limit_champions_cost_2.Checked) { return 0; }
+            if (cost1Amount > 2 && limit_champions_cost_1.Checked) { return 0; }
 
             // Inclusion scoring
             if (includedTraitsScore != include_trait.Items.Count) { return 0; }
@@ -367,6 +391,10 @@ namespace TFT_Comp_Creator_2
             JObject JTraits = new JObject();
 
             int cost5Amount = 0;
+            int cost4Amount = 0;
+            int cost3Amount = 0;
+            int cost2Amount = 0;
+            int cost1Amount = 0;
 
             List<string> TraitsInComp = new List<string>();
 
@@ -379,15 +407,19 @@ namespace TFT_Comp_Creator_2
                 {
                     case 1:
                         if (disable_champions_cost_1.Checked) { return false; }
+                        cost1Amount++;
                         break;
                     case 2:
                         if (disable_champions_cost_2.Checked) { return false; }
+                        cost2Amount++;
                         break;
                     case 3:
                         if (disable_champions_cost_3.Checked) { return false; }
+                        cost3Amount++;
                         break;
                     case 4:
                         if (disable_champions_cost_4.Checked) { return false; }
+                        cost4Amount++;
                         break;
                     case 5:
                         if (disable_champions_cost_5.Checked) { return false; }
@@ -399,6 +431,10 @@ namespace TFT_Comp_Creator_2
 
                 // Size can't be higher than 1
                 if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
+                if (limit_champions_cost_4.Checked && cost4Amount > 1) { return false; }
+                if (limit_champions_cost_3.Checked && cost3Amount > 1) { return false; }
+                if (limit_champions_cost_2.Checked && cost2Amount > 1) { return false; }
+                if (limit_champions_cost_1.Checked && cost1Amount > 1) { return false; }
 
 
                 // Add the trait to the list
@@ -458,13 +494,18 @@ namespace TFT_Comp_Creator_2
             int TotalUpgrades = 0;
             int[] UpgradeLevels = { };
 
+            
+
             // Iterate through all 
             foreach (string Trait in TraitsInComp)
             {
                 int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+                int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
+
 
                 // Make sure the trait is active
-                if ((int)JTraits[Trait] >= minBreakPoint)
+                // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
+                if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
                 {
                     ActiveTraits++;
 
@@ -476,21 +517,22 @@ namespace TFT_Comp_Creator_2
                     {
                         if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
                         {
-                            
+
                             isBalanced = true;
 
                             if (BreakpointAmount > 1 && i > 0)
                             {
                                 TotalUpgrades += i;
                                 UpgradeLevels.Append(i);
+
+                                
                             }
-                            
+
                         }
                     }
 
-                    if (!isBalanced && no_error.Checked) { return false; }
-                    
 
+                    if (!isBalanced && no_error.Checked) { return false; }
 
                     // Included / Excluded traits check
 
@@ -509,6 +551,9 @@ namespace TFT_Comp_Creator_2
 
                 }
             }
+
+
+            
 
             if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
 

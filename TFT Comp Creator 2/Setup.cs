@@ -55,6 +55,7 @@ namespace TFT_Comp_Creator_2
             JObject JDownload = new JObject();
 
             string url = "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json";
+            url = "https://raw.communitydragon.org/pbe/cdragon/tft/en_us.json";
 
             // If our custom file already exists, then load it
             if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
@@ -75,7 +76,7 @@ namespace TFT_Comp_Creator_2
             // I hate using foreach loops, I'll use this for now
             //int SetsSize = JDownload["sets"].Count();
 
-            int setData_ID = 22;
+            int setData_ID = 3;
             // Store basic info
             dynamic TraitList = JDownload["setData"][setData_ID]["traits"];
             dynamic ChampionList = JDownload["setData"][setData_ID]["champions"];
@@ -203,6 +204,7 @@ namespace TFT_Comp_Creator_2
                 i++;
             }
 
+            // TODO: If a trait has no champions, it is removed
 
             File.WriteAllText("debugSet.json", Master.ToString());
 
@@ -231,13 +233,19 @@ namespace TFT_Comp_Creator_2
 
             foreach (dynamic item in Traits)
             {
+                
+
                 JProperty n = (JProperty)item;
                 string name = n.Name;
+
+                if(Master["TraitChampions"][name].Count < 1)
+                        continue;
 
                 default_trait.Items.Add(name);
             }
             default_trait.SelectedIndex = 0;
 
+            
         }
 
     }

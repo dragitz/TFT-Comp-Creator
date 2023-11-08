@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using static TFT_Comp_Creator_2.Nodes;
 using static TFT_Comp_Creator_2.Scoring;
 using static TFT_Comp_Creator_2.Setup;
 using static TFT_Comp_Creator_2.Utility;
@@ -29,7 +30,7 @@ namespace TFT_Comp_Creator_2
                 ))
         );
 
-        HashSet<string> usedComps = new HashSet<string>();
+        public static HashSet<string> hashmap = new HashSet<string>();
 
         public bool ForceStop = false;
 
@@ -71,7 +72,20 @@ namespace TFT_Comp_Creator_2
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, no_error, limit_champions_cost_5, minTraits, minUpgrades);
+                SetFromScoring(Master, no_error, limit_champions_cost_5, limit_champions_cost_4, limit_champions_cost_3, limit_champions_cost_2, limit_champions_cost_1, minTraits, minUpgrades);
+
+                SetNodes(
+                    Master,
+                    limit_champions_cost_5,
+                    disable_champions_cost_1,
+                    disable_champions_cost_2,
+                    disable_champions_cost_3,
+                    disable_champions_cost_4,
+                    disable_champions_cost_5,
+                    disable_champions_cost_5_more,
+
+                    exclude_trait
+                    );
 
                 Populate(Master);
 
@@ -82,9 +96,9 @@ namespace TFT_Comp_Creator_2
         }
 
 
-        public void CreateButton_Click(object sender, EventArgs e)
+        private void bruteForce_Click(object sender, EventArgs e)
         {
-            CreateButton.Enabled = false;
+            bruteForce.Enabled = false;
             StopButton.Enabled = true;
 
             Pet_SynergyBest = 1;
@@ -92,6 +106,56 @@ namespace TFT_Comp_Creator_2
 
             label14.Text = "Synergy: " + Pet_SynergyBest;
 
+
+            Thread t = new Thread(new ThreadStart(BruteCreation))
+            {
+                IsBackground = true
+            };
+            t.Start();
+
+
+        }
+        public void BruteCreation()
+        {
+            List<string> comp = new List<string>();
+            List<string> nodes = new List<string>();
+
+            for (int i = 0; i < default_champion.Items.Count; i++)
+            {
+                nodes.Add(default_champion.Items[i].ToString());
+            }
+            for (int i = 0; i < include_champion.Items.Count; i++)
+            {
+                nodes.Add(include_champion.Items[i].ToString());
+            }
+
+            int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
+
+            // Call the helper function with the empty defaultComp
+            FindCombinations(nodes, size, hashmap, comp);
+
+            Print("done");
+
+            ForceStop = false;
+            Utility.ForceStop = false;
+            Scoring.ForceStop = false;
+
+            StopButton.Enabled = false;
+            bruteForce.Enabled = true;
+
+            hashmap.Clear();
+        }
+
+        public void CreateButton_Click(object sender, EventArgs e)
+        {
+
+            CreateButton.Enabled = false;
+            StopButton.Enabled = true;
+
+            Pet_SynergyBest = 1;
+            Pet_PowerBest = -999;
+
+            label14.Text = "Synergy: " + Pet_SynergyBest;
 
             Thread t = new Thread(new ThreadStart(Creation))
             {
@@ -104,55 +168,80 @@ namespace TFT_Comp_Creator_2
 
         public void Creation()
         {
+            
+            // Empty comp
+            List<string> comp = new List<string>();
 
-            for (int k = 0; k < default_champion.Items.Count - 1; k++)
+            List<string> nodes = new List<string>();
+
+            for (int k = 0; k < default_trait.Items.Count - 1; k++)
             {
-
                 if (ForceStop)
+                {
                     CreateButton.Enabled = false;
+                    break;
+                }
 
-                // Empty comp
-                List<string> comp = new List<string>();
 
-                // null comp check - will use the first champion in the default list
-                if (comp.Count <= 0) { comp.Add(default_champion.Items[k].ToString()); }
+                // Reset
+                comp.Clear();
+                nodes.Clear();
 
-                // setup comp with initial champions
+
+                // Add champion preference
                 for (int i = 0; i < include_champion.Items.Count; i++)
                 {
                     comp.Add(include_champion.Items[i].ToString());
-                }
 
-
-                // Get nodes
-                List<string> nodes = GetNodes2(comp);
-
-                //PrintComp(nodes);
-                // Failsafe check
-                if (nodes.Count < Convert.ToInt32(min_comp_size.Value)) { continue; }
-
-                //PrintComp(nodes);
-
-                // Fill blank spots
-                int q = 0;
-                for (int i = 0; i < comp.Count; i++)
-                {
-                    if (comp[i] == "")
+                    foreach (string trait in GetTraitsFromChampion(include_champion.Items[i].ToString()))
                     {
-
-                        if (comp.Contains(nodes[q])) // DEV NOTE: This does not check for nodes size, might cause out of bound crashes (in specific cases)
-                            q++;
-
-                        comp[i] = nodes[q];
-                        q++;
+                        List<string> champs = GetChampionsFromTrait(trait);
+                        nodes = nodes.Union(champs).ToList();
                     }
                 }
+
+                // Include champions from traits
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    foreach (string champion in GetChampionsFromTrait(include_trait.Items[i].ToString()))
+                    {
+                        if (!nodes.Contains(champion) && !comp.Contains(champion))
+                            nodes.Add(champion);
+                    }
+                }
+
+
+                // Include champions from list of default traits as extra nodes
+                foreach (string champion in GetChampionsFromTrait(default_trait.Items[k].ToString()))
+                {
+                    if (!nodes.Contains(champion) && !comp.Contains(champion))
+                        nodes.Add(champion);
+                }
+
+                // Failsafe check
+                if (nodes.Count < Convert.ToInt32(min_comp_size.Value))
+                {
+                    List<string> Top3 = GetTopTraits(nodes, Convert.ToInt32(depthLevel.Value));
+                    for (int q = 0; q < Top3.Count; q++)
+                    {
+                        foreach (string champion in GetChampionsFromTrait(Top3[q]))
+                        {
+                            if (!nodes.Contains(champion) && !comp.Contains(champion))
+                                nodes.Add(champion);
+                        }
+                    }
+
+                    //File.WriteAllText("nodes_debug.txt", String.Join("-", nodes.OrderBy(x => x).ToList()));
+                }
+
+
+                if (nodes.Count < Convert.ToInt32(min_comp_size.Value)) { continue; }
 
 
                 int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
 
                 // Call the helper function with the empty defaultComp
-                FindCombinations(nodes, size, new HashSet<string>(), new List<string>());
+                FindCombinations(nodes, size, hashmap, comp);
 
             }
             Print("done");
@@ -167,6 +256,8 @@ namespace TFT_Comp_Creator_2
             StopButton.Enabled = false;
 
             //ThreadsRunning--;
+
+            hashmap.Clear();
 
         }
 
@@ -257,9 +348,8 @@ namespace TFT_Comp_Creator_2
                     {
                         possibleBest = CalculateSynergy(tempComp);
 
-                        if (possibleBest >= score)
+                        if (possibleBest >= score - 2)
                         {
-
                             Print("[+] " + possibleBest + " [+]: " + String.Join("-", tempComp));
 
                             Optimizedcomp = tempComp;
