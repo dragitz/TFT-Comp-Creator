@@ -389,6 +389,7 @@ namespace TFT_Comp_Creator_2
         public static bool CheckCompValidity(List<string> comp)
         {
             JObject JTraits = new JObject();
+            List<string> JTraits_active = new List<string>();
 
             int cost5Amount = 0;
             int cost4Amount = 0;
@@ -396,11 +397,17 @@ namespace TFT_Comp_Creator_2
             int cost2Amount = 0;
             int cost1Amount = 0;
 
+            int rangedAmount = 0;
+
+
             List<string> TraitsInComp = new List<string>();
 
             foreach (var champion in comp)
             {
                 int cost = (int)Master["Champions"][champion]["cost"];
+
+                if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
+                    rangedAmount++;
 
                 // Count the amount of 5 cost champions
                 switch (cost)
@@ -465,6 +472,9 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
+            // Ensure a carry
+            if (rangedAmount < 2) { return false; }
+
             // Included / Excluded champion check
             List<string> IncludedChampsFoundLIst = new List<string>();
             foreach (string champion in comp)
@@ -494,8 +504,6 @@ namespace TFT_Comp_Creator_2
             int TotalUpgrades = 0;
             int[] UpgradeLevels = { };
 
-            
-
             // Iterate through all 
             foreach (string Trait in TraitsInComp)
             {
@@ -508,6 +516,8 @@ namespace TFT_Comp_Creator_2
                 if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
                 {
                     ActiveTraits++;
+
+                    JTraits_active.Add(Trait);
 
                     int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
 
@@ -525,7 +535,7 @@ namespace TFT_Comp_Creator_2
                                 TotalUpgrades += i;
                                 UpgradeLevels.Append(i);
 
-                                
+
                             }
 
                         }
@@ -553,9 +563,25 @@ namespace TFT_Comp_Creator_2
             }
 
 
-            
 
-            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+            // Ensure all champions have contributed to the active trait list at least once
+            foreach (string champion in comp)
+            {
+                JArray ChampTraits = Master["Champions"][champion]["Traits"];
+
+                bool has_contributed = false;
+
+                foreach (string Trait in ChampTraits)
+                {
+                    if (JTraits_active.Contains(Trait)) { has_contributed = true; break; };
+                }
+                if (!has_contributed) { return false; }
+            }
+
+
+
+            // wtf why did I write this??
+            //if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
 
             // Ensure minimum amount of upgrades
             if (TotalUpgrades < minUpgrades.Value) { return false; }
