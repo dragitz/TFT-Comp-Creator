@@ -580,8 +580,8 @@ namespace TFT_Comp_Creator_2
 
 
 
-            // wtf why did I write this??
-            //if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+            // Ensure desired traits are active
+            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
 
             // Ensure minimum amount of upgrades
             if (TotalUpgrades < minUpgrades.Value) { return false; }
