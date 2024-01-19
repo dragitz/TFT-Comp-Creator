@@ -22,7 +22,7 @@ namespace TFT_Comp_Creator_2
         public static int Pet_PowerBest = 0;
         public static bool ForceStop = false;
 
-        public static CheckBox limit_champions_cost_5 = new CheckBox();
+        public static NumericUpDown max_cost_5_amount = new NumericUpDown();
         public static CheckBox disable_champions_cost_1 = new CheckBox();
         public static CheckBox disable_champions_cost_2 = new CheckBox();
         public static CheckBox disable_champions_cost_3 = new CheckBox();
@@ -40,7 +40,7 @@ namespace TFT_Comp_Creator_2
         // Create reference of output richtextbox located in Form1, will be ran once
         public static void SetFormUtility(
             RichTextBox box, NumericUpDown targetNodes_, Label label14_,
-            CheckBox limit_champions_cost_5_,
+            NumericUpDown max_cost_5_amount_,
             CheckBox disable_champions_cost_1_,
             CheckBox disable_champions_cost_2_,
             CheckBox disable_champions_cost_3_,
@@ -59,7 +59,7 @@ namespace TFT_Comp_Creator_2
             targetNodes = targetNodes_;
             label14 = label14_;
 
-            limit_champions_cost_5 = limit_champions_cost_5_;
+            max_cost_5_amount = max_cost_5_amount_;
             disable_champions_cost_1 = disable_champions_cost_1_;
             disable_champions_cost_2 = disable_champions_cost_2_;
             disable_champions_cost_3 = disable_champions_cost_3_;
@@ -90,10 +90,10 @@ namespace TFT_Comp_Creator_2
         {
             if (comp.Count < 1) { return; }
 
-            comp = comp.OrderBy(x => x).ToList();
+            // Assuming Master is a Dictionary<string, Dictionary<string, Dictionary<string, int>>>
+            comp = comp.OrderBy(component => Master["Champions"][component]["cost"]).ToList();
 
             Print(String.Join("-", comp));
-
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace TFT_Comp_Creator_2
         {
             if (Pet_SynergyBest >= 999 ||
                 ForceStop == true
-                ) { alreadySeenCombinations.Clear(); return;  }
+                ) { alreadySeenCombinations.Clear(); return; }
 
             // Base case: if the combination size is 0, then we have found a valid combination
             if (comp.Count == TargetCompSize)
@@ -395,6 +395,61 @@ namespace TFT_Comp_Creator_2
 
         }
 
+        /**
+        
+        16 Jan. 2024: new method should increase speed by a lot and doesn't require any hashmap nor regression. ty 3blue1brown !
 
+         */
+
+        public static void FindCombinations2(int CompSize, List<string> items)
+        {
+            var combinations = GetCombs(items.Count(), CompSize);
+
+            List<string> comp = new List<string>();
+
+            
+            foreach (var combination in combinations)
+            {
+                if (Pet_SynergyBest >= 999 ||
+                    ForceStop == true
+                    ) { return; }
+
+                comp = string.Join("-", combination.Select(index => items[index]))
+                               .Split(new[] { "-" }, StringSplitOptions.None)
+                               .ToList();
+
+
+                int Synergy = CalculateSynergy(comp);
+
+                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
+                {
+                    Pet_SynergyBest = Synergy;
+                    //Pet_PowerBest = Power;
+
+                    PrintComp(comp);
+                    //PrintCompLink(comp);
+
+                    label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
+                }
+
+            }
+        }
+
+        static IEnumerable<IEnumerable<int>> GetCombs(int N, int CompSize)
+        {
+            var indices = Enumerable.Range(0, N);
+            var combinations = indices.Combinations(CompSize);
+            return combinations;
+        }
+    }
+
+    public static class Extensions
+    {
+        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
+        {
+            return k == 0 ? new[] { new T[0] } :
+                elements.SelectMany((e, i) =>
+                    elements.Skip(i + 1).Combinations(k - 1).Select(c => (new[] { e }).Concat(c)));
+        }
     }
 }

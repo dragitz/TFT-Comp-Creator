@@ -11,26 +11,30 @@ namespace TFT_Comp_Creator_2
     {
         public static dynamic Master = new JObject();
         private static CheckBox no_error = new CheckBox();
-        private static CheckBox limit_champions_cost_5 = new CheckBox();
-        private static CheckBox limit_champions_cost_4 = new CheckBox();
-        private static CheckBox limit_champions_cost_3 = new CheckBox();
-        private static CheckBox limit_champions_cost_2 = new CheckBox();
-        private static CheckBox limit_champions_cost_1 = new CheckBox();
+        private static NumericUpDown max_cost_5_amount = new NumericUpDown();
+        private static NumericUpDown max_cost_4_amount = new NumericUpDown();
+        private static NumericUpDown max_cost_3_amount = new NumericUpDown();
+        private static NumericUpDown max_cost_2_amount = new NumericUpDown();
+        private static NumericUpDown max_cost_1_amount = new NumericUpDown();
         private static NumericUpDown minActiveTRaits = new NumericUpDown();
         private static NumericUpDown minUpgrades = new NumericUpDown();
+        private static NumericUpDown minRanged = new NumericUpDown();
+        private static NumericUpDown maxRanged = new NumericUpDown();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, CheckBox NO, CheckBox limit_champions_cost_5_, CheckBox limit_champions_cost_4_, CheckBox limit_champions_cost_3_, CheckBox limit_champions_cost_2_, CheckBox limit_champions_cost_1_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_)
+        public static void SetFromScoring(dynamic M, CheckBox NO, NumericUpDown max_cost_5_amount_, NumericUpDown max_cost_4_amount_, NumericUpDown max_cost_3_amount_, NumericUpDown max_cost_2_amount_, NumericUpDown max_cost_1_amount_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_, NumericUpDown minRanged_, NumericUpDown maxRanged_)
         {
             Master = M;
             no_error = NO;
-            limit_champions_cost_5 = limit_champions_cost_5_;
-            limit_champions_cost_4 = limit_champions_cost_4_;
-            limit_champions_cost_3 = limit_champions_cost_3_;
-            limit_champions_cost_2 = limit_champions_cost_2_;
-            limit_champions_cost_1 = limit_champions_cost_1_;
+            max_cost_5_amount = max_cost_5_amount_;
+            max_cost_4_amount = max_cost_4_amount_;
+            max_cost_3_amount = max_cost_3_amount_;
+            max_cost_2_amount = max_cost_2_amount_;
+            max_cost_1_amount = max_cost_1_amount_;
             minActiveTRaits = minActiveTRaits_;
             minUpgrades = minUpgrades_;
+            minRanged = minRanged_;
+            maxRanged = maxRanged_;
         }
 
         /// <summary>
@@ -77,28 +81,24 @@ namespace TFT_Comp_Creator_2
                 // Keep track of the synergy score
                 int synergyScore = 0;
 
-                // Loop through each fruit name and calculate its contribution to the synergy score
                 foreach (var champ in comp)
                 {
-                    // Get the list of categories for the current fruit
+                    
                     var traits = championsData[champ];
 
-                    // Loop through each category and calculate its contribution to the synergy score
+                    // Loop through each trait and calculate its contribution to the synergy score
                     foreach (var trait in traits)
                     {
-                        // Each category contributes the number of fruits in the fruitNames list that belong to that category
                         synergyScore += comp.Count(f => championsData[f].Contains(trait));
                     }
 
                 }
 
-                // ... increase synergy score for each upgrade ...
-                // for each trait
 
                 // Return the total synergy score
                 return synergyScore;
             }
-            catch (Exception ex) { return 0; } // This should never get hit, in case it happens the search will stop
+            catch (Exception) { return 0; } // This should never get hit, in case it happens the search will stop
 
         }
 
@@ -351,11 +351,11 @@ namespace TFT_Comp_Creator_2
             if (Opportunities > 20) { return 0; }
 
             // Cost limiter
-            if (cost5Amount > 1 && limit_champions_cost_5.Checked) { return 0; }
-            if (cost4Amount > 2 && limit_champions_cost_4.Checked) { return 0; }
-            if (cost3Amount > 2 && limit_champions_cost_3.Checked) { return 0; }
-            if (cost2Amount > 2 && limit_champions_cost_2.Checked) { return 0; }
-            if (cost1Amount > 2 && limit_champions_cost_1.Checked) { return 0; }
+            if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return 0; }
+            if (cost4Amount > Convert.ToInt32(max_cost_4_amount.Value)) { return 0; }
+            if (cost3Amount > Convert.ToInt32(max_cost_3_amount.Value)) { return 0; }
+            if (cost2Amount > Convert.ToInt32(max_cost_2_amount.Value)) { return 0; }
+            if (cost1Amount > Convert.ToInt32(max_cost_1_amount.Value)) { return 0; }
 
             // Inclusion scoring
             if (includedTraitsScore != include_trait.Items.Count) { return 0; }
@@ -437,11 +437,11 @@ namespace TFT_Comp_Creator_2
                     return false;
 
                 // Size can't be higher than 1
-                if (limit_champions_cost_5.Checked && cost5Amount > 1) { return false; }
-                if (limit_champions_cost_4.Checked && cost4Amount > 1) { return false; }
-                if (limit_champions_cost_3.Checked && cost3Amount > 1) { return false; }
-                if (limit_champions_cost_2.Checked && cost2Amount > 1) { return false; }
-                if (limit_champions_cost_1.Checked && cost1Amount > 1) { return false; }
+                if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return false; }
+                if (cost4Amount > Convert.ToInt32(max_cost_4_amount.Value)) { return false; }
+                if (cost3Amount > Convert.ToInt32(max_cost_3_amount.Value)) { return false; }
+                if (cost2Amount > Convert.ToInt32(max_cost_2_amount.Value)) { return false; }
+                if (cost1Amount > Convert.ToInt32(max_cost_1_amount.Value)) { return false; }
 
 
                 // Add the trait to the list
@@ -472,8 +472,8 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
-            // Ensure a carry
-            if (rangedAmount < 2) { return false; }
+            // Ensure n amount of ranged
+            if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
 
             // Included / Excluded champion check
             List<string> IncludedChampsFoundLIst = new List<string>();

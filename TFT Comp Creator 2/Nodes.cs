@@ -10,7 +10,7 @@ namespace TFT_Comp_Creator_2
     {
         public static dynamic Master = new JObject();
 
-        public static CheckBox limit_champions_cost_5 = new CheckBox();
+        public static NumericUpDown max_cost_5_amount = new NumericUpDown();
         public static CheckBox disable_champions_cost_1 = new CheckBox();
         public static CheckBox disable_champions_cost_2 = new CheckBox();
         public static CheckBox disable_champions_cost_3 = new CheckBox();
@@ -22,7 +22,7 @@ namespace TFT_Comp_Creator_2
 
         public static void SetNodes(
             JObject _Master,
-            CheckBox limit_champions_cost_5_,
+            NumericUpDown max_cost_5_amount_,
             CheckBox disable_champions_cost_1_,
             CheckBox disable_champions_cost_2_,
             CheckBox disable_champions_cost_3_,
@@ -34,7 +34,7 @@ namespace TFT_Comp_Creator_2
         {
             Master = _Master;
 
-            limit_champions_cost_5 = limit_champions_cost_5_;
+            max_cost_5_amount = max_cost_5_amount_;
             disable_champions_cost_1 = disable_champions_cost_1_;
             disable_champions_cost_2 = disable_champions_cost_2_;
             disable_champions_cost_3 = disable_champions_cost_3_;

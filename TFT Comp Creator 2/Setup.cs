@@ -76,7 +76,7 @@ namespace TFT_Comp_Creator_2
             // I hate using foreach loops, I'll use this for now
             //int SetsSize = JDownload["sets"].Count();
 
-            int setData_ID = 3;
+            int setData_ID = 4;
             // Store basic info
             dynamic TraitList = JDownload["setData"][setData_ID]["traits"];
             dynamic ChampionList = JDownload["setData"][setData_ID]["champions"];

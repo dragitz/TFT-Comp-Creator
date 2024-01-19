@@ -44,7 +44,7 @@ namespace TFT_Comp_Creator_2
                 // Setup part 1
                 SetFormUtility(
                     output, targetNodes, label14,
-                    limit_champions_cost_5,
+                    max_cost_5_amount,
                     disable_champions_cost_1,
                     disable_champions_cost_2,
                     disable_champions_cost_3,
@@ -72,11 +72,11 @@ namespace TFT_Comp_Creator_2
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, no_error, limit_champions_cost_5, limit_champions_cost_4, limit_champions_cost_3, limit_champions_cost_2, limit_champions_cost_1, minTraits, minUpgrades);
+                SetFromScoring(Master, no_error, max_cost_5_amount, max_cost_4_amount, max_cost_3_amount, max_cost_2_amount, max_cost_1_amount, minTraits, minUpgrades, minRanged, maxRanged);
 
                 SetNodes(
                     Master,
-                    limit_champions_cost_5,
+                    max_cost_5_amount,
                     disable_champions_cost_1,
                     disable_champions_cost_2,
                     disable_champions_cost_3,
@@ -132,7 +132,8 @@ namespace TFT_Comp_Creator_2
             int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
 
             // Call the helper function with the empty defaultComp
-            FindCombinations(nodes, size, hashmap, comp);
+            //FindCombinations(nodes, size, hashmap, comp);
+            FindCombinations2(size, nodes);
 
             Print("done");
 
@@ -241,7 +242,8 @@ namespace TFT_Comp_Creator_2
                 int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
 
                 // Call the helper function with the empty defaultComp
-                FindCombinations(nodes, size, hashmap, comp);
+                //FindCombinations(nodes, size, hashmap, comp);
+                FindCombinations2(size, nodes);
 
             }
             Print("done");
