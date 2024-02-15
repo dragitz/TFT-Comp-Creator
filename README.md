@@ -6,29 +6,28 @@ Bug testing is required !
 
 Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package Manager > Manage NuGet packages for Solution...
 
-![immagine](https://i.imgur.com/wWBXBPt.png)
+![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/b3600b69-1802-45fa-ba6b-98d4098b7f52)
+
 
 
 
 ## Features
-* #### Pet algorithm --> Fast hashing (aka the Create button)
-
-  Hashing is a way to make a unique number, called a "hash," from data. It can be used to quickly compare and find data, which can speed up processes like creating a comp. 
+* #### n choose k algorithm (no more hashing)
   
   This drastically reduces the compute time and allows the program to produce good and fast results
   
 
 * #### Exclusion / Inclusion
 	
-    You can specify any desired or unwanted Traits / Champs
+    You can specify any desired or unwanted Traits / Champs / Spatula / Headliners
 
 *  #### Nodes
 	
-    The Pet algo uses a list of nodes that represents the "connection" between a champion and another.
+    The algo uses a list of nodes that represents the "connection" between a champion and another.
     
     It prioritizes the highest "relativeness" to the lowest and the size can be customized in the GUI.
     
-    Higher nodes = better results (but also slightly higher computation time)
+    Higher nodes = better results (but also higher computation time)
 
    Note: Dominant traits with more breakpoints will have a higher impact
     
@@ -44,8 +43,6 @@ Note: Project uses Newtonsoft.Json, get it in VS by doing: Tools > NuGet Package
 * #### Brute All Champs
 	
     Brute force every possible comp, node depth is ignored
-
-* ~~#### Convert text comp to a valid tftactics.gg team~~
 
 ## Bugs n' stuff
 Optimizer tab will not obey to the rules set in the inclusion / exclusion tab
