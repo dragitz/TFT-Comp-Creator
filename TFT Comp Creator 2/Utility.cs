@@ -86,14 +86,14 @@ namespace TFT_Comp_Creator_2
             formObj.AppendText(data.ToString() + Environment.NewLine);
         }
 
-        public static void PrintComp(List<string> comp)
+        public static void PrintComp(List<string> comp, int score)
         {
             if (comp.Count < 1) { return; }
 
             // Assuming Master is a Dictionary<string, Dictionary<string, Dictionary<string, int>>>
             comp = comp.OrderBy(component => Master["Champions"][component]["cost"]).ToList();
 
-            Print(String.Join("-", comp));
+            Print(score + " - " + String.Join("-", comp));
         }
 
         /// <summary>
@@ -328,13 +328,14 @@ namespace TFT_Comp_Creator_2
                 //Form1.hashmap.Add(combinationString);
 
                 int Synergy = CalculateSynergy(comp);
+                PrintComp(comp, Synergy);
 
                 if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp) && !alreadySeenCombinations.Contains(combinationString))
                 {
                     Pet_SynergyBest = Synergy;
                     //Pet_PowerBest = Power;
 
-                    PrintComp(comp);
+                    PrintComp(comp, Synergy);
                     //PrintCompLink(comp);
 
                     label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
@@ -426,7 +427,7 @@ namespace TFT_Comp_Creator_2
                     Pet_SynergyBest = Synergy;
                     //Pet_PowerBest = Power;
 
-                    PrintComp(comp);
+                    PrintComp(comp, Synergy);
                     //PrintCompLink(comp);
 
                     label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";

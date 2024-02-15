@@ -11,6 +11,7 @@ namespace TFT_Comp_Creator_2
     {
         public static dynamic Master = new JObject();
         private static CheckBox no_error = new CheckBox();
+        private static CheckBox exclusion_allow_base_trait = new CheckBox();
         private static NumericUpDown max_cost_5_amount = new NumericUpDown();
         private static NumericUpDown max_cost_4_amount = new NumericUpDown();
         private static NumericUpDown max_cost_3_amount = new NumericUpDown();
@@ -20,12 +21,30 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown minUpgrades = new NumericUpDown();
         private static NumericUpDown minRanged = new NumericUpDown();
         private static NumericUpDown maxRanged = new NumericUpDown();
+        private static NumericUpDown trait_3_limiter = new NumericUpDown();
+
+        public static ListBox include_spatula = new ListBox();
 
         public static bool ForceStop = false;
-        public static void SetFromScoring(dynamic M, CheckBox NO, NumericUpDown max_cost_5_amount_, NumericUpDown max_cost_4_amount_, NumericUpDown max_cost_3_amount_, NumericUpDown max_cost_2_amount_, NumericUpDown max_cost_1_amount_, NumericUpDown minActiveTRaits_, NumericUpDown minUpgrades_, NumericUpDown minRanged_, NumericUpDown maxRanged_)
+        public static void SetFromScoring(
+            dynamic M,
+            CheckBox NO,
+            CheckBox exclusion_allow_base_trait_,
+            NumericUpDown max_cost_5_amount_,
+            NumericUpDown max_cost_4_amount_,
+            NumericUpDown max_cost_3_amount_,
+            NumericUpDown max_cost_2_amount_,
+            NumericUpDown max_cost_1_amount_,
+            NumericUpDown minActiveTRaits_,
+            NumericUpDown minUpgrades_,
+            NumericUpDown minRanged_,
+            NumericUpDown maxRanged_,
+            NumericUpDown trait_3_limiter_,
+            ListBox include_spatula_)
         {
             Master = M;
             no_error = NO;
+            exclusion_allow_base_trait = exclusion_allow_base_trait_;
             max_cost_5_amount = max_cost_5_amount_;
             max_cost_4_amount = max_cost_4_amount_;
             max_cost_3_amount = max_cost_3_amount_;
@@ -35,6 +54,10 @@ namespace TFT_Comp_Creator_2
             minUpgrades = minUpgrades_;
             minRanged = minRanged_;
             maxRanged = maxRanged_;
+            trait_3_limiter = trait_3_limiter_;
+
+            include_spatula = include_spatula_;
+
         }
 
         /// <summary>
@@ -57,6 +80,8 @@ namespace TFT_Comp_Creator_2
 
             // Access the property of the checkbox here.
             bool isChecked = no_error.Checked;
+
+            JObject JTraits = new JObject();
 
             try
             {
@@ -83,7 +108,7 @@ namespace TFT_Comp_Creator_2
 
                 foreach (var champ in comp)
                 {
-                    
+
                     var traits = championsData[champ];
 
                     // Loop through each trait and calculate its contribution to the synergy score
@@ -93,6 +118,16 @@ namespace TFT_Comp_Creator_2
                     }
 
                 }
+
+                // Spatula traits / Headliners
+                foreach (var champTraits in championsData.Values)
+                {
+                    // Increase synergy score if the trait is present in the List<string> comp
+                    synergyScore += champTraits.Count(trait => include_spatula.Items.Contains(trait));
+                }
+
+
+
 
 
                 // Return the total synergy score
@@ -239,7 +274,7 @@ namespace TFT_Comp_Creator_2
 
             if (debug == 3)
             {
-                PrintComp(comp);
+                PrintComp(comp, 9999);
 
                 return ActiveTraits + InactiveTraits;
             }
@@ -470,7 +505,56 @@ namespace TFT_Comp_Creator_2
                         JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
                     }
                 }
+
+
             }
+
+
+            int found = 0;
+            int mustFind = include_spatula.Items.Count;
+
+            // Spatula traits can be added here (to be coded)
+            for (int k = 0; k < include_spatula.Items.Count; k++)
+            {
+                string spatulaTrait = include_spatula.Items[k].ToString();
+
+
+                bool foundChamp = false;
+
+                foreach (var champion in comp)
+                {
+                    dynamic Traits = Master["Champions"][champion]["Traits"];
+
+
+                    foreach (string Trait in Traits)
+                    {
+                        if (Traits.Contains(spatulaTrait))
+                            break;
+
+                        foundChamp = true;
+                        found++;
+                        break;
+                    }
+                    if (foundChamp) { break; }
+                }
+
+                if (!foundChamp) { return false; }
+
+
+                if (TraitsInComp.Contains(spatulaTrait))
+                {
+                    JTraits[spatulaTrait] = (int)JTraits[spatulaTrait] + 1;
+                }
+                else
+                {
+                    TraitsInComp.Add(spatulaTrait);
+                    JProperty item_properties = new JProperty(spatulaTrait, 0);
+                    JTraits.Add(item_properties);
+                }
+            }
+            if (found < mustFind && mustFind > 0) { return false; }
+
+
 
             // Ensure n amount of ranged
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
@@ -502,19 +586,44 @@ namespace TFT_Comp_Creator_2
             List<string> IncludedTraitFoundLIst = new List<string>();
 
             int TotalUpgrades = 0;
-            int[] UpgradeLevels = { };
 
             // Iterate through all 
             foreach (string Trait in TraitsInComp)
             {
+                // Included / Excluded traits check
+
+                // Check if trait appears in the excluded list, as well as the included list
+                if (!exclusion_allow_base_trait.Checked)
+                {
+                    if (exclude_trait.Items.Contains(Trait))
+                        return false;
+                    //for (int i = 0; i < exclude_trait.Items.Count; i++)
+                    //{
+                    //    if (Trait == exclude_trait.Items[i].ToString())
+                    //        return false;
+                    //}
+                }
+
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
+                        IncludedTraitFoundLIst.Add(Trait);
+                }
+
                 int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
                 int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
 
+                if (exclusion_allow_base_trait.Checked && (int)JTraits[Trait] > minBreakPoint && exclude_trait.Items.Contains(Trait) && totalBreakPoints > 1)
+                {
+                    return false;
+                }
 
                 // Make sure the trait is active
                 // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
                 if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
                 {
+                    int maxBreakpoint = (int)Master["TraitList"][Trait]["Breakpoints"][Master["TraitList"][Trait]["Breakpoints"].Count - 1]; // This is a test, might leave it here
+
                     ActiveTraits++;
 
                     JTraits_active.Add(Trait);
@@ -525,7 +634,7 @@ namespace TFT_Comp_Creator_2
                     bool isBalanced = false;
                     for (int i = 0; i < BreakpointAmount; i++)
                     {
-                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
+                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait] || (int)Master["TraitList"][Trait]["Breakpoints"][i] > maxBreakpoint)
                         {
 
                             isBalanced = true;
@@ -533,37 +642,19 @@ namespace TFT_Comp_Creator_2
                             if (BreakpointAmount > 1 && i > 0)
                             {
                                 TotalUpgrades += i;
-                                UpgradeLevels.Append(i);
-
-
                             }
 
                         }
                     }
 
-
                     if (!isBalanced && no_error.Checked) { return false; }
 
-                    // Included / Excluded traits check
-
-                    // Check if trait appears in the excluded list, as well as the included list
-                    for (int i = 0; i < exclude_trait.Items.Count; i++)
-                    {
-                        if (Trait == exclude_trait.Items[i].ToString())
-                            return false;
-                    }
-
-                    for (int i = 0; i < include_trait.Items.Count; i++)
-                    {
-                        if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
-                            IncludedTraitFoundLIst.Add(Trait);
-                    }
 
                 }
             }
 
 
-
+            int championsWith_3_traits_or_more = 0;
             // Ensure all champions have contributed to the active trait list at least once
             foreach (string champion in comp)
             {
@@ -576,6 +667,15 @@ namespace TFT_Comp_Creator_2
                     if (JTraits_active.Contains(Trait)) { has_contributed = true; break; };
                 }
                 if (!has_contributed) { return false; }
+
+                
+                int NumberOfTraits = Master["Champions"][champion]["Traits"].Count;
+
+                if (NumberOfTraits >= 3)
+                    championsWith_3_traits_or_more++;
+
+                if (championsWith_3_traits_or_more > Convert.ToInt32(trait_3_limiter.Value))
+                    return false;
             }
 
 

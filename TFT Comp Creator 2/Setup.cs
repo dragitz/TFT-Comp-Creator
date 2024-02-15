@@ -1,8 +1,11 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json.Nodes;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -16,6 +19,8 @@ namespace TFT_Comp_Creator_2
         public static ListBox exclude_champion = new ListBox();
         public static ListBox default_champion = new ListBox();
         public static ListBox include_champion = new ListBox();
+        public static ListBox default_spatula = new ListBox();
+        public static ListBox include_spatula = new ListBox();
 
 
         public static void SetFormSetup(
@@ -24,7 +29,9 @@ namespace TFT_Comp_Creator_2
             ListBox include_trait_,
             ListBox exclude_champion_,
             ListBox default_champion_,
-            ListBox include_champion_
+            ListBox include_champion_,
+            ListBox default_spatula_,
+            ListBox include_spatula_
         )
         {
             exclude_trait = exclude_trait_;
@@ -33,6 +40,8 @@ namespace TFT_Comp_Creator_2
             exclude_champion = exclude_champion_;
             default_champion = default_champion_;
             include_champion = include_champion_;
+            default_spatula = default_spatula_;
+            include_spatula = include_spatula_;
         }
 
         public static dynamic FirstRun()
@@ -76,6 +85,7 @@ namespace TFT_Comp_Creator_2
             // I hate using foreach loops, I'll use this for now
             //int SetsSize = JDownload["sets"].Count();
 
+            // 4 = recent
             int setData_ID = 4;
             // Store basic info
             dynamic TraitList = JDownload["setData"][setData_ID]["traits"];
@@ -136,8 +146,25 @@ namespace TFT_Comp_Creator_2
                 ChampionName = ChampionName.Replace(" & Willump", "");
                 ChampionName = ChampionName.Replace("'", "");
 
-                // Ignore duplicates
-                if (Master["Champions"].ContainsKey(ChampionName)) { i++; continue; }
+                // Ignore duplicates, unless the same champion is considered different (compare its traits first)
+                if (Master["Champions"].ContainsKey(ChampionName))
+                {
+
+                    JArray LoggedChampionTraits = Master["Champions"][ChampionName]["Traits"];
+                    var PotentialNew = JDownload["setData"][setData_ID]["champions"][i]["traits"];
+
+                    if (LoggedChampionTraits == PotentialNew) { i++; continue; }
+
+                    List<string> Original = LoggedChampionTraits.Select(j => (string)j).ToList();
+                    List<string> New = PotentialNew.Select(j => (string)j).ToList();
+
+                    // Find differences
+                    // Retrieve elements that are not in common
+                    var notInCommon = Original.Except(New).Union(New.Except(Original)).ToList().Last();
+
+                    ChampionName += "-("+notInCommon+")";
+
+                }
 
                 // Champion info
                 int cost = (int)JDownload["setData"][setData_ID]["champions"][i]["cost"];
@@ -206,8 +233,6 @@ namespace TFT_Comp_Creator_2
 
             // TODO: If a trait has no champions, it is removed
 
-            File.WriteAllText("debugSet.json", Master.ToString());
-
             File.WriteAllText("set.json", Master.ToString());
 
             return Master;
@@ -233,19 +258,42 @@ namespace TFT_Comp_Creator_2
 
             foreach (dynamic item in Traits)
             {
-                
+
 
                 JProperty n = (JProperty)item;
                 string name = n.Name;
 
-                if(Master["TraitChampions"][name].Count < 1)
-                        continue;
+
+                int Amount = Master["TraitChampions"][name].Count;
+
+                if (Amount < 1)
+                    continue;
 
                 default_trait.Items.Add(name);
+
+                int totalBreakPoints = Master["TraitList"][name]["Breakpoints"].Count;
+
+                if (totalBreakPoints > 1)
+                {
+                    // If a trait doesn't have enough champions to fully complete it, it means we have a spatula (or so I think?)
+                    int maxBreakpoint = (int)Master["TraitList"][name]["Breakpoints"][Master["TraitList"][name]["Breakpoints"].Count - 1];
+                    if (Amount <= maxBreakpoint)
+                    {
+                        // Include spatulas + headliner
+                        for (int i = 0; i < maxBreakpoint - Amount + 1; i++)
+                        {
+                            default_spatula.Items.Add(name);
+                        }
+
+                    }
+
+                    default_spatula.Items.Add(name);
+                }
+
             }
             default_trait.SelectedIndex = 0;
 
-            
+
         }
 
     }

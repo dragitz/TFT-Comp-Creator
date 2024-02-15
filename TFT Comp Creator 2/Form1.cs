@@ -66,13 +66,30 @@ namespace TFT_Comp_Creator_2
                     include_trait,
                     exclude_champion,
                     default_champion,
-                    include_champion
+                    include_champion,
+                    default_spatula,
+                    include_spatula
                 );
 
                 // Setup part 2
                 Master = FirstRun();
 
-                SetFromScoring(Master, no_error, max_cost_5_amount, max_cost_4_amount, max_cost_3_amount, max_cost_2_amount, max_cost_1_amount, minTraits, minUpgrades, minRanged, maxRanged);
+                SetFromScoring(
+                    Master,
+                    no_error,
+                    exclusion_allow_base_trait,
+                    max_cost_5_amount,
+                    max_cost_4_amount,
+                    max_cost_3_amount,
+                    max_cost_2_amount,
+                    max_cost_1_amount,
+                    minTraits,
+                    minUpgrades,
+                    minRanged,
+                    maxRanged,
+                    trait_3_limiter,
+                    include_spatula
+                );
 
                 SetNodes(
                     Master,
@@ -169,7 +186,7 @@ namespace TFT_Comp_Creator_2
 
         public void Creation()
         {
-            
+
             // Empty comp
             List<string> comp = new List<string>();
 
@@ -215,6 +232,9 @@ namespace TFT_Comp_Creator_2
                 // Include champions from list of default traits as extra nodes
                 foreach (string champion in GetChampionsFromTrait(default_trait.Items[k].ToString()))
                 {
+                    if (quick_discovery.Checked)
+                        break;
+
                     if (!nodes.Contains(champion) && !comp.Contains(champion))
                         nodes.Add(champion);
                 }
@@ -245,6 +265,9 @@ namespace TFT_Comp_Creator_2
                 //FindCombinations(nodes, size, hashmap, comp);
                 FindCombinations2(size, nodes);
 
+                if (quick_discovery.Checked)
+                    break;
+
             }
             Print("done");
 
@@ -265,7 +288,7 @@ namespace TFT_Comp_Creator_2
 
 
 
-
+        // Traits
         private void Trait_default_to_exclude_Click(object sender, EventArgs e)
         {
             moveData(default_trait.SelectedItem, default_trait, exclude_trait);
@@ -282,6 +305,7 @@ namespace TFT_Comp_Creator_2
         {
             moveData(include_trait.SelectedItem, include_trait, default_trait);
         }
+        // Champions
         private void Champion_default_to_exclude_Click(object sender, EventArgs e)
         {
             moveData(default_champion.SelectedItem, default_champion, exclude_champion);
@@ -298,7 +322,16 @@ namespace TFT_Comp_Creator_2
         {
             moveData(include_champion.SelectedItem, include_champion, default_champion);
         }
+        // Spatula
+        private void spatula_default_to_include_Click(object sender, EventArgs e)
+        {
+            moveData(default_spatula.SelectedItem, default_spatula, include_spatula);
+        }
 
+        private void spatula_include_to_default_Click(object sender, EventArgs e)
+        {
+            moveData(include_spatula.SelectedItem, include_spatula, default_spatula);
+        }
         private void ClearButton_Click(object sender, EventArgs e)
         {
             output.Text = "";

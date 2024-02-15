@@ -35,6 +35,18 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.exclusion_allow_base_trait = new System.Windows.Forms.CheckBox();
+            this.quick_discovery = new System.Windows.Forms.CheckBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.maxRanged = new System.Windows.Forms.NumericUpDown();
+            this.max_cost_5_amount = new System.Windows.Forms.NumericUpDown();
+            this.max_cost_4_amount = new System.Windows.Forms.NumericUpDown();
+            this.max_cost_3_amount = new System.Windows.Forms.NumericUpDown();
+            this.max_cost_2_amount = new System.Windows.Forms.NumericUpDown();
+            this.label16 = new System.Windows.Forms.Label();
+            this.max_cost_1_amount = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.minRanged = new System.Windows.Forms.NumericUpDown();
             this.depthLevel = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
             this.minUpgrades = new System.Windows.Forms.NumericUpDown();
@@ -81,26 +93,32 @@ namespace TFT_Comp_Creator_2
             this.label7 = new System.Windows.Forms.Label();
             this.include_champion = new System.Windows.Forms.ListBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.spatula_default_to_include = new System.Windows.Forms.Button();
+            this.spatula_include_to_default = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.default_spatula = new System.Windows.Forms.ListBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.include_spatula = new System.Windows.Forms.ListBox();
             this.label14 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.bruteForce = new System.Windows.Forms.Button();
-            this.minRanged = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
-            this.max_cost_1_amount = new System.Windows.Forms.NumericUpDown();
-            this.label16 = new System.Windows.Forms.Label();
-            this.max_cost_2_amount = new System.Windows.Forms.NumericUpDown();
-            this.max_cost_3_amount = new System.Windows.Forms.NumericUpDown();
-            this.max_cost_4_amount = new System.Windows.Forms.NumericUpDown();
-            this.max_cost_5_amount = new System.Windows.Forms.NumericUpDown();
-            this.label17 = new System.Windows.Forms.Label();
-            this.maxRanged = new System.Windows.Forms.NumericUpDown();
+            this.label20 = new System.Windows.Forms.Label();
+            this.trait_3_limiter = new System.Windows.Forms.NumericUpDown();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_4_amount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_3_amount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_2_amount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_1_amount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minRanged)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.depthLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).BeginInit();
@@ -110,13 +128,8 @@ namespace TFT_Comp_Creator_2
             this.tabControl2.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minRanged)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_1_amount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_2_amount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_3_amount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_4_amount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trait_3_limiter)).BeginInit();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -153,6 +166,10 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.trait_3_limiter);
+            this.tabRules.Controls.Add(this.label20);
+            this.tabRules.Controls.Add(this.exclusion_allow_base_trait);
+            this.tabRules.Controls.Add(this.quick_discovery);
             this.tabRules.Controls.Add(this.label17);
             this.tabRules.Controls.Add(this.maxRanged);
             this.tabRules.Controls.Add(this.max_cost_5_amount);
@@ -186,6 +203,179 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             // 
+            // exclusion_allow_base_trait
+            // 
+            this.exclusion_allow_base_trait.AutoSize = true;
+            this.exclusion_allow_base_trait.Checked = true;
+            this.exclusion_allow_base_trait.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.exclusion_allow_base_trait.Location = new System.Drawing.Point(440, 232);
+            this.exclusion_allow_base_trait.Name = "exclusion_allow_base_trait";
+            this.exclusion_allow_base_trait.Size = new System.Drawing.Size(239, 17);
+            this.exclusion_allow_base_trait.TabIndex = 67;
+            this.exclusion_allow_base_trait.Text = "Allow excluded traits to have the minimum BP";
+            this.exclusion_allow_base_trait.UseVisualStyleBackColor = true;
+            // 
+            // quick_discovery
+            // 
+            this.quick_discovery.AutoSize = true;
+            this.quick_discovery.Location = new System.Drawing.Point(440, 207);
+            this.quick_discovery.Name = "quick_discovery";
+            this.quick_discovery.Size = new System.Drawing.Size(102, 17);
+            this.quick_discovery.TabIndex = 66;
+            this.quick_discovery.Text = "Quick discovery";
+            this.quick_discovery.UseVisualStyleBackColor = true;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(31, 232);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(63, 13);
+            this.label17.TabIndex = 65;
+            this.label17.Text = "Max ranged";
+            // 
+            // maxRanged
+            // 
+            this.maxRanged.Location = new System.Drawing.Point(97, 230);
+            this.maxRanged.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.maxRanged.Name = "maxRanged";
+            this.maxRanged.Size = new System.Drawing.Size(120, 20);
+            this.maxRanged.TabIndex = 64;
+            this.maxRanged.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // max_cost_5_amount
+            // 
+            this.max_cost_5_amount.Location = new System.Drawing.Point(598, 124);
+            this.max_cost_5_amount.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.max_cost_5_amount.Name = "max_cost_5_amount";
+            this.max_cost_5_amount.Size = new System.Drawing.Size(120, 20);
+            this.max_cost_5_amount.TabIndex = 63;
+            this.max_cost_5_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.max_cost_5_amount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // max_cost_4_amount
+            // 
+            this.max_cost_4_amount.Location = new System.Drawing.Point(598, 101);
+            this.max_cost_4_amount.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.max_cost_4_amount.Name = "max_cost_4_amount";
+            this.max_cost_4_amount.Size = new System.Drawing.Size(120, 20);
+            this.max_cost_4_amount.TabIndex = 62;
+            this.max_cost_4_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.max_cost_4_amount.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // max_cost_3_amount
+            // 
+            this.max_cost_3_amount.Location = new System.Drawing.Point(598, 78);
+            this.max_cost_3_amount.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.max_cost_3_amount.Name = "max_cost_3_amount";
+            this.max_cost_3_amount.Size = new System.Drawing.Size(120, 20);
+            this.max_cost_3_amount.TabIndex = 61;
+            this.max_cost_3_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.max_cost_3_amount.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            // 
+            // max_cost_2_amount
+            // 
+            this.max_cost_2_amount.Location = new System.Drawing.Point(598, 55);
+            this.max_cost_2_amount.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.max_cost_2_amount.Name = "max_cost_2_amount";
+            this.max_cost_2_amount.Size = new System.Drawing.Size(120, 20);
+            this.max_cost_2_amount.TabIndex = 60;
+            this.max_cost_2_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.max_cost_2_amount.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(653, 14);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(65, 13);
+            this.label16.TabIndex = 59;
+            this.label16.Text = "Max amount";
+            // 
+            // max_cost_1_amount
+            // 
+            this.max_cost_1_amount.Location = new System.Drawing.Point(598, 32);
+            this.max_cost_1_amount.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.max_cost_1_amount.Name = "max_cost_1_amount";
+            this.max_cost_1_amount.Size = new System.Drawing.Size(120, 20);
+            this.max_cost_1_amount.TabIndex = 58;
+            this.max_cost_1_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.max_cost_1_amount.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(31, 206);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(60, 13);
+            this.label15.TabIndex = 57;
+            this.label15.Text = "Min ranged";
+            // 
+            // minRanged
+            // 
+            this.minRanged.Location = new System.Drawing.Point(97, 204);
+            this.minRanged.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.minRanged.Name = "minRanged";
+            this.minRanged.Size = new System.Drawing.Size(120, 20);
+            this.minRanged.TabIndex = 56;
+            this.minRanged.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
             // depthLevel
             // 
             this.depthLevel.Location = new System.Drawing.Point(97, 127);
@@ -203,7 +393,7 @@ namespace TFT_Comp_Creator_2
             this.depthLevel.Size = new System.Drawing.Size(120, 20);
             this.depthLevel.TabIndex = 54;
             this.depthLevel.Value = new decimal(new int[] {
-            2,
+            5,
             0,
             0,
             0});
@@ -229,7 +419,7 @@ namespace TFT_Comp_Creator_2
             this.minUpgrades.Size = new System.Drawing.Size(120, 20);
             this.minUpgrades.TabIndex = 38;
             this.minUpgrades.Value = new decimal(new int[] {
-            2,
+            1,
             0,
             0,
             0});
@@ -272,7 +462,7 @@ namespace TFT_Comp_Creator_2
             this.min_comp_size.Size = new System.Drawing.Size(120, 20);
             this.min_comp_size.TabIndex = 20;
             this.min_comp_size.Value = new decimal(new int[] {
-            8,
+            9,
             0,
             0,
             0});
@@ -389,7 +579,7 @@ namespace TFT_Comp_Creator_2
             this.tabOptimize.Location = new System.Drawing.Point(4, 22);
             this.tabOptimize.Name = "tabOptimize";
             this.tabOptimize.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOptimize.Size = new System.Drawing.Size(880, 184);
+            this.tabOptimize.Size = new System.Drawing.Size(880, 271);
             this.tabOptimize.TabIndex = 1;
             this.tabOptimize.Text = "Optimizer";
             this.tabOptimize.UseVisualStyleBackColor = true;
@@ -462,6 +652,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.tabControl2.Controls.Add(this.tabPage4);
             this.tabControl2.Controls.Add(this.tabPage5);
+            this.tabControl2.Controls.Add(this.tabPage1);
             this.tabControl2.Location = new System.Drawing.Point(3, 6);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
@@ -711,6 +902,82 @@ namespace TFT_Comp_Creator_2
             this.label8.TabIndex = 9;
             this.label8.Text = "Exclude";
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.spatula_default_to_include);
+            this.tabPage1.Controls.Add(this.spatula_include_to_default);
+            this.tabPage1.Controls.Add(this.label18);
+            this.tabPage1.Controls.Add(this.default_spatula);
+            this.tabPage1.Controls.Add(this.label19);
+            this.tabPage1.Controls.Add(this.include_spatula);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(880, 267);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Spatula (wip)";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // spatula_default_to_include
+            // 
+            this.spatula_default_to_include.ForeColor = System.Drawing.Color.Red;
+            this.spatula_default_to_include.Location = new System.Drawing.Point(483, 53);
+            this.spatula_default_to_include.Name = "spatula_default_to_include";
+            this.spatula_default_to_include.Size = new System.Drawing.Size(75, 23);
+            this.spatula_default_to_include.TabIndex = 13;
+            this.spatula_default_to_include.Text = "== >";
+            this.spatula_default_to_include.UseVisualStyleBackColor = true;
+            this.spatula_default_to_include.Click += new System.EventHandler(this.spatula_default_to_include_Click);
+            // 
+            // spatula_include_to_default
+            // 
+            this.spatula_include_to_default.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.spatula_include_to_default.Location = new System.Drawing.Point(553, 82);
+            this.spatula_include_to_default.Name = "spatula_include_to_default";
+            this.spatula_include_to_default.Size = new System.Drawing.Size(75, 23);
+            this.spatula_include_to_default.TabIndex = 12;
+            this.spatula_include_to_default.Text = "< ==";
+            this.spatula_include_to_default.UseVisualStyleBackColor = true;
+            this.spatula_include_to_default.Click += new System.EventHandler(this.spatula_include_to_default_Click);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(374, 29);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(48, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Default";
+            // 
+            // default_spatula
+            // 
+            this.default_spatula.FormattingEnabled = true;
+            this.default_spatula.Location = new System.Drawing.Point(300, 53);
+            this.default_spatula.Name = "default_spatula";
+            this.default_spatula.Size = new System.Drawing.Size(174, 160);
+            this.default_spatula.Sorted = true;
+            this.default_spatula.TabIndex = 8;
+            this.default_spatula.DoubleClick += new System.EventHandler(this.spatula_default_to_include_Click);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(699, 29);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(49, 13);
+            this.label19.TabIndex = 10;
+            this.label19.Text = "Include";
+            // 
+            // include_spatula
+            // 
+            this.include_spatula.FormattingEnabled = true;
+            this.include_spatula.Location = new System.Drawing.Point(634, 53);
+            this.include_spatula.Name = "include_spatula";
+            this.include_spatula.Size = new System.Drawing.Size(174, 160);
+            this.include_spatula.TabIndex = 9;
+            this.include_spatula.DoubleClick += new System.EventHandler(this.spatula_include_to_default_Click);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -770,153 +1037,29 @@ namespace TFT_Comp_Creator_2
             this.bruteForce.UseVisualStyleBackColor = true;
             this.bruteForce.Click += new System.EventHandler(this.bruteForce_Click);
             // 
-            // minRanged
+            // label20
             // 
-            this.minRanged.Location = new System.Drawing.Point(97, 204);
-            this.minRanged.Maximum = new decimal(new int[] {
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(267, 30);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(137, 13);
+            this.label20.TabIndex = 68;
+            this.label20.Text = "Max champions with 3 traits";
+            // 
+            // trait_3_limiter
+            // 
+            this.trait_3_limiter.Location = new System.Drawing.Point(284, 46);
+            this.trait_3_limiter.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.minRanged.Name = "minRanged";
-            this.minRanged.Size = new System.Drawing.Size(120, 20);
-            this.minRanged.TabIndex = 56;
-            this.minRanged.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(31, 206);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(60, 13);
-            this.label15.TabIndex = 57;
-            this.label15.Text = "Min ranged";
-            // 
-            // max_cost_1_amount
-            // 
-            this.max_cost_1_amount.Location = new System.Drawing.Point(598, 32);
-            this.max_cost_1_amount.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.max_cost_1_amount.Name = "max_cost_1_amount";
-            this.max_cost_1_amount.Size = new System.Drawing.Size(120, 20);
-            this.max_cost_1_amount.TabIndex = 58;
-            this.max_cost_1_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.max_cost_1_amount.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(653, 14);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(65, 13);
-            this.label16.TabIndex = 59;
-            this.label16.Text = "Max amount";
-            // 
-            // max_cost_2_amount
-            // 
-            this.max_cost_2_amount.Location = new System.Drawing.Point(598, 55);
-            this.max_cost_2_amount.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.max_cost_2_amount.Name = "max_cost_2_amount";
-            this.max_cost_2_amount.Size = new System.Drawing.Size(120, 20);
-            this.max_cost_2_amount.TabIndex = 60;
-            this.max_cost_2_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.max_cost_2_amount.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // max_cost_3_amount
-            // 
-            this.max_cost_3_amount.Location = new System.Drawing.Point(598, 78);
-            this.max_cost_3_amount.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.max_cost_3_amount.Name = "max_cost_3_amount";
-            this.max_cost_3_amount.Size = new System.Drawing.Size(120, 20);
-            this.max_cost_3_amount.TabIndex = 61;
-            this.max_cost_3_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.max_cost_3_amount.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // max_cost_4_amount
-            // 
-            this.max_cost_4_amount.Location = new System.Drawing.Point(598, 101);
-            this.max_cost_4_amount.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.max_cost_4_amount.Name = "max_cost_4_amount";
-            this.max_cost_4_amount.Size = new System.Drawing.Size(120, 20);
-            this.max_cost_4_amount.TabIndex = 62;
-            this.max_cost_4_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.max_cost_4_amount.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // max_cost_5_amount
-            // 
-            this.max_cost_5_amount.Location = new System.Drawing.Point(598, 124);
-            this.max_cost_5_amount.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.max_cost_5_amount.Name = "max_cost_5_amount";
-            this.max_cost_5_amount.Size = new System.Drawing.Size(120, 20);
-            this.max_cost_5_amount.TabIndex = 63;
-            this.max_cost_5_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.max_cost_5_amount.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(31, 232);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(63, 13);
-            this.label17.TabIndex = 65;
-            this.label17.Text = "Max ranged";
-            // 
-            // maxRanged
-            // 
-            this.maxRanged.Location = new System.Drawing.Point(97, 230);
-            this.maxRanged.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.maxRanged.Name = "maxRanged";
-            this.maxRanged.Size = new System.Drawing.Size(120, 20);
-            this.maxRanged.TabIndex = 64;
-            this.maxRanged.Value = new decimal(new int[] {
-            10,
+            this.trait_3_limiter.Name = "trait_3_limiter";
+            this.trait_3_limiter.Size = new System.Drawing.Size(120, 20);
+            this.trait_3_limiter.TabIndex = 69;
+            this.trait_3_limiter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.trait_3_limiter.Value = new decimal(new int[] {
+            4,
             0,
             0,
             0});
@@ -943,6 +1086,13 @@ namespace TFT_Comp_Creator_2
             this.tabControl1.ResumeLayout(false);
             this.tabRules.ResumeLayout(false);
             this.tabRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_4_amount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_3_amount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_2_amount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_cost_1_amount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minRanged)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.depthLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minUpgrades)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_comp_size)).EndInit();
@@ -955,13 +1105,9 @@ namespace TFT_Comp_Creator_2
             this.tabPage4.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minRanged)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_1_amount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_2_amount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_3_amount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_4_amount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trait_3_limiter)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1035,6 +1181,17 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.NumericUpDown max_cost_2_amount;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.NumericUpDown maxRanged;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.Button spatula_default_to_include;
+        private System.Windows.Forms.Button spatula_include_to_default;
+        private System.Windows.Forms.Label label18;
+        public System.Windows.Forms.ListBox default_spatula;
+        private System.Windows.Forms.Label label19;
+        public System.Windows.Forms.ListBox include_spatula;
+        public System.Windows.Forms.CheckBox quick_discovery;
+        public System.Windows.Forms.CheckBox exclusion_allow_base_trait;
+        private System.Windows.Forms.NumericUpDown trait_3_limiter;
+        private System.Windows.Forms.Label label20;
     }
 }
 
