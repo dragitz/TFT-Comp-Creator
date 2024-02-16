@@ -604,11 +604,6 @@ namespace TFT_Comp_Creator_2
                     //}
                 }
 
-                for (int i = 0; i < include_trait.Items.Count; i++)
-                {
-                    if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
-                        IncludedTraitFoundLIst.Add(Trait);
-                }
 
                 int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
                 int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
@@ -622,6 +617,12 @@ namespace TFT_Comp_Creator_2
                 // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
                 if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
                 {
+                    for (int i = 0; i < include_trait.Items.Count; i++)
+                    {
+                        if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
+                            IncludedTraitFoundLIst.Add(Trait);
+                    }
+
                     int maxBreakpoint = (int)Master["TraitList"][Trait]["Breakpoints"][Master["TraitList"][Trait]["Breakpoints"].Count - 1]; // This is a test, might leave it here
 
                     ActiveTraits++;
@@ -668,7 +669,7 @@ namespace TFT_Comp_Creator_2
                 }
                 if (!has_contributed) { return false; }
 
-                
+
                 int NumberOfTraits = Master["Champions"][champion]["Traits"].Count;
 
                 if (NumberOfTraits >= 3)
