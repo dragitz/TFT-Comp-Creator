@@ -23,6 +23,7 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown maxRanged = new NumericUpDown();
         private static NumericUpDown trait_3_limiter = new NumericUpDown();
 
+
         public static ListBox include_spatula = new ListBox();
 
         public static bool ForceStop = false;
@@ -78,10 +79,6 @@ namespace TFT_Comp_Creator_2
         {
             if (ForceStop) { return 0; }
 
-            // Access the property of the checkbox here.
-            bool isChecked = no_error.Checked;
-
-            JObject JTraits = new JObject();
 
             try
             {
@@ -104,19 +101,44 @@ namespace TFT_Comp_Creator_2
                 }
 
                 // Keep track of the synergy score
-                int synergyScore = 0;
+                float synergyScore = 0;
+                List<string> userPreferredTraits = new List<string>();
+                //foreach (string trait in include_trait.Items)
+                //{
+                //    userPreferredTraits.Add(trait);
+                //}
+                foreach (string trait in include_spatula.Items)
+                {
+                    userPreferredTraits.Add(trait);
+                }
+                foreach (string champion in include_champion.Items)
+                {
+                    JArray traits = Master["Champions"][champion]["Traits"];
+                    foreach (string trait in traits)
+                    {
+                        userPreferredTraits.Add((string)trait);
+                    }
+                }
+
+                float preferredTraitWeight = 1.9f; // anti bias
 
                 foreach (var champ in comp)
                 {
-
                     var traits = championsData[champ];
 
-                    // Loop through each trait and calculate its contribution to the synergy score
                     foreach (var trait in traits)
                     {
-                        synergyScore += comp.Count(f => championsData[f].Contains(trait));
-                    }
+                        float traitContribution = comp.Count(f => championsData[f].Contains(trait));
 
+                        // Check if the trait is in the user's preferred traits list
+                        if (userPreferredTraits != null && userPreferredTraits.Contains(trait))
+                        {
+                            // If the trait is preferred, apply a higher weight
+                            traitContribution *= preferredTraitWeight;
+                        }
+
+                        synergyScore += traitContribution;
+                    }
                 }
 
                 // Spatula traits / Headliners
@@ -127,283 +149,11 @@ namespace TFT_Comp_Creator_2
                 }
 
 
-
-
-
                 // Return the total synergy score
-                return synergyScore;
+                return Convert.ToInt32(synergyScore);
             }
             catch (Exception) { return 0; } // This should never get hit, in case it happens the search will stop
 
-        }
-
-        // Important function that returns a score.
-        // It's an outdated function, but I want to keep it in case I need some of its functionalities.
-        /// <summary>
-        /// 
-        /// The GetScore function takes in a List of strings representing champions and an integer called debug, and returns a score 
-        /// based on certain statistics about the traits of the champions in the List. 
-        ///
-        /// These statistics include the number of active and inactive traits in the List, whether certain traits are balanced or unbalanced, and 
-        /// whether certain traits have upgrades available.
-        ///
-        /// The function also checks for certain conditions, such as the number of champions with specific traits, and returns 0 if these conditions are met.
-        /// 
-        /// return 0 means the comp is bad.
-        /// 
-        /// </summary>
-        /// <param name="comp"></param>
-        /// <param name="debug"></param>
-        /// <returns></returns>
-        public static int GetScore(List<string> comp, int debug)
-        {
-            if (ForceStop) { return 0; }
-
-            int ActiveTraits = 0;
-            int InactiveTraits = 0;
-            int BalancedTraits = 0;
-            int UnbalancedTraits = 0;
-
-            int Opportunities = 0;
-
-            int BreakPoints = 0;    // Upgrades
-            int TraitsWithUpgrades = 0;
-
-            int cost5Amount = 0;
-            int cost4Amount = 0;
-            int cost3Amount = 0;
-            int cost2Amount = 0;
-            int cost1Amount = 0;
-
-            int includedTraitsScore = 0;
-            int includedChampionsScore = 0;
-
-
-            // Fill TraitsInComp
-            // Loop through the comp
-            List<string> TraitsInComp = new List<string>();
-            JObject JTraits = new JObject();
-
-            for (int i = 0; i < comp.Count; i++)
-            {
-                string ChampionName = comp[i].ToString();
-
-                int cost = Master["Champions"][ChampionName]["cost"];
-
-                if (cost == 5)
-                    cost5Amount += 1;
-                if (cost == 4)
-                    cost4Amount += 1;
-                if (cost == 3)
-                    cost3Amount += 1;
-                if (cost == 2)
-                    cost2Amount += 1;
-                if (cost == 1)
-                    cost1Amount += 1;
-
-                // Make sure that champion has been added, by checking user specified champion inclusion
-                for (int qq = 0; qq < include_champion.Items.Count; qq++)
-                {
-                    if (ChampionName == include_champion.Items[qq].ToString()) { includedChampionsScore++; break; }
-                }
-
-                // Compute amount of traits that the current champion has
-                int TraitsAmount = Master["Champions"][ChampionName]["Traits"].Count;
-
-                //avgArmor += Master["Champions"][ChampionName]["Traits"]
-                for (int k = 0; k < TraitsAmount; k++)
-                {
-                    string CurrentTrait = (string)Master["Champions"][ChampionName]["Traits"][k];
-
-                    if (!TraitsInComp.Contains(CurrentTrait))
-                    {
-
-                        TraitsInComp.Add(CurrentTrait);
-                        JProperty item_properties = new JProperty(CurrentTrait, 0);
-                        JTraits.Add(item_properties);
-                    }
-                }
-                for (int k = 0; k < TraitsAmount; k++)
-                {
-                    string CurrentTrait = (string)Master["Champions"][ChampionName]["Traits"][k];
-
-                    if (TraitsInComp.Contains(CurrentTrait))
-                    {
-                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
-
-                    }
-
-                    // Check if current comp has all user-defined included traits
-                    for (int qq = 0; qq < include_trait.Items.Count; qq++)
-                    {
-                        if (CurrentTrait == include_trait.Items[qq].ToString()) { includedTraitsScore++; break; }
-                    }
-                }
-
-
-            }
-            //
-            // Active traits is calculated separately for a different reason
-            foreach (dynamic item in JTraits)
-            {
-                int BreakpointAmount = Master["TraitList"][item.Key]["Breakpoints"].Count;
-                int Step = (int)item.Value;
-
-                bool isActive = false;
-
-
-                int minBreakPoint = (int)Master["TraitList"][item.Key]["Breakpoints"][0];
-                int maxBreakPoint = (int)Master["TraitList"][item.Key]["Breakpoints"][BreakpointAmount - 1];
-
-
-                for (int i = 0; i < BreakpointAmount; i++)
-                {
-                    // is in/active?
-                    if (Step >= minBreakPoint)
-                    {
-
-                        isActive = true;
-                    }
-                }
-
-                // Compute flags
-                if (isActive) { ActiveTraits++; } else { InactiveTraits++; }
-
-            }
-
-
-            if (debug == 3)
-            {
-                PrintComp(comp, 9999);
-
-                return ActiveTraits + InactiveTraits;
-            }
-
-            // Calculate stats
-            foreach (dynamic item in JTraits)
-            {
-                int BreakpointAmount = Master["TraitList"][item.Key]["Breakpoints"].Count;
-                int Step = (int)item.Value;
-
-                bool isBalanced = false;
-                bool isActive = false;
-                bool hasTraitUpgrade = false;
-
-                int minBreakPoint = (int)Master["TraitList"][item.Key]["Breakpoints"][0];
-                int maxBreakPoint = (int)Master["TraitList"][item.Key]["Breakpoints"][BreakpointAmount - 1];
-
-                string CurrentTrait = "";
-
-                for (int i = 0; i < BreakpointAmount; i++)
-                {
-                    CurrentTrait = item.Key;
-
-                    // is in/active?
-                    if (Step >= minBreakPoint)
-                    {
-                        isActive = true;
-
-                        // Make sure that trait can be added, by checking user specified traits exclusion
-                        for (int qq = 0; qq < exclude_trait.Items.Count; qq++)
-                        {
-                            if (exclude_trait.Items[qq].ToString() == CurrentTrait) { return 0; }
-                        }
-                    }
-
-                    // is missed opportunity?
-                    if (Step + 1 == minBreakPoint) { Opportunities++; }
-
-                    // is un/balanced ?
-                    if (Step == (int)Master["TraitList"][CurrentTrait]["Breakpoints"][i])
-                    {
-
-                        isBalanced = true;
-
-                    }
-
-                    // breakpoints
-                    if (Step >= (int)Master["TraitList"][CurrentTrait]["Breakpoints"][i] && i > 0)
-                    {
-                        BreakPoints++;
-
-                    }
-
-                    // TraitsWithUpgrades
-                    if (BreakpointAmount > 1)
-                    {
-                        if (Step >= (int)Master["TraitList"][item.Key]["Breakpoints"][1])
-                        {
-                            //TraitsWithUpgrades++;
-                            hasTraitUpgrade = true;
-                        }
-
-                    }
-
-                    // if comp size is surpassed, exclude
-                    if (Step > maxBreakPoint) { return 0; }
-
-
-                }
-
-
-                if (hasTraitUpgrade) { TraitsWithUpgrades++; }
-
-                if (isBalanced) { BalancedTraits++; }
-                else
-                {
-                    if (isActive)
-                    {
-                        UnbalancedTraits++;
-                    }
-                }
-
-            }
-
-
-            // debugging
-            if (debug == 1)
-            {
-                Print(JTraits.ToString());
-
-                Print("ActiveTraits: " + ActiveTraits);
-                Print("InactiveTraits: " + InactiveTraits);
-                Print("BalancedTraits: " + BalancedTraits);
-                Print("UnbalancedTraits: " + UnbalancedTraits);
-
-                Print("BreakPoints: " + BreakPoints);
-                Print("TraitsWithUpgrades: " + TraitsWithUpgrades);
-                Print("Opportunities: " + Opportunities);
-            }
-
-            // Hardcoded rules
-            // 
-            // These rules affects the quality of the output, 
-            if (ActiveTraits < 4) { return 0; }     // Comp must have at least x active traits
-            //if (BreakPoints < 1) { return 0; }      // Comp must have at least x upgrades (combined)
-
-            //if (InactiveTraits > 10) { return 0; }
-            if (UnbalancedTraits > 0 && no_error.Checked) { return 0; }
-            if (Opportunities > 20) { return 0; }
-
-            // Cost limiter
-            if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return 0; }
-            if (cost4Amount > Convert.ToInt32(max_cost_4_amount.Value)) { return 0; }
-            if (cost3Amount > Convert.ToInt32(max_cost_3_amount.Value)) { return 0; }
-            if (cost2Amount > Convert.ToInt32(max_cost_2_amount.Value)) { return 0; }
-            if (cost1Amount > Convert.ToInt32(max_cost_1_amount.Value)) { return 0; }
-
-            // Inclusion scoring
-            if (includedTraitsScore != include_trait.Items.Count) { return 0; }
-            if (includedChampionsScore != include_champion.Items.Count) { return 0; }
-
-
-            // Scoring
-            int Score = 0;
-            if (debug == 1)
-            {
-                Print("Score: " + Score);
-            }
-            return Score;
         }
 
 
@@ -509,11 +259,27 @@ namespace TFT_Comp_Creator_2
 
             }
 
+            // Min BP on highest trait
 
+            //string HighestTrait = JTraits.Properties().Aggregate((max, current) => (int)max.Value > (int)current.Value ? max : current).Name;
+            //int HighestTraitValue = (int)JTraits[HighestTrait];
+            //
+            //JArray BP_list = Master["TraitList"][HighestTrait]["Breakpoints"];
+            //
+            //int total_BP = 0;
+            //foreach (int BP in BP_list)
+            //{
+            //    if (HighestTraitValue > BP)
+            //        total_BP++;
+            //}
+            //if (total_BP < Convert.ToInt32(min_bp_main_trait.Value))
+            //    return false;
+
+
+            // Spatula traits can be added here (to be coded)
             int found = 0;
             int mustFind = include_spatula.Items.Count;
 
-            // Spatula traits can be added here (to be coded)
             for (int k = 0; k < include_spatula.Items.Count; k++)
             {
                 string spatulaTrait = include_spatula.Items[k].ToString();
@@ -693,61 +459,7 @@ namespace TFT_Comp_Creator_2
 
             return true;
         }
-        // Unused function that I keep in case I need it
-        public static int ComputePowerLevel(List<string> comp)
-        {
-            if (ForceStop) { return 0; }
 
-            // Define weights for each stat, based on its relative importance in determining the character's power level
-            float damageWeight = 0.052f;
-            float armorWeight = 0.0025f;
-            float magicResistanceWeight = -0.0025f;
-            float critChanceWeight = 0.025f;
-            float critMultiplierWeight = 0.0013f;
-            float maxManaWeight = -0.0023f;
-            float hpWeight = 0.007f;
-            float attackSpeedWeight = -131.1f;
-            float initialManaWeight = 1.001f;
-            float attackDistanceWeight = 0.0014f;
-
-            ////////////////////////////////////
-
-            float powerLevel = 0f;
-
-            for (int i = 0; i < comp.Count(); i++)
-            {
-                string championName = comp[i];
-
-                int attackSpeed = (int)Master["Champions"][championName]["stats"]["attackSpeed"];
-                int armor = (int)Master["Champions"][championName]["stats"]["armor"];
-                int magicResistance = (int)Master["Champions"][championName]["stats"]["magicResist"];
-                int attackDistance = (int)Master["Champions"][championName]["stats"]["range"];
-                int damage = (int)Master["Champions"][championName]["stats"]["damage"];
-                int maxMana = (int)Master["Champions"][championName]["stats"]["mana"];
-                int initialMana = (int)Master["Champions"][championName]["stats"]["initialMana"];
-                int hp = (int)Master["Champions"][championName]["stats"]["hp"];
-                float critChance = (float)Master["Champions"][championName]["stats"]["critChance"];
-                float critMultiplier = (float)Master["Champions"][championName]["stats"]["critMultiplier"];
-
-                // Compute the power level as a weighted sum of the character's stats
-                //powerLevel += attackSpeed * attackSpeedWeight + armor * armorWeight + magicResistance * magicResistanceWeight + attackDistance * attackDistanceWeight + damage * damageWeight + maxMana * maxManaWeight + initialMana * initialManaWeight + hp * hpWeight + critChance * critChanceWeight + critMultiplier * critMultiplierWeight;
-                powerLevel +=
-                    attackSpeed * attackSpeedWeight +
-                    armor * armorWeight +
-                    magicResistance * magicResistanceWeight +
-                    attackDistance * attackDistanceWeight +
-                    damage * damageWeight +
-                    maxMana * maxManaWeight +
-                    initialMana * initialManaWeight +
-                    hp * hpWeight +
-                    critChance * critChanceWeight +
-                    critMultiplier * critMultiplierWeight;
-
-                // Alistar-Aphelios-Fiddlesticks-Janna-Leona-Mordekaiser-Nunu-Syndra
-            }
-
-            return Convert.ToInt32(powerLevel);
-        }
 
     }
 }

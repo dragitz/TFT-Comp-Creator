@@ -43,7 +43,7 @@ namespace TFT_Comp_Creator_2
             {
                 // Setup part 1
                 SetFormUtility(
-                    output, targetNodes, label14,
+                    output, targetNodes, status_text,
                     max_cost_5_amount,
                     disable_champions_cost_1,
                     disable_champions_cost_2,
@@ -121,7 +121,7 @@ namespace TFT_Comp_Creator_2
             Pet_SynergyBest = 1;
             Pet_PowerBest = -999;
 
-            label14.Text = "Synergy: " + Pet_SynergyBest;
+            status_text.Text = "Synergy: " + Pet_SynergyBest;
 
 
             Thread t = new Thread(new ThreadStart(BruteCreation))
@@ -173,7 +173,7 @@ namespace TFT_Comp_Creator_2
             Pet_SynergyBest = 1;
             Pet_PowerBest = -999;
 
-            label14.Text = "Synergy: " + Pet_SynergyBest;
+            status_text.Text = "Synergy: " + Pet_SynergyBest;
 
             Thread t = new Thread(new ThreadStart(Creation))
             {

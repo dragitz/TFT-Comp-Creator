@@ -14,7 +14,7 @@ namespace TFT_Comp_Creator_2
 
         public static RichTextBox formObj = new RichTextBox();
         public static NumericUpDown targetNodes = new NumericUpDown();
-        public static Label label14 = new Label();
+        public static Label status_text = new Label();
 
         public static dynamic Master = new JObject();
 
@@ -39,7 +39,7 @@ namespace TFT_Comp_Creator_2
 
         // Create reference of output richtextbox located in Form1, will be ran once
         public static void SetFormUtility(
-            RichTextBox box, NumericUpDown targetNodes_, Label label14_,
+            RichTextBox box, NumericUpDown targetNodes_, Label status_text_,
             NumericUpDown max_cost_5_amount_,
             CheckBox disable_champions_cost_1_,
             CheckBox disable_champions_cost_2_,
@@ -57,7 +57,7 @@ namespace TFT_Comp_Creator_2
         {
             formObj = box;
             targetNodes = targetNodes_;
-            label14 = label14_;
+            status_text = status_text_;
 
             max_cost_5_amount = max_cost_5_amount_;
             disable_champions_cost_1 = disable_champions_cost_1_;
@@ -96,92 +96,6 @@ namespace TFT_Comp_Creator_2
             Print(score + " - " + String.Join("-", comp));
         }
 
-        /// <summary>
-        /// TL;DR
-        /// This function takes in a list of strings and returns a list of strings that includes a specified number of elements 
-        /// based on the number of occurrences of certain traits in a dictionary. 
-        /// 
-        /// It also removes any elements in a separate list from the final list before returning it.
-        /// </summary>
-        /// <param name="comp"></param>
-        /// <returns></returns>
-        public static List<string> GetNodes(List<string> comp)
-        {
-
-            // Store all traits in the comp
-            List<string> allTraits = new List<string>();
-
-            for (int i = 0; i < comp.Count; i++)
-            {
-                if (comp[i] == "") { continue; }
-
-                string Champion = comp[i];
-
-                // Check if Master contains the "Champions" key
-                if (Master.ContainsKey("Champions"))
-                {
-                    // Get the "Champions" dictionary
-                    var Champions = Master["Champions"];
-
-                    // Check if the "Champions" dictionary contains the champion we're looking for
-                    if (Champions.ContainsKey(Champion))
-                    {
-                        // Get the champion's traits
-                        var Traits = Champions[Champion]["Traits"];
-
-                        // Check if the traits exist
-                        if (Traits != null)
-                        {
-                            // Loop through the champion's traits and add them to the allTraits list
-                            for (int q = 0; q < Traits.Count; q++)
-                            {
-
-                                allTraits.Add(Traits[q].ToString());
-                            }
-                        }
-                    }
-                }
-
-            }
-
-
-            // From allTraits find champions occourences, order them by biggest number and add number of nodes equal to the specified amount in the GUI ( targetNodes.Value )
-            List<string> list = new List<string>();
-
-            int target = Convert.ToInt32(targetNodes.Value);
-
-            foreach (var currentTrait in allTraits)
-            {
-                var count = Master["TraitChampions"][currentTrait].Count;
-
-                for (int i = 0; i < count && list.Count < target; i++)
-                {
-                    string champion = Master["TraitChampions"][currentTrait][i];
-
-                    int cost = Master["Champions"][champion]["cost"];
-
-                    if (disable_champions_cost_1.Checked && cost == 1) { continue; }
-                    else if (disable_champions_cost_2.Checked && cost == 2) { continue; }
-                    else if (disable_champions_cost_3.Checked && cost == 3) { continue; }
-                    else if (disable_champions_cost_4.Checked && cost == 4) { continue; }
-                    else if (disable_champions_cost_5.Checked && cost == 5) { continue; }
-                    else if (disable_champions_cost_5_more.Checked && cost > 5) { continue; }
-
-                    list.Add(champion.ToString());
-                }
-            }
-
-            // Filter out excluded champions
-            if (exclude_champion.Items.Count > 0)
-            {
-                for (int i = 0; i < exclude_champion.Items.Count; i++)
-                {
-                    list.Remove(exclude_champion.Items[i].ToString());
-                }
-            }
-
-            return list;
-        }
 
         public static List<string> GetChampionsFromTrait(string trait)
         {
@@ -245,170 +159,19 @@ namespace TFT_Comp_Creator_2
             return topTraits;
         }
 
-        public static List<string> GetNodes2(List<string> comp)
-        {
-            // Get the nodes into a list, list must contain traits
-            List<string> traits = new List<string>();
-
-            for (int i = 0; i < comp.Count; i++)
-            {
-                // Get the champions's traits
-                int numberOfTraits = Master["Champions"][comp[i]]["Traits"].Count;
-                for (int k = 0; k < numberOfTraits; k++)
-                {
-                    // Check if trait can be added (exclusion)
-                    string trait = Master["Champions"][comp[i]]["Traits"][k].ToString();
-
-                    if (!exclude_trait.Items.Contains(trait))
-                    {
-                        traits.Add(trait);
-                    }
-
-                }
-            }
-
-            traits = traits.Distinct().ToList();
-
-            // Now initiate a list of champions that have that trait
-            List<string> championNodes = new List<string>();
-
-            for (int i = 0; i < traits.Count; i++)
-            {
-                int ChampionsInTrait = Master["TraitChampions"][traits[i]].Count;
-
-                for (int k = 0; k < ChampionsInTrait; k++)
-                {
-                    // Check filters
-                    string champion = Master["TraitChampions"][traits[i]][k];
-                    int cost = Master["Champions"][champion]["cost"];
-
-                    if (disable_champions_cost_1.Checked && cost == 1) { continue; }
-                    else if (disable_champions_cost_2.Checked && cost == 2) { continue; }
-                    else if (disable_champions_cost_3.Checked && cost == 3) { continue; }
-                    else if (disable_champions_cost_4.Checked && cost == 4) { continue; }
-                    else if (disable_champions_cost_5.Checked && cost == 5) { continue; }
-                    else if (disable_champions_cost_5_more.Checked && cost > 5) { continue; }
-
-                    championNodes.Add(champion);
-                }
-
-            }
-
-            championNodes = championNodes.Distinct().ToList();
-            List<string> championNodeStrings = championNodes.Distinct().Select(node => node.ToString()).ToList();
-
-            return championNodeStrings;
-
-        }
-
-        /// <summary>
-        /// This is a recursive function that generates all possible combinations of a given size from a list of elements (nodes) and 
-        /// checks whether each combination is valid. 
-        /// 
-        /// A combination is considered valid if it has not been seen before (determined by checking whether it is present in the alreadySeenCombinations set) and
-        /// if it meets certain criteria (determined by the CheckCompValidity and CalculateSynergy functions).
-        /// 
-        /// </summary>
-        /// <param name="nodes"></param>
-        /// <param name="TargetCompSize"></param>
-        /// <param name="alreadySeenCombinations"></param>
-        /// <param name="comp"></param>
-        public static void FindCombinations(List<string> nodes, int TargetCompSize, HashSet<string> alreadySeenCombinations, List<string> comp)
-        {
-            if (Pet_SynergyBest >= 999 ||
-                ForceStop == true
-                ) { alreadySeenCombinations.Clear(); return; }
-
-            // Base case: if the combination size is 0, then we have found a valid combination
-            if (comp.Count == TargetCompSize)
-            {
-                // Convert the combination to a string and add it to the set of already seen combinations
-                string combinationString = string.Join("-", comp);
-
-                //Form1.hashmap.Add(combinationString);
-
-                int Synergy = CalculateSynergy(comp);
-                PrintComp(comp, Synergy);
-
-                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp) && !alreadySeenCombinations.Contains(combinationString))
-                {
-                    Pet_SynergyBest = Synergy;
-                    //Pet_PowerBest = Power;
-
-                    PrintComp(comp, Synergy);
-                    //PrintCompLink(comp);
-
-                    label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
-                }
-
-                alreadySeenCombinations.Add(combinationString);
-
-                return;
-            }
-
-            // Base case: if the nodes list is empty, then there are no more elements to add to the combination
-            if (nodes.Count == 0)
-            {
-                //alreadySeenCombinations.Clear(); // should fix the memory leak
-                return;
-            }
-
-            // Try including the first element in the combination
-            string firstElement = nodes[0];
-            List<string> remainingElements = nodes.Skip(1).ToList();
-
-            // Only add the element to the combination if it is not already present
-            if (!comp.Contains(firstElement))
-            {
-                comp.Add(firstElement);
-                FindCombinations(remainingElements, TargetCompSize, alreadySeenCombinations, comp);
-                comp.RemoveAt(comp.Count - 1);
-            }
-
-            // Try not including the first element in the combination
-            FindCombinations(remainingElements, TargetCompSize, alreadySeenCombinations, comp);
-        }
-
-        public static void GenerateCombinations(int[] array, int combinationLength)
-        {
-            int[] combination = new int[combinationLength];
-            GenerateCombinationsRecursive(array, combination, 0, 0);
-        }
-
-        private static void GenerateCombinationsRecursive(int[] array, int[] combination, int currentIndex, int currentCombinationLength)
-        {
-            if (currentCombinationLength == combination.Length)
-            {
-                //Print(string.Join(", ", combination));
-                return;
-            }
-
-            for (int i = currentIndex; i < array.Length; i++)
-            {
-                if (i > currentIndex && array[i] == array[i - 1])
-                {
-                    continue;
-                }
-
-                combination[currentCombinationLength] = array[i];
-                GenerateCombinationsRecursive(array, combination, i + 1, currentCombinationLength + 1);
-            }
-
-        }
 
         /**
         
         16 Jan. 2024: new method should increase speed by a lot and doesn't require any hashmap nor regression. ty 3blue1brown !
 
          */
-
         public static void FindCombinations2(int CompSize, List<string> items)
         {
             var combinations = GetCombs(items.Count(), CompSize);
 
             List<string> comp = new List<string>();
 
-            
+
             foreach (var combination in combinations)
             {
                 if (Pet_SynergyBest >= 999 ||
@@ -425,12 +188,10 @@ namespace TFT_Comp_Creator_2
                 if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
                 {
                     Pet_SynergyBest = Synergy;
-                    //Pet_PowerBest = Power;
 
                     PrintComp(comp, Synergy);
-                    //PrintCompLink(comp);
 
-                    label14.Text = "Synergy: " + Pet_SynergyBest + " - Power: ";
+                    status_text.Text = "Synergy: " + Pet_SynergyBest;
                 }
 
             }

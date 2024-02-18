@@ -66,36 +66,5 @@ namespace TFT_Comp_Creator_2
             return sharedTraits;
         }
 
-        public static List<string> GetChampionNodes(string chosen_champion)
-        {
-            JArray chosen_champion_traits = Master["Champions"][chosen_champion]["Traits"];
-
-            JObject champion_list = Master["Champions"];
-
-            List<string> nodes = new List<string>();
-
-            foreach (dynamic item in champion_list)
-            {
-                string current_champion = item.Value["ChampionName"];
-                JArray traits = item.Value["Traits"];
-
-                if (CountSharedTraits(chosen_champion_traits, traits) > 0)
-                {
-                    nodes.Add(current_champion);
-                }
-            }
-
-            return nodes;
-        }
-
-        public static List<string> Carry()
-        {
-            JArray cost4 = Master["Costs"]["4"];
-
-            List<string> nodes = new List<string>();
-
-
-            return nodes;
-        }
     }
 }
