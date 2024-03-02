@@ -30,7 +30,7 @@ namespace TFT_Comp_Creator_2
                 ))
         );
 
-        public static HashSet<string> hashmap = new HashSet<string>();
+        
 
         public bool ForceStop = false;
 
@@ -84,9 +84,12 @@ namespace TFT_Comp_Creator_2
                     max_cost_2_amount,
                     max_cost_1_amount,
                     minTraits,
+                    maxTraits,
                     minUpgrades,
                     minRanged,
                     maxRanged,
+                    minTank,
+                    maxTank,
                     trait_3_limiter,
                     include_spatula
                 );
@@ -137,6 +140,8 @@ namespace TFT_Comp_Creator_2
             List<string> comp = new List<string>();
             List<string> nodes = new List<string>();
 
+            PrintComp(comp, 9999);
+
             for (int i = 0; i < default_champion.Items.Count; i++)
             {
                 nodes.Add(default_champion.Items[i].ToString());
@@ -161,7 +166,6 @@ namespace TFT_Comp_Creator_2
             StopButton.Enabled = false;
             bruteForce.Enabled = true;
 
-            hashmap.Clear();
         }
 
         public void CreateButton_Click(object sender, EventArgs e)
@@ -191,6 +195,8 @@ namespace TFT_Comp_Creator_2
             List<string> comp = new List<string>();
 
             List<string> nodes = new List<string>();
+
+            PrintComp(comp, 9999);
 
             for (int k = 0; k < default_trait.Items.Count - 1; k++)
             {
@@ -239,23 +245,18 @@ namespace TFT_Comp_Creator_2
                         nodes.Add(champion);
                 }
 
-                // Failsafe check
-                if (nodes.Count < Convert.ToInt32(min_comp_size.Value))
+                
+                List<string> Top3 = GetTopTraits(nodes, Convert.ToInt32(depthLevel.Value));
+                for (int q = 0; q < Top3.Count; q++)
                 {
-                    List<string> Top3 = GetTopTraits(nodes, Convert.ToInt32(depthLevel.Value));
-                    for (int q = 0; q < Top3.Count; q++)
+                    foreach (string champion in GetChampionsFromTrait(Top3[q]))
                     {
-                        foreach (string champion in GetChampionsFromTrait(Top3[q]))
-                        {
-                            if (!nodes.Contains(champion) && !comp.Contains(champion))
-                                nodes.Add(champion);
-                        }
+                        if (!nodes.Contains(champion) && !comp.Contains(champion))
+                            nodes.Add(champion);
                     }
-
-                    //File.WriteAllText("nodes_debug.txt", String.Join("-", nodes.OrderBy(x => x).ToList()));
                 }
 
-
+                // Failsafe
                 if (nodes.Count < Convert.ToInt32(min_comp_size.Value)) { continue; }
 
 
@@ -282,7 +283,7 @@ namespace TFT_Comp_Creator_2
 
             //ThreadsRunning--;
 
-            hashmap.Clear();
+            
 
         }
 
@@ -403,5 +404,9 @@ namespace TFT_Comp_Creator_2
 
         }
 
+        private void tabRules_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

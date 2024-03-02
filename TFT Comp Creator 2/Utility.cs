@@ -86,12 +86,24 @@ namespace TFT_Comp_Creator_2
             formObj.AppendText(data.ToString() + Environment.NewLine);
         }
 
+        public static HashSet<string> hashmap = new HashSet<string>();
+
         public static void PrintComp(List<string> comp, int score)
         {
+            if (score == 9999) { hashmap.Clear(); return; }
             if (comp.Count < 1) { return; }
 
-            // Assuming Master is a Dictionary<string, Dictionary<string, Dictionary<string, int>>>
-            comp = comp.OrderBy(component => Master["Champions"][component]["cost"]).ToList();
+            // quick fix to avoid repetitive spam
+            if (comp.All(element => hashmap.Contains(element))) { return; }
+            if (hashmap.Count() > 5)
+            {
+                hashmap.Remove(hashmap.First());
+            }
+            hashmap.UnionWith(comp);
+
+            comp = comp.OrderBy(component => Master["Champions"][component]["cost"])
+                .ThenBy(component => Master["Champions"][component]["ChampionName"])
+                .ToList();
 
             Print(score + " - " + String.Join("-", comp));
         }

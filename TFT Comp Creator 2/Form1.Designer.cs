@@ -35,6 +35,14 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.maxTraits = new System.Windows.Forms.NumericUpDown();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.maxTank = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
+            this.minTank = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
             this.trait_3_limiter = new System.Windows.Forms.NumericUpDown();
             this.label20 = new System.Windows.Forms.Label();
             this.exclusion_allow_base_trait = new System.Windows.Forms.CheckBox();
@@ -108,11 +116,13 @@ namespace TFT_Comp_Creator_2
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.bruteForce = new System.Windows.Forms.Button();
-            this.label21 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxTraits)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxTank)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trait_3_limiter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).BeginInit();
@@ -140,7 +150,7 @@ namespace TFT_Comp_Creator_2
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
-            this.MenuTab.Size = new System.Drawing.Size(905, 370);
+            this.MenuTab.Size = new System.Drawing.Size(905, 434);
             this.MenuTab.TabIndex = 0;
             // 
             // main
@@ -150,7 +160,7 @@ namespace TFT_Comp_Creator_2
             this.main.Location = new System.Drawing.Point(4, 22);
             this.main.Name = "main";
             this.main.Padding = new System.Windows.Forms.Padding(3);
-            this.main.Size = new System.Drawing.Size(897, 344);
+            this.main.Size = new System.Drawing.Size(897, 408);
             this.main.TabIndex = 0;
             this.main.Text = "Main";
             this.main.UseVisualStyleBackColor = true;
@@ -162,11 +172,18 @@ namespace TFT_Comp_Creator_2
             this.tabControl1.Location = new System.Drawing.Point(3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(888, 336);
+            this.tabControl1.Size = new System.Drawing.Size(888, 400);
             this.tabControl1.TabIndex = 48;
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.maxTraits);
+            this.tabRules.Controls.Add(this.label24);
+            this.tabRules.Controls.Add(this.label14);
+            this.tabRules.Controls.Add(this.label22);
+            this.tabRules.Controls.Add(this.maxTank);
+            this.tabRules.Controls.Add(this.label23);
+            this.tabRules.Controls.Add(this.minTank);
             this.tabRules.Controls.Add(this.label21);
             this.tabRules.Controls.Add(this.trait_3_limiter);
             this.tabRules.Controls.Add(this.label20);
@@ -200,14 +217,124 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Location = new System.Drawing.Point(4, 22);
             this.tabRules.Name = "tabRules";
             this.tabRules.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRules.Size = new System.Drawing.Size(880, 310);
+            this.tabRules.Size = new System.Drawing.Size(880, 374);
             this.tabRules.TabIndex = 0;
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
+            this.tabRules.Click += new System.EventHandler(this.tabRules_Click);
+            // 
+            // maxTraits
+            // 
+            this.maxTraits.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.maxTraits.Location = new System.Drawing.Point(292, 163);
+            this.maxTraits.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.maxTraits.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.maxTraits.Name = "maxTraits";
+            this.maxTraits.Size = new System.Drawing.Size(120, 20);
+            this.maxTraits.TabIndex = 76;
+            this.maxTraits.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(223, 161);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(59, 26);
+            this.label24.TabIndex = 77;
+            this.label24.Text = "Max active\r\ntraits";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(114, 253);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(95, 13);
+            this.label14.TabIndex = 75;
+            this.label14.Text = "Atk. range <= 1";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(223, 271);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(51, 13);
+            this.label22.TabIndex = 74;
+            this.label22.Text = "Max tank";
+            // 
+            // maxTank
+            // 
+            this.maxTank.Location = new System.Drawing.Point(292, 269);
+            this.maxTank.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.maxTank.Name = "maxTank";
+            this.maxTank.Size = new System.Drawing.Size(120, 20);
+            this.maxTank.TabIndex = 73;
+            this.maxTank.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(40, 271);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(48, 13);
+            this.label23.TabIndex = 72;
+            this.label23.Text = "Min tank";
+            // 
+            // minTank
+            // 
+            this.minTank.Location = new System.Drawing.Point(97, 269);
+            this.minTank.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.minTank.Name = "minTank";
+            this.minTank.Size = new System.Drawing.Size(120, 20);
+            this.minTank.TabIndex = 71;
+            this.minTank.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(114, 204);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(95, 13);
+            this.label21.TabIndex = 70;
+            this.label21.Text = "Atk. range >= 4";
             // 
             // trait_3_limiter
             // 
-            this.trait_3_limiter.Location = new System.Drawing.Point(97, 265);
+            this.trait_3_limiter.Location = new System.Drawing.Point(97, 332);
             this.trait_3_limiter.Maximum = new decimal(new int[] {
             10,
             0,
@@ -218,7 +345,7 @@ namespace TFT_Comp_Creator_2
             this.trait_3_limiter.TabIndex = 69;
             this.trait_3_limiter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.trait_3_limiter.Value = new decimal(new int[] {
-            3,
+            4,
             0,
             0,
             0});
@@ -226,7 +353,7 @@ namespace TFT_Comp_Creator_2
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(18, 259);
+            this.label20.Location = new System.Drawing.Point(18, 326);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(70, 26);
             this.label20.TabIndex = 68;
@@ -236,7 +363,7 @@ namespace TFT_Comp_Creator_2
             // exclusion_allow_base_trait
             // 
             this.exclusion_allow_base_trait.AutoSize = true;
-            this.exclusion_allow_base_trait.Location = new System.Drawing.Point(440, 232);
+            this.exclusion_allow_base_trait.Location = new System.Drawing.Point(589, 248);
             this.exclusion_allow_base_trait.Name = "exclusion_allow_base_trait";
             this.exclusion_allow_base_trait.Size = new System.Drawing.Size(239, 17);
             this.exclusion_allow_base_trait.TabIndex = 67;
@@ -246,7 +373,7 @@ namespace TFT_Comp_Creator_2
             // quick_discovery
             // 
             this.quick_discovery.AutoSize = true;
-            this.quick_discovery.Location = new System.Drawing.Point(440, 207);
+            this.quick_discovery.Location = new System.Drawing.Point(589, 223);
             this.quick_discovery.Name = "quick_discovery";
             this.quick_discovery.Size = new System.Drawing.Size(102, 17);
             this.quick_discovery.TabIndex = 66;
@@ -256,7 +383,7 @@ namespace TFT_Comp_Creator_2
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(25, 215);
+            this.label17.Location = new System.Drawing.Point(223, 222);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(63, 13);
             this.label17.TabIndex = 65;
@@ -264,7 +391,7 @@ namespace TFT_Comp_Creator_2
             // 
             // maxRanged
             // 
-            this.maxRanged.Location = new System.Drawing.Point(97, 213);
+            this.maxRanged.Location = new System.Drawing.Point(292, 220);
             this.maxRanged.Maximum = new decimal(new int[] {
             10,
             0,
@@ -274,14 +401,14 @@ namespace TFT_Comp_Creator_2
             this.maxRanged.Size = new System.Drawing.Size(120, 20);
             this.maxRanged.TabIndex = 64;
             this.maxRanged.Value = new decimal(new int[] {
-            5,
+            8,
             0,
             0,
             0});
             // 
             // max_cost_5_amount
             // 
-            this.max_cost_5_amount.Location = new System.Drawing.Point(598, 124);
+            this.max_cost_5_amount.Location = new System.Drawing.Point(747, 140);
             this.max_cost_5_amount.Maximum = new decimal(new int[] {
             10,
             0,
@@ -299,7 +426,7 @@ namespace TFT_Comp_Creator_2
             // 
             // max_cost_4_amount
             // 
-            this.max_cost_4_amount.Location = new System.Drawing.Point(598, 101);
+            this.max_cost_4_amount.Location = new System.Drawing.Point(747, 117);
             this.max_cost_4_amount.Maximum = new decimal(new int[] {
             10,
             0,
@@ -317,7 +444,7 @@ namespace TFT_Comp_Creator_2
             // 
             // max_cost_3_amount
             // 
-            this.max_cost_3_amount.Location = new System.Drawing.Point(598, 78);
+            this.max_cost_3_amount.Location = new System.Drawing.Point(747, 94);
             this.max_cost_3_amount.Maximum = new decimal(new int[] {
             10,
             0,
@@ -335,7 +462,7 @@ namespace TFT_Comp_Creator_2
             // 
             // max_cost_2_amount
             // 
-            this.max_cost_2_amount.Location = new System.Drawing.Point(598, 55);
+            this.max_cost_2_amount.Location = new System.Drawing.Point(747, 71);
             this.max_cost_2_amount.Maximum = new decimal(new int[] {
             10,
             0,
@@ -354,7 +481,7 @@ namespace TFT_Comp_Creator_2
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(653, 14);
+            this.label16.Location = new System.Drawing.Point(802, 30);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(65, 13);
             this.label16.TabIndex = 59;
@@ -362,7 +489,7 @@ namespace TFT_Comp_Creator_2
             // 
             // max_cost_1_amount
             // 
-            this.max_cost_1_amount.Location = new System.Drawing.Point(598, 32);
+            this.max_cost_1_amount.Location = new System.Drawing.Point(747, 48);
             this.max_cost_1_amount.Maximum = new decimal(new int[] {
             10,
             0,
@@ -381,7 +508,7 @@ namespace TFT_Comp_Creator_2
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(28, 189);
+            this.label15.Location = new System.Drawing.Point(28, 222);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(60, 13);
             this.label15.TabIndex = 57;
@@ -389,7 +516,7 @@ namespace TFT_Comp_Creator_2
             // 
             // minRanged
             // 
-            this.minRanged.Location = new System.Drawing.Point(97, 187);
+            this.minRanged.Location = new System.Drawing.Point(97, 220);
             this.minRanged.Maximum = new decimal(new int[] {
             10,
             0,
@@ -399,14 +526,14 @@ namespace TFT_Comp_Creator_2
             this.minRanged.Size = new System.Drawing.Size(120, 20);
             this.minRanged.TabIndex = 56;
             this.minRanged.Value = new decimal(new int[] {
-            1,
+            2,
             0,
             0,
             0});
             // 
             // depthLevel
             // 
-            this.depthLevel.Location = new System.Drawing.Point(97, 125);
+            this.depthLevel.Location = new System.Drawing.Point(97, 92);
             this.depthLevel.Maximum = new decimal(new int[] {
             15,
             0,
@@ -429,7 +556,7 @@ namespace TFT_Comp_Creator_2
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(36, 127);
+            this.label13.Location = new System.Drawing.Point(36, 94);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(52, 13);
             this.label13.TabIndex = 55;
@@ -437,7 +564,7 @@ namespace TFT_Comp_Creator_2
             // 
             // minUpgrades
             // 
-            this.minUpgrades.Location = new System.Drawing.Point(97, 89);
+            this.minUpgrades.Location = new System.Drawing.Point(97, 138);
             this.minUpgrades.Maximum = new decimal(new int[] {
             9,
             0,
@@ -450,7 +577,7 @@ namespace TFT_Comp_Creator_2
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(36, 30);
+            this.label5.Location = new System.Drawing.Point(36, 32);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 19;
@@ -461,7 +588,7 @@ namespace TFT_Comp_Creator_2
             this.no_error.AutoSize = true;
             this.no_error.Checked = true;
             this.no_error.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.no_error.Location = new System.Drawing.Point(440, 171);
+            this.no_error.Location = new System.Drawing.Point(589, 187);
             this.no_error.Name = "no_error";
             this.no_error.Size = new System.Drawing.Size(149, 17);
             this.no_error.TabIndex = 46;
@@ -470,7 +597,7 @@ namespace TFT_Comp_Creator_2
             // 
             // min_comp_size
             // 
-            this.min_comp_size.Location = new System.Drawing.Point(97, 28);
+            this.min_comp_size.Location = new System.Drawing.Point(97, 30);
             this.min_comp_size.Maximum = new decimal(new int[] {
             10,
             0,
@@ -495,7 +622,7 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_5_more.AutoSize = true;
             this.disable_champions_cost_5_more.Checked = true;
             this.disable_champions_cost_5_more.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.disable_champions_cost_5_more.Location = new System.Drawing.Point(440, 148);
+            this.disable_champions_cost_5_more.Location = new System.Drawing.Point(589, 164);
             this.disable_champions_cost_5_more.Name = "disable_champions_cost_5_more";
             this.disable_champions_cost_5_more.Size = new System.Drawing.Size(153, 17);
             this.disable_champions_cost_5_more.TabIndex = 45;
@@ -505,7 +632,7 @@ namespace TFT_Comp_Creator_2
             // disable_champions_cost_5
             // 
             this.disable_champions_cost_5.AutoSize = true;
-            this.disable_champions_cost_5.Location = new System.Drawing.Point(440, 125);
+            this.disable_champions_cost_5.Location = new System.Drawing.Point(589, 141);
             this.disable_champions_cost_5.Name = "disable_champions_cost_5";
             this.disable_champions_cost_5.Size = new System.Drawing.Size(147, 17);
             this.disable_champions_cost_5.TabIndex = 44;
@@ -514,7 +641,7 @@ namespace TFT_Comp_Creator_2
             // 
             // minTraits
             // 
-            this.minTraits.Location = new System.Drawing.Point(97, 63);
+            this.minTraits.Location = new System.Drawing.Point(97, 164);
             this.minTraits.Maximum = new decimal(new int[] {
             15,
             0,
@@ -537,7 +664,7 @@ namespace TFT_Comp_Creator_2
             // disable_champions_cost_4
             // 
             this.disable_champions_cost_4.AutoSize = true;
-            this.disable_champions_cost_4.Location = new System.Drawing.Point(440, 102);
+            this.disable_champions_cost_4.Location = new System.Drawing.Point(589, 118);
             this.disable_champions_cost_4.Name = "disable_champions_cost_4";
             this.disable_champions_cost_4.Size = new System.Drawing.Size(147, 17);
             this.disable_champions_cost_4.TabIndex = 43;
@@ -547,7 +674,7 @@ namespace TFT_Comp_Creator_2
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 65);
+            this.label10.Location = new System.Drawing.Point(10, 166);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(81, 13);
             this.label10.TabIndex = 37;
@@ -556,7 +683,7 @@ namespace TFT_Comp_Creator_2
             // disable_champions_cost_3
             // 
             this.disable_champions_cost_3.AutoSize = true;
-            this.disable_champions_cost_3.Location = new System.Drawing.Point(440, 79);
+            this.disable_champions_cost_3.Location = new System.Drawing.Point(589, 95);
             this.disable_champions_cost_3.Name = "disable_champions_cost_3";
             this.disable_champions_cost_3.Size = new System.Drawing.Size(147, 17);
             this.disable_champions_cost_3.TabIndex = 42;
@@ -566,7 +693,7 @@ namespace TFT_Comp_Creator_2
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(20, 91);
+            this.label12.Location = new System.Drawing.Point(20, 140);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(71, 13);
             this.label12.TabIndex = 39;
@@ -575,7 +702,7 @@ namespace TFT_Comp_Creator_2
             // disable_champions_cost_2
             // 
             this.disable_champions_cost_2.AutoSize = true;
-            this.disable_champions_cost_2.Location = new System.Drawing.Point(440, 56);
+            this.disable_champions_cost_2.Location = new System.Drawing.Point(589, 72);
             this.disable_champions_cost_2.Name = "disable_champions_cost_2";
             this.disable_champions_cost_2.Size = new System.Drawing.Size(147, 17);
             this.disable_champions_cost_2.TabIndex = 41;
@@ -585,7 +712,7 @@ namespace TFT_Comp_Creator_2
             // disable_champions_cost_1
             // 
             this.disable_champions_cost_1.AutoSize = true;
-            this.disable_champions_cost_1.Location = new System.Drawing.Point(440, 33);
+            this.disable_champions_cost_1.Location = new System.Drawing.Point(589, 49);
             this.disable_champions_cost_1.Name = "disable_champions_cost_1";
             this.disable_champions_cost_1.Size = new System.Drawing.Size(147, 17);
             this.disable_champions_cost_1.TabIndex = 40;
@@ -602,7 +729,7 @@ namespace TFT_Comp_Creator_2
             this.tabOptimize.Location = new System.Drawing.Point(4, 22);
             this.tabOptimize.Name = "tabOptimize";
             this.tabOptimize.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOptimize.Size = new System.Drawing.Size(880, 271);
+            this.tabOptimize.Size = new System.Drawing.Size(880, 374);
             this.tabOptimize.TabIndex = 1;
             this.tabOptimize.Text = "Optimizer";
             this.tabOptimize.UseVisualStyleBackColor = true;
@@ -666,7 +793,7 @@ namespace TFT_Comp_Creator_2
             this.incEx.Location = new System.Drawing.Point(4, 22);
             this.incEx.Name = "incEx";
             this.incEx.Padding = new System.Windows.Forms.Padding(3);
-            this.incEx.Size = new System.Drawing.Size(897, 393);
+            this.incEx.Size = new System.Drawing.Size(897, 408);
             this.incEx.TabIndex = 1;
             this.incEx.Text = "Include / Exclude";
             this.incEx.UseVisualStyleBackColor = true;
@@ -1004,7 +1131,7 @@ namespace TFT_Comp_Creator_2
             // status_text
             // 
             this.status_text.AutoSize = true;
-            this.status_text.Location = new System.Drawing.Point(747, 504);
+            this.status_text.Location = new System.Drawing.Point(747, 565);
             this.status_text.Name = "status_text";
             this.status_text.Size = new System.Drawing.Size(69, 13);
             this.status_text.TabIndex = 28;
@@ -1012,8 +1139,9 @@ namespace TFT_Comp_Creator_2
             // 
             // output
             // 
-            this.output.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
-            this.output.Location = new System.Drawing.Point(12, 388);
+            this.output.BackColor = System.Drawing.SystemColors.Menu;
+            this.output.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.output.Location = new System.Drawing.Point(12, 452);
             this.output.Name = "output";
             this.output.Size = new System.Drawing.Size(729, 235);
             this.output.TabIndex = 1;
@@ -1021,7 +1149,7 @@ namespace TFT_Comp_Creator_2
             // 
             // CreateButton
             // 
-            this.CreateButton.Location = new System.Drawing.Point(747, 391);
+            this.CreateButton.Location = new System.Drawing.Point(747, 452);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(75, 23);
             this.CreateButton.TabIndex = 2;
@@ -1032,7 +1160,7 @@ namespace TFT_Comp_Creator_2
             // StopButton
             // 
             this.StopButton.Enabled = false;
-            this.StopButton.Location = new System.Drawing.Point(747, 420);
+            this.StopButton.Location = new System.Drawing.Point(747, 481);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(75, 23);
             this.StopButton.TabIndex = 3;
@@ -1042,7 +1170,7 @@ namespace TFT_Comp_Creator_2
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(747, 469);
+            this.ClearButton.Location = new System.Drawing.Point(747, 530);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(75, 23);
             this.ClearButton.TabIndex = 4;
@@ -1052,7 +1180,7 @@ namespace TFT_Comp_Creator_2
             // 
             // bruteForce
             // 
-            this.bruteForce.Location = new System.Drawing.Point(828, 391);
+            this.bruteForce.Location = new System.Drawing.Point(828, 452);
             this.bruteForce.Name = "bruteForce";
             this.bruteForce.Size = new System.Drawing.Size(75, 23);
             this.bruteForce.TabIndex = 29;
@@ -1060,21 +1188,12 @@ namespace TFT_Comp_Creator_2
             this.bruteForce.UseVisualStyleBackColor = true;
             this.bruteForce.Click += new System.EventHandler(this.bruteForce_Click);
             // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(114, 171);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(80, 13);
-            this.label21.TabIndex = 70;
-            this.label21.Text = "Atk. range >= 4";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(918, 635);
+            this.ClientSize = new System.Drawing.Size(918, 699);
             this.Controls.Add(this.bruteForce);
             this.Controls.Add(this.status_text);
             this.Controls.Add(this.ClearButton);
@@ -1092,6 +1211,9 @@ namespace TFT_Comp_Creator_2
             this.tabControl1.ResumeLayout(false);
             this.tabRules.ResumeLayout(false);
             this.tabRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxTraits)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxTank)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minTank)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trait_3_limiter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxRanged)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_cost_5_amount)).EndInit();
@@ -1199,6 +1321,13 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.NumericUpDown trait_3_limiter;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.NumericUpDown maxTank;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.NumericUpDown minTank;
+        private System.Windows.Forms.NumericUpDown maxTraits;
+        private System.Windows.Forms.Label label24;
     }
 }
 

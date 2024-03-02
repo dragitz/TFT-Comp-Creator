@@ -17,10 +17,13 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown max_cost_3_amount = new NumericUpDown();
         private static NumericUpDown max_cost_2_amount = new NumericUpDown();
         private static NumericUpDown max_cost_1_amount = new NumericUpDown();
-        private static NumericUpDown minActiveTRaits = new NumericUpDown();
+        private static NumericUpDown minActiveTraits = new NumericUpDown();
+        private static NumericUpDown maxActiveTraits = new NumericUpDown();
         private static NumericUpDown minUpgrades = new NumericUpDown();
         private static NumericUpDown minRanged = new NumericUpDown();
         private static NumericUpDown maxRanged = new NumericUpDown();
+        private static NumericUpDown minTank = new NumericUpDown();
+        private static NumericUpDown maxTank = new NumericUpDown();
         private static NumericUpDown trait_3_limiter = new NumericUpDown();
 
 
@@ -36,10 +39,13 @@ namespace TFT_Comp_Creator_2
             NumericUpDown max_cost_3_amount_,
             NumericUpDown max_cost_2_amount_,
             NumericUpDown max_cost_1_amount_,
-            NumericUpDown minActiveTRaits_,
+            NumericUpDown minActiveTraits_,
+            NumericUpDown maxActiveTraits_,
             NumericUpDown minUpgrades_,
             NumericUpDown minRanged_,
             NumericUpDown maxRanged_,
+            NumericUpDown minTank_,
+            NumericUpDown maxTank_,
             NumericUpDown trait_3_limiter_,
             ListBox include_spatula_)
         {
@@ -51,10 +57,13 @@ namespace TFT_Comp_Creator_2
             max_cost_3_amount = max_cost_3_amount_;
             max_cost_2_amount = max_cost_2_amount_;
             max_cost_1_amount = max_cost_1_amount_;
-            minActiveTRaits = minActiveTRaits_;
+            minActiveTraits = minActiveTraits_;
+            maxActiveTraits = maxActiveTraits_;
             minUpgrades = minUpgrades_;
             minRanged = minRanged_;
             maxRanged = maxRanged_;
+            minTank = minTank_;
+            maxTank = maxTank_;
             trait_3_limiter = trait_3_limiter_;
 
             include_spatula = include_spatula_;
@@ -183,6 +192,7 @@ namespace TFT_Comp_Creator_2
             int cost1Amount = 0;
 
             int rangedAmount = 0;
+            int tankAmount = 0;
 
 
             List<string> TraitsInComp = new List<string>();
@@ -193,6 +203,10 @@ namespace TFT_Comp_Creator_2
 
                 if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
                     rangedAmount++;
+
+                if ((int)Master["Champions"][champion]["stats"]["range"] <= 1)
+                    tankAmount++;
+
 
                 // Count the amount of 5 cost champions
                 switch (cost)
@@ -322,8 +336,9 @@ namespace TFT_Comp_Creator_2
 
 
 
-            // Ensure n amount of ranged
+            // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
+            if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
 
             // Included / Excluded champion check
             List<string> IncludedChampsFoundLIst = new List<string>();
@@ -454,7 +469,7 @@ namespace TFT_Comp_Creator_2
             if (TotalUpgrades < minUpgrades.Value) { return false; }
 
             // less than x traits makes the comp invalid
-            if (ActiveTraits < Convert.ToInt32(minActiveTRaits.Value)) { return false; }
+            if (ActiveTraits < Convert.ToInt32(minActiveTraits.Value) || ActiveTraits > Convert.ToInt32(maxActiveTraits.Value)) { return false; }
 
 
             return true;
