@@ -30,7 +30,7 @@ namespace TFT_Comp_Creator_2
                 ))
         );
 
-        
+
 
         public bool ForceStop = false;
 
@@ -45,6 +45,10 @@ namespace TFT_Comp_Creator_2
                 SetFormUtility(
                     output, targetNodes, status_text,
                     max_cost_5_amount,
+                    max_cost_4_amount,
+                    max_cost_3_amount,
+                    max_cost_2_amount,
+                    max_cost_1_amount,
                     disable_champions_cost_1,
                     disable_champions_cost_2,
                     disable_champions_cost_3,
@@ -68,11 +72,12 @@ namespace TFT_Comp_Creator_2
                     default_champion,
                     include_champion,
                     default_spatula,
-                    include_spatula
+                    include_spatula,
+                    setList
                 );
 
                 // Setup part 2
-                Master = FirstRun();
+                Master = FirstRun(0);
 
                 SetFromScoring(
                     Master,
@@ -83,8 +88,10 @@ namespace TFT_Comp_Creator_2
                     max_cost_3_amount,
                     max_cost_2_amount,
                     max_cost_1_amount,
+                    max_comp_cost,
                     minTraits,
                     maxTraits,
+                    max_inactive_traits,
                     minUpgrades,
                     minRanged,
                     maxRanged,
@@ -122,7 +129,7 @@ namespace TFT_Comp_Creator_2
             StopButton.Enabled = true;
 
             Pet_SynergyBest = 1;
-            Pet_PowerBest = -999;
+            Pet_SynergyBest_backup = 1;
 
             status_text.Text = "Synergy: " + Pet_SynergyBest;
 
@@ -139,7 +146,13 @@ namespace TFT_Comp_Creator_2
         {
             List<string> comp = new List<string>();
             List<string> nodes = new List<string>();
+            List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(s => s.Trim())
+                                                   .ToList();
 
+            // Temporary lists for traits and spatulas to avoid modifying the original ListBox items
+            List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
+            List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
             PrintComp(comp, 9999);
 
             for (int i = 0; i < default_champion.Items.Count; i++)
@@ -155,7 +168,7 @@ namespace TFT_Comp_Creator_2
 
             // Call the helper function with the empty defaultComp
             //FindCombinations(nodes, size, hashmap, comp);
-            FindCombinations2(size, nodes);
+            FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
 
             Print("done");
 
@@ -175,7 +188,7 @@ namespace TFT_Comp_Creator_2
             StopButton.Enabled = true;
 
             Pet_SynergyBest = 1;
-            Pet_PowerBest = -999;
+            Pet_SynergyBest_backup = 1;
 
             status_text.Text = "Synergy: " + Pet_SynergyBest;
 
@@ -187,32 +200,99 @@ namespace TFT_Comp_Creator_2
 
         }
 
+        public void ResetAllForms()
+        {
+            include_spatula.Items.Clear();
+            include_trait.Items.Clear();
+            default_trait.Items.Clear();
+            include_trait.Items.Clear();
+            exclude_champion.Items.Clear();
+            default_champion.Items.Clear();
+            include_champion.Items.Clear();
+            default_spatula.Items.Clear();
+            include_spatula.Items.Clear();
+        }
 
         public void Creation()
         {
-
-            // Empty comp
+            // Initialize empty lists for computation
             List<string> comp = new List<string>();
-
             List<string> nodes = new List<string>();
+            List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(s => s.Trim())
+                                                   .ToList();
 
+
+            
             PrintComp(comp, 9999);
+
+            string trait_snake = "";
 
             for (int k = 0; k < default_trait.Items.Count - 1; k++)
             {
+                List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
+                List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
+
                 if (ForceStop)
                 {
                     CreateButton.Enabled = false;
                     break;
                 }
 
-
                 // Reset
                 comp.Clear();
                 nodes.Clear();
 
+                if (champion_optimizer.Checked)
+                {
+                    if (score_reset.Checked)
+                    {
+                        Pet_SynergyBest = 1;
+                        Pet_SynergyBest_backup = Pet_SynergyBest - 1;
+                    }
 
-                // Add champion preference
+                    hashmap.Clear();
+                    status_text.Text = "Synergy: " + Pet_SynergyBest;
+
+                    // Use temporary lists instead of modifying the actual ListBox items
+                    //tempIncludeTrait.Clear();
+                    //tempIncludeTrait.AddRange(default_trait.Items.Cast<string>());
+                    //Print(tempIncludeTrait);
+
+                    tempIncludeTrait.Add((string)default_trait.Items[k]);
+
+                    Print(String.Join("-", tempIncludeTrait));
+                    //break;
+                    if (!no_spatula.Checked)
+                    {
+                        //tempIncludeSpatula.Clear();
+                        //tempIncludeSpatula.AddRange(default_spatula.Items.Cast<string>());
+                        
+                        //foreach (string item in include_spatula.Items.Cast<object>().ToList())
+                        //{
+                        //    tempIncludeSpatula.Add(item);
+                        //}
+                        
+                        Print("SPatula is bugged, disable it");
+                    }
+
+                    trait_snake = default_trait.Items[k].ToString();
+                    int bp_total = Master["TraitList"][trait_snake]["Breakpoints"].Count;
+                    int biggest_bp = Master["TraitList"][trait_snake]["Breakpoints"][bp_total - 1];
+                    int emblems_required = biggest_bp - Master["TraitChampions"][trait_snake].Count;
+
+                    tempIncludeTrait.Add(trait_snake);
+
+                    if (emblems_required > 0 && !no_spatula.Checked)
+                    {
+                        for (int i = 0; i < emblems_required; i++)
+                        {
+                            tempIncludeSpatula.Add(trait_snake);
+                        }
+                    }
+                }
+
+                // Process champions in the 'include_champion' ListBox
                 for (int i = 0; i < include_champion.Items.Count; i++)
                 {
                     comp.Add(include_champion.Items[i].ToString());
@@ -224,68 +304,86 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
-                // Include champions from traits
-                for (int i = 0; i < include_trait.Items.Count; i++)
+                // Process temporary trait list instead of the actual ListBox items
+                foreach (var trait in tempIncludeTrait)
                 {
-                    foreach (string champion in GetChampionsFromTrait(include_trait.Items[i].ToString()))
+                    foreach (string champion in GetChampionsFromTrait(trait))
                     {
                         if (!nodes.Contains(champion) && !comp.Contains(champion))
                             nodes.Add(champion);
                     }
                 }
 
-
-                // Include champions from list of default traits as extra nodes
-                foreach (string champion in GetChampionsFromTrait(default_trait.Items[k].ToString()))
+                // Process temporary spatula list instead of the actual ListBox items
+                foreach (var spatulaTrait in tempIncludeSpatula)
                 {
-                    if (quick_discovery.Checked)
-                        break;
-
-                    if (!nodes.Contains(champion) && !comp.Contains(champion))
-                        nodes.Add(champion);
+                    foreach (string champion in GetChampionsFromTrait(spatulaTrait))
+                    {
+                        if (!nodes.Contains(champion) && !comp.Contains(champion))
+                            nodes.Add(champion);
+                    }
                 }
 
-                
+                // Include champions based on top traits
                 List<string> Top3 = GetTopTraits(nodes, Convert.ToInt32(depthLevel.Value));
-                for (int q = 0; q < Top3.Count; q++)
+                foreach (var topTrait in Top3)
                 {
-                    foreach (string champion in GetChampionsFromTrait(Top3[q]))
+                    foreach (string champion in GetChampionsFromTrait(topTrait))
                     {
                         if (!nodes.Contains(champion) && !comp.Contains(champion))
                             nodes.Add(champion);
                     }
                 }
 
-                // Failsafe
-                if (nodes.Count < Convert.ToInt32(min_comp_size.Value)) { continue; }
+                // Filter nodes using adjacency matrix
+                var adjacencyMatrix = BuildAdjacencyMatrix(comp);
+                List<string> newNodes = new List<string>();
 
+                foreach (var champion in adjacencyMatrix)
+                {
+                    foreach (var otherChampion in champion.Value)
+                    {
+                        if (otherChampion.Value <= 1) continue;
 
-                int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
+                        if (!newNodes.Contains(otherChampion.Key))
+                            newNodes.Add(otherChampion.Key);
+                    }
+                }
 
-                // Call the helper function with the empty defaultComp
-                //FindCombinations(nodes, size, hashmap, comp);
-                FindCombinations2(size, nodes);
+                // Failsafe to ensure minimum composition size
+                while (newNodes.Count < Convert.ToInt32(min_comp_size.Value) + 2 && Pet_SynergyBest < 999)
+                {
+                    List<string> TopX = GetTopTraits(newNodes, 3);
+                    foreach (var topTrait in TopX)
+                    {
+                        foreach (string champion in GetChampionsFromTrait(topTrait))
+                        {
+                            if (!newNodes.Contains(champion) && !comp.Contains(champion))
+                                newNodes.Add(champion);
+                        }
+                    }
+                }
 
-                if (quick_discovery.Checked)
-                    break;
+                // If the final list meets the required size, continue
+                if (newNodes.Count < Convert.ToInt32(min_comp_size.Value)) continue;
 
+                int size = Convert.ToInt32(min_comp_size.Value);
+                FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                if (quick_discovery.Checked) break;
             }
+
             Print("done");
 
+            // Reset form controls and variables
             System.Threading.Thread.Sleep(100);
-
             ForceStop = false;
             Utility.ForceStop = false;
             Scoring.ForceStop = false;
-
             CreateButton.Enabled = true;
             StopButton.Enabled = false;
-
-            //ThreadsRunning--;
-
-            
-
         }
+
 
 
 
@@ -344,6 +442,8 @@ namespace TFT_Comp_Creator_2
             ForceStop = true;
             Utility.ForceStop = true;
             Scoring.ForceStop = true;
+
+            //Pet_SynergyBest = 999;
         }
 
         private void OptimizeComp_Click(object sender, EventArgs e)
@@ -353,8 +453,16 @@ namespace TFT_Comp_Creator_2
 
             List<string> comp = compBox.Text.Split('-').ToList();
             List<string> Optimizedcomp = new List<string>(comp);
+            
+            List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(s => s.Trim())
+                                                   .ToList();
 
-            int score = CalculateSynergy(comp);
+            // Temporary lists for traits and spatulas to avoid modifying the original ListBox items
+            List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
+            List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
+
+            int score = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
             int possibleBest = score;
 
             Print("initial score: " + score);
@@ -380,9 +488,9 @@ namespace TFT_Comp_Creator_2
                     tempComp[q] = championList[i];
 
                     // ensure validity
-                    if (CheckCompValidity(tempComp))
+                    if (CheckCompValidity(tempComp, new List<string> { }))
                     {
-                        possibleBest = CalculateSynergy(tempComp);
+                        possibleBest = CalculateSynergy(tempComp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
 
                         if (possibleBest >= score - 2)
                         {
@@ -407,6 +515,15 @@ namespace TFT_Comp_Creator_2
         private void tabRules_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void applySet_Click(object sender, EventArgs e)
+        {
+            ResetAllForms();
+
+            Master = FirstRun(setList.SelectedIndex);
+            Populate(Master);
+            InformUtility(Master);
         }
     }
 }

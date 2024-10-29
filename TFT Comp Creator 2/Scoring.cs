@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -17,8 +18,10 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown max_cost_3_amount = new NumericUpDown();
         private static NumericUpDown max_cost_2_amount = new NumericUpDown();
         private static NumericUpDown max_cost_1_amount = new NumericUpDown();
+        private static NumericUpDown max_comp_cost = new NumericUpDown();
         private static NumericUpDown minActiveTraits = new NumericUpDown();
         private static NumericUpDown maxActiveTraits = new NumericUpDown();
+        private static NumericUpDown maxInctiveTraits = new NumericUpDown();
         private static NumericUpDown minUpgrades = new NumericUpDown();
         private static NumericUpDown minRanged = new NumericUpDown();
         private static NumericUpDown maxRanged = new NumericUpDown();
@@ -39,8 +42,10 @@ namespace TFT_Comp_Creator_2
             NumericUpDown max_cost_3_amount_,
             NumericUpDown max_cost_2_amount_,
             NumericUpDown max_cost_1_amount_,
+            NumericUpDown max_comp_cost_,
             NumericUpDown minActiveTraits_,
             NumericUpDown maxActiveTraits_,
+            NumericUpDown maxInctiveTraits_,
             NumericUpDown minUpgrades_,
             NumericUpDown minRanged_,
             NumericUpDown maxRanged_,
@@ -57,8 +62,10 @@ namespace TFT_Comp_Creator_2
             max_cost_3_amount = max_cost_3_amount_;
             max_cost_2_amount = max_cost_2_amount_;
             max_cost_1_amount = max_cost_1_amount_;
+            max_comp_cost = max_comp_cost_;
             minActiveTraits = minActiveTraits_;
             maxActiveTraits = maxActiveTraits_;
+            maxInctiveTraits = maxInctiveTraits_;
             minUpgrades = minUpgrades_;
             minRanged = minRanged_;
             maxRanged = maxRanged_;
@@ -84,10 +91,19 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         /// <param name="comp"></param>
         /// <returns></returns>
-        public static int CalculateSynergy(List<string> comp)
+        public static int CalculateSynergy(List<string> comp, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             if (ForceStop) { return 0; }
 
+            /*
+            List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(s => s.Trim())
+                                       .ToList();
+
+            // Temporary lists for traits and spatulas to avoid modifying the original ListBox items
+            List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
+            List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
+            */
 
             try
             {
@@ -112,11 +128,12 @@ namespace TFT_Comp_Creator_2
                 // Keep track of the synergy score
                 float synergyScore = 0;
                 List<string> userPreferredTraits = new List<string>();
-                //foreach (string trait in include_trait.Items)
-                //{
-                //    userPreferredTraits.Add(trait);
-                //}
-                foreach (string trait in include_spatula.Items)
+
+                foreach (string trait in tempIncludeTrait)
+                {
+                    userPreferredTraits.Add(trait);
+                }
+                foreach (string trait in tempIncludeSpatula)
                 {
                     userPreferredTraits.Add(trait);
                 }
@@ -125,11 +142,13 @@ namespace TFT_Comp_Creator_2
                     JArray traits = Master["Champions"][champion]["Traits"];
                     foreach (string trait in traits)
                     {
-                        userPreferredTraits.Add((string)trait);
+                        userPreferredTraits.Add(trait);
                     }
                 }
 
-                float preferredTraitWeight = 1.9f; // anti bias
+                float preferredTraitWeight = 2.0f; // anti bias
+
+                object lockObject = new object();
 
                 foreach (var champ in comp)
                 {
@@ -150,11 +169,12 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
+
                 // Spatula traits / Headliners
                 foreach (var champTraits in championsData.Values)
                 {
                     // Increase synergy score if the trait is present in the List<string> comp
-                    synergyScore += champTraits.Count(trait => include_spatula.Items.Contains(trait));
+                    synergyScore += champTraits.Count(trait => tempIncludeSpatula.Contains(trait));
                 }
 
 
@@ -164,6 +184,9 @@ namespace TFT_Comp_Creator_2
             catch (Exception) { return 0; } // This should never get hit, in case it happens the search will stop
 
         }
+
+
+
 
 
         /// <summary>
@@ -180,7 +203,7 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         /// <param name="comp"></param>
         /// <returns></returns>
-        public static bool CheckCompValidity(List<string> comp)
+        public static bool CheckCompValidity(List<string> comp, List<string> excluded_comp_champions)
         {
             JObject JTraits = new JObject();
             List<string> JTraits_active = new List<string>();
@@ -190,6 +213,7 @@ namespace TFT_Comp_Creator_2
             int cost3Amount = 0;
             int cost2Amount = 0;
             int cost1Amount = 0;
+            int totalCost = 0;
 
             int rangedAmount = 0;
             int tankAmount = 0;
@@ -199,6 +223,9 @@ namespace TFT_Comp_Creator_2
 
             foreach (var champion in comp)
             {
+                // Avoid contected comp
+                if (excluded_comp_champions.Contains(champion)) { return false; }
+
                 int cost = (int)Master["Champions"][champion]["cost"];
 
                 if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
@@ -214,28 +241,37 @@ namespace TFT_Comp_Creator_2
                     case 1:
                         if (disable_champions_cost_1.Checked) { return false; }
                         cost1Amount++;
+                        totalCost += 1;
                         break;
                     case 2:
                         if (disable_champions_cost_2.Checked) { return false; }
                         cost2Amount++;
+                        totalCost += 2;
                         break;
                     case 3:
                         if (disable_champions_cost_3.Checked) { return false; }
                         cost3Amount++;
+                        totalCost += 3;
                         break;
                     case 4:
                         if (disable_champions_cost_4.Checked) { return false; }
                         cost4Amount++;
+                        totalCost += 4;
                         break;
                     case 5:
                         if (disable_champions_cost_5.Checked) { return false; }
                         cost5Amount++;
+                        totalCost += 5;
                         break;
                 }
+
+                if (totalCost > Convert.ToInt32(max_comp_cost.Value))
+                    return false;
+
                 if (cost > 5 && disable_champions_cost_5_more.Checked)
                     return false;
 
-                // Size can't be higher than 1
+                // Size can't be higher than x
                 if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return false; }
                 if (cost4Amount > Convert.ToInt32(max_cost_4_amount.Value)) { return false; }
                 if (cost3Amount > Convert.ToInt32(max_cost_3_amount.Value)) { return false; }
@@ -362,6 +398,7 @@ namespace TFT_Comp_Creator_2
 
 
             int ActiveTraits = 0;
+            int InactiveTraits = 0;
 
             // Let's check if the comp is balanced
             List<string> IncludedTraitFoundLIst = new List<string>();
@@ -394,6 +431,13 @@ namespace TFT_Comp_Creator_2
                     return false;
                 }
 
+                // Do not let traits overflow unique traits
+                int ChampionsInTrait = (int)Master["TraitChampions"][Trait].Count; // This is a test, might leave it here
+                int maxBreakpointValue = (int)Master["TraitList"][Trait]["Breakpoints"][totalBreakPoints - 1]; // This is a test, might leave it here
+
+                if ((int)JTraits[Trait] > maxBreakpointValue && maxBreakpointValue == 1)
+                    return false;
+
                 // Make sure the trait is active
                 // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
                 if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
@@ -404,24 +448,18 @@ namespace TFT_Comp_Creator_2
                             IncludedTraitFoundLIst.Add(Trait);
                     }
 
-                    int maxBreakpoint = (int)Master["TraitList"][Trait]["Breakpoints"][Master["TraitList"][Trait]["Breakpoints"].Count - 1]; // This is a test, might leave it here
-
                     ActiveTraits++;
 
                     JTraits_active.Add(Trait);
 
-                    int BreakpointAmount = (int)Master["TraitList"][Trait]["Breakpoints"].Count;
-
-
                     bool isBalanced = false;
-                    for (int i = 0; i < BreakpointAmount; i++)
+                    for (int i = 0; i < totalBreakPoints; i++)
                     {
-                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait] || (int)Master["TraitList"][Trait]["Breakpoints"][i] > maxBreakpoint)
+                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait]) // 
                         {
 
                             isBalanced = true;
-
-                            if (BreakpointAmount > 1 && i > 0)
+                            if (totalBreakPoints > 1 && i > 0)
                             {
                                 TotalUpgrades += i;
                             }
@@ -433,6 +471,16 @@ namespace TFT_Comp_Creator_2
 
 
                 }
+                else
+                {
+                    if (totalBreakPoints > 1)
+                    {
+                        InactiveTraits++;
+                        if (InactiveTraits > Convert.ToInt32(maxInctiveTraits.Value)) { return false; }
+                    }
+
+                }
+
             }
 
 
@@ -460,6 +508,11 @@ namespace TFT_Comp_Creator_2
                     return false;
             }
 
+            // Ensure specified spatula items are considered to be active
+            //foreach(string currentSpatulaTrait in include_spatula.Items)
+            //{
+                //if (!IncludedTraitFoundLIst.Contains(currentSpatulaTrait)) { return false; }
+            //}
 
 
             // Ensure desired traits are active

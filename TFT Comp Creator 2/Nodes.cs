@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Windows.Forms;
-
-using static TFT_Comp_Creator_2.Utility;
 
 namespace TFT_Comp_Creator_2
 {

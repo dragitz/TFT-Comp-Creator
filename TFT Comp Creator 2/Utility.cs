@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Scoring;
 
@@ -19,10 +22,14 @@ namespace TFT_Comp_Creator_2
         public static dynamic Master = new JObject();
 
         public static int Pet_SynergyBest = 0;
-        public static int Pet_PowerBest = 0;
+        public static int Pet_SynergyBest_backup = 0;
         public static bool ForceStop = false;
 
         public static NumericUpDown max_cost_5_amount = new NumericUpDown();
+        public static NumericUpDown max_cost_4_amount = new NumericUpDown();
+        public static NumericUpDown max_cost_3_amount = new NumericUpDown();
+        public static NumericUpDown max_cost_2_amount = new NumericUpDown();
+        public static NumericUpDown max_cost_1_amount = new NumericUpDown();
         public static CheckBox disable_champions_cost_1 = new CheckBox();
         public static CheckBox disable_champions_cost_2 = new CheckBox();
         public static CheckBox disable_champions_cost_3 = new CheckBox();
@@ -41,6 +48,10 @@ namespace TFT_Comp_Creator_2
         public static void SetFormUtility(
             RichTextBox box, NumericUpDown targetNodes_, Label status_text_,
             NumericUpDown max_cost_5_amount_,
+            NumericUpDown max_cost_4_amount_,
+            NumericUpDown max_cost_3_amount_,
+            NumericUpDown max_cost_2_amount_,
+            NumericUpDown max_cost_1_amount_,
             CheckBox disable_champions_cost_1_,
             CheckBox disable_champions_cost_2_,
             CheckBox disable_champions_cost_3_,
@@ -60,6 +71,10 @@ namespace TFT_Comp_Creator_2
             status_text = status_text_;
 
             max_cost_5_amount = max_cost_5_amount_;
+            max_cost_4_amount = max_cost_4_amount_;
+            max_cost_3_amount = max_cost_3_amount_;
+            max_cost_2_amount = max_cost_2_amount_;
+            max_cost_1_amount = max_cost_1_amount_;
             disable_champions_cost_1 = disable_champions_cost_1_;
             disable_champions_cost_2 = disable_champions_cost_2_;
             disable_champions_cost_3 = disable_champions_cost_3_;
@@ -83,7 +98,10 @@ namespace TFT_Comp_Creator_2
         // My favourite function, it has saved me so much time :D
         public static void Print(dynamic data)
         {
-            formObj.AppendText(data.ToString() + Environment.NewLine);
+            try
+            {
+                formObj.AppendText(data.ToString() + Environment.NewLine);
+            } catch (Exception e) { formObj.AppendText(e.ToString()); }
         }
 
         public static HashSet<string> hashmap = new HashSet<string>();
@@ -94,8 +112,10 @@ namespace TFT_Comp_Creator_2
             if (comp.Count < 1) { return; }
 
             // quick fix to avoid repetitive spam
+            if (Pet_SynergyBest > Pet_SynergyBest_backup) { hashmap.Clear(); Pet_SynergyBest_backup = Pet_SynergyBest; } // fixed printing bug
+
             if (comp.All(element => hashmap.Contains(element))) { return; }
-            if (hashmap.Count() > 5)
+            if (hashmap.Count() > 7)
             {
                 hashmap.Remove(hashmap.First());
             }
@@ -116,6 +136,29 @@ namespace TFT_Comp_Creator_2
 
             foreach (string item in array)
             {
+                int cost = Master["Champions"][item]["cost"];
+
+                // Check for disabled or quantity set to 0
+                int[] maxCostAmounts = {
+                    Convert.ToInt32(max_cost_1_amount.Value),
+                    Convert.ToInt32(max_cost_2_amount.Value),
+                    Convert.ToInt32(max_cost_3_amount.Value),
+                    Convert.ToInt32(max_cost_4_amount.Value),
+                    Convert.ToInt32(max_cost_5_amount.Value)
+                };
+
+                CheckBox[] disableChampionsCheckboxes = {
+                    disable_champions_cost_1,
+                    disable_champions_cost_2,
+                    disable_champions_cost_3,
+                    disable_champions_cost_4,
+                    disable_champions_cost_5
+                };
+
+                if (cost >= 1 && cost <= 5 && (maxCostAmounts[cost - 1] == 0 || disableChampionsCheckboxes[cost - 1].Checked))
+                    continue;
+
+
                 champions.Add(item);
             }
 
@@ -137,19 +180,22 @@ namespace TFT_Comp_Creator_2
         public static List<string> GetTopTraits(List<string> championList, int depthLevel)
         {
             Dictionary<string, int> traitCount = new Dictionary<string, int>();
+            string traitName;
+            JObject championData;
+            JArray traitsArray;
 
             foreach (string championName in championList)
             {
-                JObject championData = Master["Champions"][championName];
+                championData = Master["Champions"][championName];
 
                 if (championData != null)
                 {
-                    JArray traitsArray = (JArray)championData["Traits"];
+                    traitsArray = (JArray)championData["Traits"];
 
                     // Count the traits for each champion
                     foreach (var trait in traitsArray)
                     {
-                        string traitName = trait.ToString();
+                        traitName = trait.ToString();
                         if (traitCount.ContainsKey(traitName))
                         {
                             traitCount[traitName]++;
@@ -177,36 +223,134 @@ namespace TFT_Comp_Creator_2
         16 Jan. 2024: new method should increase speed by a lot and doesn't require any hashmap nor regression. ty 3blue1brown !
 
          */
-        public static void FindCombinations2(int CompSize, List<string> items)
+        
+        
+        public static void FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             var combinations = GetCombs(items.Count(), CompSize);
 
-            List<string> comp = new List<string>();
 
+            object lockObject = new object();
 
-            foreach (var combination in combinations)
+            int Synergy = 0;
+
+            if (items.Count >= 20)
             {
-                if (Pet_SynergyBest >= 999 ||
-                    ForceStop == true
-                    ) { return; }
-
-                comp = string.Join("-", combination.Select(index => items[index]))
-                               .Split(new[] { "-" }, StringSplitOptions.None)
-                               .ToList();
-
-
-                int Synergy = CalculateSynergy(comp);
-
-                if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp))
+                CancellationTokenSource cts = new CancellationTokenSource();
+                Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
                 {
-                    Pet_SynergyBest = Synergy;
+                    if (Pet_SynergyBest >= 999 || cts.Token.IsCancellationRequested)
+                        cts.Cancel();
 
-                    PrintComp(comp, Synergy);
+                    List<string> comp = string.Join("-", combination.Select(index => items[index]))
+                        .Split(new[] { "-" }, StringSplitOptions.None)
+                        .ToList();
 
-                    status_text.Text = "Synergy: " + Pet_SynergyBest;
-                }
+                    Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                    if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
+                    {
+                        lock (lockObject)
+                        {
+                            if (Synergy >= Pet_SynergyBest)
+                            {
+                                Pet_SynergyBest = Synergy;
+                                PrintComp(comp, Synergy);
+                                status_text.Text = "Synergy: " + Pet_SynergyBest;
+                            }
+                        }
+                    }
+                });
 
             }
+            else
+            {
+                List<string> comp = new List<string>();
+
+                foreach (var combination in combinations)
+                {
+                    if (Pet_SynergyBest >= 999 ||
+                        ForceStop == true
+                        ) { return; }
+
+                    comp = string.Join("-", combination.Select(index => items[index]))
+                                   .Split(new[] { "-" }, StringSplitOptions.None)
+                                   .ToList();
+
+
+                    Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                    if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
+                    {
+                        Pet_SynergyBest = Synergy;
+
+                        PrintComp(comp, Synergy);
+
+                        status_text.Text = "Synergy: " + Pet_SynergyBest;
+                    }
+
+                }
+            }
+        }
+
+
+        public static Dictionary<string, Dictionary<string, int>> BuildAdjacencyMatrix(List<string> nodes)
+        {
+            // Initialize adjacency matrix
+            var adjacencyMatrix = new Dictionary<string, Dictionary<string, int>>();
+
+            List<string> champions = new List<string>();
+            for (int i = 0; i < default_champion.Items.Count; i++)
+            {
+                champions.Add(default_champion.Items[i].ToString());
+            }
+            for (int i = 0; i < include_champion.Items.Count; i++)
+            {
+                champions.Add(include_champion.Items[i].ToString());
+            }
+
+            // Populate adjacency matrix
+            foreach (string champion in champions)
+            {
+                List<string> traits = GetTraitsFromChampion(champion);
+
+                // Initialize row for the champion
+                adjacencyMatrix[champion] = new Dictionary<string, int>();
+
+                // Populate row based on champion's traits
+                foreach (string otherChampion in champions)
+                {
+                    if (champion == otherChampion)
+                    {
+                        adjacencyMatrix[champion][otherChampion] = 0; // Same champion
+                    }
+                    else
+                    {
+                        List<string> otherTraits = GetTraitsFromChampion(otherChampion);
+
+                        // Count common traits
+                        int commonTraitsCount = CountCommonTraits(traits, otherTraits);
+
+                        // Assign the count to the matrix
+                        adjacencyMatrix[champion][otherChampion] = commonTraitsCount;
+                    }
+                }
+            }
+
+            return adjacencyMatrix;
+        }
+
+        public static int CountCommonTraits(List<string> traits1, List<string> traits2)
+        {
+            int count = 0;
+            foreach (string trait in traits1)
+            {
+                if (traits2.Contains(trait))
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         static IEnumerable<IEnumerable<int>> GetCombs(int N, int CompSize)
