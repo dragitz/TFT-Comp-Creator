@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -28,6 +27,7 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown minTank = new NumericUpDown();
         private static NumericUpDown maxTank = new NumericUpDown();
         private static NumericUpDown trait_3_limiter = new NumericUpDown();
+        private static NumericUpDown min_upgrades_included = new NumericUpDown();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -52,7 +52,9 @@ namespace TFT_Comp_Creator_2
             NumericUpDown minTank_,
             NumericUpDown maxTank_,
             NumericUpDown trait_3_limiter_,
-            ListBox include_spatula_)
+            NumericUpDown min_upgrades_included_,
+            ListBox include_spatula_
+            )
         {
             Master = M;
             no_error = NO;
@@ -72,6 +74,7 @@ namespace TFT_Comp_Creator_2
             minTank = minTank_;
             maxTank = maxTank_;
             trait_3_limiter = trait_3_limiter_;
+            min_upgrades_included = min_upgrades_included_;
 
             include_spatula = include_spatula_;
 
@@ -205,6 +208,7 @@ namespace TFT_Comp_Creator_2
         /// <returns></returns>
         public static bool CheckCompValidity(List<string> comp, List<string> excluded_comp_champions)
         {
+
             JObject JTraits = new JObject();
             List<string> JTraits_active = new List<string>();
 
@@ -305,184 +309,127 @@ namespace TFT_Comp_Creator_2
                         JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
                     }
                 }
-
-
             }
-
-            // Min BP on highest trait
-
-            //string HighestTrait = JTraits.Properties().Aggregate((max, current) => (int)max.Value > (int)current.Value ? max : current).Name;
-            //int HighestTraitValue = (int)JTraits[HighestTrait];
-            //
-            //JArray BP_list = Master["TraitList"][HighestTrait]["Breakpoints"];
-            //
-            //int total_BP = 0;
-            //foreach (int BP in BP_list)
-            //{
-            //    if (HighestTraitValue > BP)
-            //        total_BP++;
-            //}
-            //if (total_BP < Convert.ToInt32(min_bp_main_trait.Value))
-            //    return false;
-
-
-            // Spatula traits can be added here (to be coded)
-            int found = 0;
-            int mustFind = include_spatula.Items.Count;
-
-            for (int k = 0; k < include_spatula.Items.Count; k++)
-            {
-                string spatulaTrait = include_spatula.Items[k].ToString();
-
-
-                bool foundChamp = false;
-
-                foreach (var champion in comp)
-                {
-                    dynamic Traits = Master["Champions"][champion]["Traits"];
-
-
-                    foreach (string Trait in Traits)
-                    {
-                        if (Traits.Contains(spatulaTrait))
-                            break;
-
-                        foundChamp = true;
-                        found++;
-                        break;
-                    }
-                    if (foundChamp) { break; }
-                }
-
-                if (!foundChamp) { return false; }
-
-
-                if (TraitsInComp.Contains(spatulaTrait))
-                {
-                    JTraits[spatulaTrait] = (int)JTraits[spatulaTrait] + 1;
-                }
-                else
-                {
-                    TraitsInComp.Add(spatulaTrait);
-                    JProperty item_properties = new JProperty(spatulaTrait, 0);
-                    JTraits.Add(item_properties);
-                }
-            }
-            if (found < mustFind && mustFind > 0) { return false; }
-
 
 
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
             if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
 
-            // Included / Excluded champion check
-            List<string> IncludedChampsFoundLIst = new List<string>();
-            foreach (string champion in comp)
+            // Add spatula to jtraits
+            foreach (string trait in include_spatula.Items)
             {
-                // Check if champ appears in the excluded list, as well as the included list
-                for (int i = 0; i < exclude_champion.Items.Count; i++)
+                if (JTraits.ContainsKey(trait))
                 {
-                    if (champion == exclude_champion.Items[i].ToString())
-                        return false;
+                    JTraits[trait] = (int)JTraits[trait] + 1;
                 }
-
-                for (int i = 0; i < include_champion.Items.Count; i++)
-                {
-                    if (champion == include_champion.Items[i].ToString() && !IncludedChampsFoundLIst.Contains(champion))
-                        IncludedChampsFoundLIst.Add(champion);
-                }
+                else { JTraits[trait] = 1; }
             }
-            if (include_champion.Items.Count != IncludedChampsFoundLIst.Count) { return false; }
+
+            //
+            // Check if comp is balanced
+            if (no_error.Checked && !isCompBalanced(JTraits))
+                return false;
 
 
-
-            int ActiveTraits = 0;
-            int InactiveTraits = 0;
-
-            // Let's check if the comp is balanced
-            List<string> IncludedTraitFoundLIst = new List<string>();
-
-            int TotalUpgrades = 0;
-
-            // Iterate through all 
-            foreach (string Trait in TraitsInComp)
+            // Included / Excluded champion check
+            List<string> excluded_champions = new List<string>();
+            foreach (string champion in exclude_champion.Items)
             {
-                // Included / Excluded traits check
+                excluded_champions.Add(champion);
+            }
+            if (isChampionPresent(comp, excluded_champions) && excluded_champions.Count > 0)
+                return false;
 
-                // Check if trait appears in the excluded list, as well as the included list
+            List<string> included_champions = new List<string>();
+            foreach (string champion in include_champion.Items)
+            {
+                included_champions.Add(champion);
+            }
+            if (!isChampionPresent(comp, included_champions) && included_champions.Count > 0)
+                return false;
+
+
+
+            // Included / Excluded trait check
+            foreach (string Trait in include_trait.Items)
+            {
+                if (!isTraitActive(JTraits, Trait))
+                    return false;
+            }
+
+            foreach (string Trait in exclude_trait.Items)
+            {
                 if (!exclusion_allow_base_trait.Checked)
                 {
-                    if (exclude_trait.Items.Contains(Trait))
+                    if (isTraitActive(JTraits, Trait))
                         return false;
-                    //for (int i = 0; i < exclude_trait.Items.Count; i++)
-                    //{
-                    //    if (Trait == exclude_trait.Items[i].ToString())
-                    //        return false;
-                    //}
-                }
-
-
-                int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
-                int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
-
-                if (exclusion_allow_base_trait.Checked && (int)JTraits[Trait] > minBreakPoint && exclude_trait.Items.Contains(Trait) && totalBreakPoints > 1)
-                {
-                    return false;
-                }
-
-                // Do not let traits overflow unique traits
-                int ChampionsInTrait = (int)Master["TraitChampions"][Trait].Count; // This is a test, might leave it here
-                int maxBreakpointValue = (int)Master["TraitList"][Trait]["Breakpoints"][totalBreakPoints - 1]; // This is a test, might leave it here
-
-                if ((int)JTraits[Trait] > maxBreakpointValue && maxBreakpointValue == 1)
-                    return false;
-
-                // Make sure the trait is active
-                // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
-                if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
-                {
-                    for (int i = 0; i < include_trait.Items.Count; i++)
-                    {
-                        if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
-                            IncludedTraitFoundLIst.Add(Trait);
-                    }
-
-                    ActiveTraits++;
-
-                    JTraits_active.Add(Trait);
-
-                    bool isBalanced = false;
-                    for (int i = 0; i < totalBreakPoints; i++)
-                    {
-                        if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait]) // 
-                        {
-
-                            isBalanced = true;
-                            if (totalBreakPoints > 1 && i > 0)
-                            {
-                                TotalUpgrades += i;
-                            }
-
-                        }
-                    }
-
-                    if (!isBalanced && no_error.Checked) { return false; }
-
-
                 }
                 else
                 {
-                    if (totalBreakPoints > 1)
-                    {
-                        InactiveTraits++;
-                        if (InactiveTraits > Convert.ToInt32(maxInctiveTraits.Value)) { return false; }
-                    }
-
+                    int BP = CheckBreakPointAmount(JTraits, Trait);
+                    if (isTraitActive(JTraits, Trait) && BP > 1)
+                        return false;
                 }
-
             }
 
+            // Ensure specified emblems are used
+            foreach (string Trait in include_spatula.Items)
+            {
+                if (!isTraitActive(JTraits, Trait))
+                    return false;
+            }
+
+            // Get ActiveTraits
+            // Get InactiveTraits
+            int ActiveTraits = 0;
+            int InactiveTraits = 0;
+            foreach (dynamic Obj in JTraits.Properties())
+            {
+                string Trait = Obj.Name;
+                if (isTraitActive(JTraits, Trait))
+                {
+                    ActiveTraits++;
+                }
+                else
+                {
+                    InactiveTraits++;
+                }
+            }
+            if (InactiveTraits > Convert.ToInt32(maxInctiveTraits.Value)) { return false; }
+            if (ActiveTraits < Convert.ToInt32(minActiveTraits.Value) || ActiveTraits > Convert.ToInt32(maxActiveTraits.Value)) { return false; }
+
+
+            // Get TotalUpgrades
+            if (getTotalUpgrades(JTraits) < minUpgrades.Value) { return false; }
+
+
+
+            // Min upgrades for specified (included) traits
+            int min_upgrades_included_value = Convert.ToInt32(min_upgrades_included.Value);
+            if (min_upgrades_included_value > 0)
+            {
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    string include_trait_name = (string)include_trait.Items[i];
+
+                    int breakpoints_hit = CheckBreakPointAmount(JTraits, include_trait_name);
+                    if (breakpoints_hit < min_upgrades_included_value)
+                        return false;
+                }
+            }
+
+            // Check if all champions have contributed to the whole comp
+            foreach (string champion in comp)
+            {
+                List<string> champion_traits = GetTraitsFromChampion(champion);
+                //bool has_contributed = false;
+                foreach (string trait in champion_traits)
+                {
+                    if (isTraitActive(JTraits, trait))
+                        JTraits_active.Add(trait);
+                }
+            }
 
             int championsWith_3_traits_or_more = 0;
             // Ensure all champions have contributed to the active trait list at least once
@@ -498,9 +445,7 @@ namespace TFT_Comp_Creator_2
                 }
                 if (!has_contributed) { return false; }
 
-
                 int NumberOfTraits = Master["Champions"][champion]["Traits"].Count;
-
                 if (NumberOfTraits >= 3)
                     championsWith_3_traits_or_more++;
 
@@ -508,25 +453,160 @@ namespace TFT_Comp_Creator_2
                     return false;
             }
 
-            // Ensure specified spatula items are considered to be active
-            //foreach(string currentSpatulaTrait in include_spatula.Items)
-            //{
-                //if (!IncludedTraitFoundLIst.Contains(currentSpatulaTrait)) { return false; }
-            //}
-
-
-            // Ensure desired traits are active
-            if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
-
-            // Ensure minimum amount of upgrades
-            if (TotalUpgrades < minUpgrades.Value) { return false; }
-
-            // less than x traits makes the comp invalid
-            if (ActiveTraits < Convert.ToInt32(minActiveTraits.Value) || ActiveTraits > Convert.ToInt32(maxActiveTraits.Value)) { return false; }
-
-
             return true;
         }
+        /*
+        List<string> IncludedChampsFoundLIst = new List<string>();
+        foreach (string champion in comp)
+        {
+            // Check if champ appears in the excluded list, as well as the included list
+            for (int i = 0; i < exclude_champion.Items.Count; i++)
+            {
+                if (champion == exclude_champion.Items[i].ToString())
+                    return false;
+            }
+
+            for (int i = 0; i < include_champion.Items.Count; i++)
+            {
+                if (champion == include_champion.Items[i].ToString() && !IncludedChampsFoundLIst.Contains(champion))
+                    IncludedChampsFoundLIst.Add(champion);
+            }
+        }
+        if (include_champion.Items.Count != IncludedChampsFoundLIst.Count) { return false; }
+        */
+
+
+
+        // Min BP on highest trait
+
+        //string HighestTrait = JTraits.Properties().Aggregate((max, current) => (int)max.Value > (int)current.Value ? max : current).Name;
+        //int HighestTraitValue = (int)JTraits[HighestTrait];
+        //
+        //JArray BP_list = Master["TraitList"][HighestTrait]["Breakpoints"];
+        //
+        //int total_BP = 0;
+        //foreach (int BP in BP_list)
+        //{
+        //    if (HighestTraitValue > BP)
+        //        total_BP++;
+        //}
+        //if (total_BP < Convert.ToInt32(min_bp_main_trait.Value))
+        //    return false;
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+        // Let's check if the comp is balanced
+        List<string> IncludedTraitFoundLIst = new List<string>();
+
+
+
+        // Iterate through all 
+        foreach (string Trait in TraitsInComp)
+        {
+            // Included / Excluded traits check
+
+            // Check if trait appears in the excluded list, as well as the included list
+            if (!exclusion_allow_base_trait.Checked)
+            {
+                if (exclude_trait.Items.Contains(Trait))
+                    return false;
+                //for (int i = 0; i < exclude_trait.Items.Count; i++)
+                //{
+                //    if (Trait == exclude_trait.Items[i].ToString())
+                //        return false;
+                //}
+            }
+
+
+            int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+            int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
+
+            if (exclusion_allow_base_trait.Checked && (int)JTraits[Trait] > minBreakPoint && exclude_trait.Items.Contains(Trait) && totalBreakPoints > 1)
+            {
+                return false;
+            }
+
+            // Do not let traits overflow unique traits
+            int ChampionsInTrait = (int)Master["TraitChampions"][Trait].Count; // This is a test, might leave it here
+            int maxBreakpointValue = (int)Master["TraitList"][Trait]["Breakpoints"][totalBreakPoints - 1]; // This is a test, might leave it here
+
+            if ((int)JTraits[Trait] > maxBreakpointValue && maxBreakpointValue == 1)
+                return false;
+
+            // Make sure the trait is active
+            // Trait must not be unique per champion (eg. a 5 cost that has its own trait does not count as having more active traits), aka more than 1 BP
+            if ((int)JTraits[Trait] >= minBreakPoint && totalBreakPoints > 1)
+            {
+                for (int i = 0; i < include_trait.Items.Count; i++)
+                {
+                    if (Trait == include_trait.Items[i].ToString() && !IncludedTraitFoundLIst.Contains(Trait))
+                        IncludedTraitFoundLIst.Add(Trait);
+                }
+
+                ActiveTraits++;
+
+                JTraits_active.Add(Trait);
+
+                bool isBalanced = false;
+                for (int i = 0; i < totalBreakPoints; i++)
+                {
+                    if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait]) // 
+                    {
+
+                        isBalanced = true;
+                        if (totalBreakPoints > 1 && i > 0)
+                        {
+                            TotalUpgrades += i;
+                        }
+
+                    }
+                }
+                if (!isBalanced && no_error.Checked) { return false; }
+            }
+            else
+            {
+                if (totalBreakPoints > 1)
+                {
+                    InactiveTraits++;
+                    if (InactiveTraits > Convert.ToInt32(maxInctiveTraits.Value)) { return false; }
+                }
+
+            }
+        }
+        */
+
+
+
+
+
+
+        // Ensure specified spatula items are considered to be active
+        //foreach(string currentSpatulaTrait in include_spatula.Items)
+        //{
+        //if (!IncludedTraitFoundLIst.Contains(currentSpatulaTrait)) { return false; }
+        //}
+
+
+
+        //if (include_trait.Items.Count != IncludedTraitFoundLIst.Count) { return false; }
+
+        // Ensure minimum amount of upgrades
+
+
+
+
+
 
 
     }

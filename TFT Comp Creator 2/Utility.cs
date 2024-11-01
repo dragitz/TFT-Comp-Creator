@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -101,7 +100,8 @@ namespace TFT_Comp_Creator_2
             try
             {
                 formObj.AppendText(data.ToString() + Environment.NewLine);
-            } catch (Exception e) { formObj.AppendText(e.ToString()); }
+            }
+            catch (Exception e) { formObj.AppendText(e.ToString()); }
         }
 
         public static HashSet<string> hashmap = new HashSet<string>();
@@ -176,6 +176,100 @@ namespace TFT_Comp_Creator_2
 
             return traits;
         }
+        public static int CheckBreakPointAmount(JObject JTraits, string Trait)
+        {
+
+            dynamic BreakPoints = Master["TraitList"][Trait]["Breakpoints"];
+            int maxBreakpointValue = (int)Master["TraitList"][Trait]["Breakpoints"][BreakPoints.Count - 1];
+
+            if (!JTraits.ContainsKey(Trait) || maxBreakpointValue <= 1)
+                return 0;
+
+            int Score = (int)JTraits[Trait];
+            int BP = 0;
+
+            for (int i = 0; i < BreakPoints.Count; i++)
+            {
+                if (Score >= (int)BreakPoints[i])
+                    BP = i + 1;
+            }
+            return BP;
+        }
+
+        public static bool isTraitActive(JObject JTraits, string Trait)
+        {
+            if (!JTraits.ContainsKey(Trait))
+                return false;
+
+            int TraitScore = (int)JTraits[Trait];
+            int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+
+
+            if (TraitScore >= minBreakPoint)
+                return true;
+
+            return false;
+        }
+        public static bool isChampionPresent(List<string> comp, List<string> checks)
+        {
+
+            foreach (string champion in comp)
+            {
+                if (checks.Contains(champion))
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool hasTraitContibuted()
+        {
+            return false;
+        }
+        public static int getTotalUpgrades(JObject JTraits)
+        {
+            int TotalUpgrades = 0;
+            foreach (dynamic Obj in JTraits.Properties())
+            {
+                string Trait = Obj.Name;
+                int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
+                for (int i = 0; i < totalBreakPoints; i++)
+                {
+                    if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait]) // 
+                    {
+                        if (totalBreakPoints > 1 && i > 0)
+                        {
+                            TotalUpgrades += i;
+                        }
+
+                    }
+                }
+            }
+            return TotalUpgrades;
+        }
+        public static bool isCompBalanced(JObject JTraits)
+        {
+            foreach (dynamic Obj in JTraits.Properties())
+            {
+                bool isBalanced = false;
+
+                string Trait = Obj.Name;
+                if (!isTraitActive(JTraits, Trait))
+                    continue;
+
+                int totalBreakPoints = Master["TraitList"][Trait]["Breakpoints"].Count;
+                for (int i = 0; i < totalBreakPoints; i++)
+                {
+                    if ((int)Master["TraitList"][Trait]["Breakpoints"][i] == (int)JTraits[Trait])
+                    {
+                        isBalanced = true;
+                        break;
+                    }
+                }
+                if (!isBalanced)
+                    return false;
+            }
+            return true;
+        }
 
         public static List<string> GetTopTraits(List<string> championList, int depthLevel)
         {
@@ -223,8 +317,8 @@ namespace TFT_Comp_Creator_2
         16 Jan. 2024: new method should increase speed by a lot and doesn't require any hashmap nor regression. ty 3blue1brown !
 
          */
-        
-        
+
+
         public static void FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             var combinations = GetCombs(items.Count(), CompSize);
@@ -234,7 +328,7 @@ namespace TFT_Comp_Creator_2
 
             int Synergy = 0;
 
-            if (items.Count >= 20)
+            if (items.Count >= 2)
             {
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>

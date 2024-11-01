@@ -128,6 +128,8 @@ namespace TFT_Comp_Creator_2
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.bruteForce = new System.Windows.Forms.Button();
+            this.min_upgrades_included = new System.Windows.Forms.NumericUpDown();
+            this.label28 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -156,6 +158,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage5.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.setup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.min_upgrades_included)).BeginInit();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -193,6 +196,8 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.min_upgrades_included);
+            this.tabRules.Controls.Add(this.label28);
             this.tabRules.Controls.Add(this.label27);
             this.tabRules.Controls.Add(this.excludedComp);
             this.tabRules.Controls.Add(this.max_comp_cost);
@@ -298,11 +303,6 @@ namespace TFT_Comp_Creator_2
             // 
             // max_inactive_traits
             // 
-            this.max_inactive_traits.Increment = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.max_inactive_traits.Location = new System.Drawing.Point(97, 210);
             this.max_inactive_traits.Maximum = new decimal(new int[] {
             20,
@@ -355,9 +355,9 @@ namespace TFT_Comp_Creator_2
             this.champion_optimizer.AutoSize = true;
             this.champion_optimizer.Location = new System.Drawing.Point(589, 290);
             this.champion_optimizer.Name = "champion_optimizer";
-            this.champion_optimizer.Size = new System.Drawing.Size(237, 17);
+            this.champion_optimizer.Size = new System.Drawing.Size(69, 17);
             this.champion_optimizer.TabIndex = 78;
-            this.champion_optimizer.Text = "Champion optimizer (only Include champions)";
+            this.champion_optimizer.Text = "Optimizer";
             this.champion_optimizer.UseVisualStyleBackColor = true;
             // 
             // maxTraits
@@ -1355,6 +1355,27 @@ namespace TFT_Comp_Creator_2
             this.bruteForce.UseVisualStyleBackColor = true;
             this.bruteForce.Click += new System.EventHandler(this.bruteForce_Click);
             // 
+            // min_upgrades_included
+            // 
+            this.min_upgrades_included.Location = new System.Drawing.Point(317, 138);
+            this.min_upgrades_included.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.min_upgrades_included.Name = "min_upgrades_included";
+            this.min_upgrades_included.Size = new System.Drawing.Size(120, 20);
+            this.min_upgrades_included.TabIndex = 87;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(224, 135);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(87, 26);
+            this.label28.TabIndex = 88;
+            this.label28.Text = "Min upgrades\r\non included traits";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1406,6 +1427,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.setup.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.min_upgrades_included)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1510,6 +1532,8 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Button applySet;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.TextBox excludedComp;
+        private System.Windows.Forms.NumericUpDown min_upgrades_included;
+        private System.Windows.Forms.Label label28;
     }
 }
 

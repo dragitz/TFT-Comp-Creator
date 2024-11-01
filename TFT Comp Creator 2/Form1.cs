@@ -98,7 +98,9 @@ namespace TFT_Comp_Creator_2
                     minTank,
                     maxTank,
                     trait_3_limiter,
+                    min_upgrades_included,
                     include_spatula
+
                 );
 
                 SetNodes(
@@ -228,7 +230,7 @@ namespace TFT_Comp_Creator_2
 
             string trait_snake = "";
 
-            for (int k = 0; k < default_trait.Items.Count - 1; k++)
+            for (int k = 0; k < default_trait.Items.Count; k++)
             {
                 List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
                 List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
