@@ -190,15 +190,47 @@ namespace TFT_Comp_Creator_2
 
             for (int i = 0; i < BreakPoints.Count; i++)
             {
+                //Print(Trait + " - " +Score + "  " + (int)BreakPoints[i]);
                 if (Score >= (int)BreakPoints[i])
                     BP = i + 1;
             }
             return BP;
         }
+        public static bool CarryWorth(JObject JTraits, List<string> comp)
+        {
+            List<string> cost3champions = new List<string>();
+            foreach(string champion in comp)
+            {
+                int traitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+                if(traitsAmount < 3)
+                    continue;
 
+                
+
+                cost3champions.Add(champion);
+            }
+
+            if(cost3champions.Count == 0) return false;
+
+            foreach (string champion in cost3champions)
+            {
+                // every trait must be active
+                foreach (string trait in Master["Champions"][champion]["Traits"])
+                {
+                    if (!isTraitActive(JTraits, trait))
+                        return false;
+                }
+            }
+
+            return true;
+        }
         public static bool isTraitActive(JObject JTraits, string Trait)
         {
             if (!JTraits.ContainsKey(Trait))
+                return false;
+
+            // Unique traits do not count as active
+            if ((int)Master["TraitList"][Trait]["Breakpoints"].Count <= 1)
                 return false;
 
             int TraitScore = (int)JTraits[Trait];
@@ -210,14 +242,12 @@ namespace TFT_Comp_Creator_2
 
             return false;
         }
-        public static bool isChampionPresent(List<string> comp, List<string> checks)
+        public static bool isChampionPresent(List<string> comp, string champion)
         {
+            
+            if (comp.Contains(champion))
+                return true;
 
-            foreach (string champion in comp)
-            {
-                if (checks.Contains(champion))
-                    return true;
-            }
             return false;
         }
 
@@ -269,6 +299,55 @@ namespace TFT_Comp_Creator_2
                     return false;
             }
             return true;
+        }
+        public static bool canSpatulaBeUsed(JObject JTraits, List<string> comp)
+        {
+            Dictionary<string, int> usedEmblems = new Dictionary<string, int>();
+
+            // Initialize the usage dictionary for included_spatula traits
+            foreach (string included_spatula in include_spatula.Items)
+            {
+                usedEmblems[included_spatula] = 0; // Start with 0 used emblems
+            }
+
+            // Iterate through champions in the comp
+            foreach (string champion in comp)
+            {
+                JArray championTraits = (JArray)Master["Champions"][champion]["Traits"];
+                bool hasEmblem = false;
+
+                // Check if the champion can hold an emblem from include_spatula
+                foreach (string included_spatula in include_spatula.Items)
+                {
+                    if (championTraits != null && championTraits.Contains(included_spatula))
+                    {
+                        usedEmblems[included_spatula]++;
+                        hasEmblem = true;
+                        break; // A champion can only hold one emblem
+                    }
+                }
+
+                // If the champion doesn't have any of the emblems, it's a free slot
+                if (!hasEmblem)
+                {
+                    // Logic to handle completely free champions can go here (if needed)
+                }
+            }
+
+            // Validate the usage of emblems
+            foreach (string included_spatula in include_spatula.Items)
+            {
+                int championsWithTrait = JTraits[included_spatula] != null ? (int)JTraits[included_spatula] : 0;
+                int totalPotential = comp.Count;
+
+                // Check if there's space to add more emblems
+                if (usedEmblems[included_spatula] + championsWithTrait > totalPotential)
+                {
+                    return false; // Not enough free slots
+                }
+            }
+
+            return true; // All emblems can be applied
         }
 
         public static List<string> GetTopTraits(List<string> championList, int depthLevel)

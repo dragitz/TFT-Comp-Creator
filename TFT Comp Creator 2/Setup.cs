@@ -19,7 +19,7 @@ namespace TFT_Comp_Creator_2
         public static ListBox include_champion = new ListBox();
         public static ListBox default_spatula = new ListBox();
         public static ListBox include_spatula = new ListBox();
-        
+
         public static ComboBox setList = new ComboBox();
 
 
@@ -88,9 +88,10 @@ namespace TFT_Comp_Creator_2
 
                     File.WriteAllText("en_us.json", JDownload.ToString());
                 }
-                else {
+                else
+                {
 
-                    Print("Set loaded " + url + Environment.NewLine);
+                    Print("Set loaded " + Environment.NewLine);
                     JDownload = JObject.Parse(File.ReadAllText("en_us.json")); ;
                 }
 
@@ -103,7 +104,7 @@ namespace TFT_Comp_Creator_2
                         setList.Items.Add(obj["mutator"]);
                     }
 
-                    setList.SelectedIndex = 0;
+                    setList.SelectedIndex = 1;
                 }
 
                 // now that we got our file, it's time to process it
@@ -140,7 +141,7 @@ namespace TFT_Comp_Creator_2
 
                     // Insert trait's peroperties
                     string Trait = (string)JDownload["setData"][setData_ID]["traits"][i]["name"];
-
+                    
                     JProperty item_properties =
                         new JProperty(Trait,
                             new JObject(
@@ -215,17 +216,33 @@ namespace TFT_Comp_Creator_2
                     {
                         if (property.Value == null || property.Value.Type == JTokenType.Null)
                         {
-                            should_skip = true;
+                            //should_skip = true;
                             break;
                         }
                     }
                     if (should_skip) { i++; continue; }
 
+                    int Armor = 0;
+                    int MagicR = 0;
+                    double AtkSpeed = 0;
+
+                    var armorValue = JDownload?["setData"]?[setData_ID]?["champions"]?[i]?["stats"]?["armor"];
+                    if (armorValue != null)
+                    {
+                        Armor = (int)armorValue;
+                    }
+                    var MRValue = JDownload?["setData"]?[setData_ID]?["champions"]?[i]?["stats"]?["armor"];
+                    if (MRValue != null)
+                    {
+                        Armor = (int)MRValue;
+                    }
+                    var AtkSpeedValue = JDownload?["setData"]?[setData_ID]?["champions"]?[i]?["stats"]?["armor"];
+                    if (AtkSpeedValue != null)
+                    {
+                        AtkSpeed = (int)AtkSpeedValue;
+                    }
 
 
-                    int Armor = (int)JDownload["setData"][setData_ID]["champions"][i]["stats"]["armor"];
-                    int MagicR = (int)JDownload["setData"][setData_ID]["champions"][i]["stats"]["magicResist"];
-                    double AtkSpeed = (double)JDownload["setData"][setData_ID]["champions"][i]["stats"]["attackSpeed"];
 
                     // Add current champion to its trait list in --> TraitChampions
                     JArray br = new JArray();

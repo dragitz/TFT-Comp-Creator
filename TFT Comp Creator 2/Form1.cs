@@ -99,7 +99,8 @@ namespace TFT_Comp_Creator_2
                     maxTank,
                     trait_3_limiter,
                     min_upgrades_included,
-                    include_spatula
+                    include_spatula,
+                    bronze_traits
 
                 );
 
@@ -125,63 +126,6 @@ namespace TFT_Comp_Creator_2
         }
 
 
-        private void bruteForce_Click(object sender, EventArgs e)
-        {
-            bruteForce.Enabled = false;
-            StopButton.Enabled = true;
-
-            Pet_SynergyBest = 1;
-            Pet_SynergyBest_backup = 1;
-
-            status_text.Text = "Synergy: " + Pet_SynergyBest;
-
-
-            Thread t = new Thread(new ThreadStart(BruteCreation))
-            {
-                IsBackground = true
-            };
-            t.Start();
-
-
-        }
-        public void BruteCreation()
-        {
-            List<string> comp = new List<string>();
-            List<string> nodes = new List<string>();
-            List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
-                                                   .Select(s => s.Trim())
-                                                   .ToList();
-
-            // Temporary lists for traits and spatulas to avoid modifying the original ListBox items
-            List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
-            List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
-            PrintComp(comp, 9999);
-
-            for (int i = 0; i < default_champion.Items.Count; i++)
-            {
-                nodes.Add(default_champion.Items[i].ToString());
-            }
-            for (int i = 0; i < include_champion.Items.Count; i++)
-            {
-                nodes.Add(include_champion.Items[i].ToString());
-            }
-
-            int size = Convert.ToInt32(min_comp_size.Value); // The target size of the comp
-
-            // Call the helper function with the empty defaultComp
-            //FindCombinations(nodes, size, hashmap, comp);
-            FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-
-            Print("done");
-
-            ForceStop = false;
-            Utility.ForceStop = false;
-            Scoring.ForceStop = false;
-
-            StopButton.Enabled = false;
-            bruteForce.Enabled = true;
-
-        }
 
         public void CreateButton_Click(object sender, EventArgs e)
         {
@@ -213,6 +157,8 @@ namespace TFT_Comp_Creator_2
             include_champion.Items.Clear();
             default_spatula.Items.Clear();
             include_spatula.Items.Clear();
+
+
         }
 
         public void Creation()
@@ -225,7 +171,7 @@ namespace TFT_Comp_Creator_2
                                                    .ToList();
 
 
-            
+
             PrintComp(comp, 9999);
 
             string trait_snake = "";
@@ -264,19 +210,6 @@ namespace TFT_Comp_Creator_2
                     tempIncludeTrait.Add((string)default_trait.Items[k]);
 
                     Print(String.Join("-", tempIncludeTrait));
-                    //break;
-                    if (!no_spatula.Checked)
-                    {
-                        //tempIncludeSpatula.Clear();
-                        //tempIncludeSpatula.AddRange(default_spatula.Items.Cast<string>());
-                        
-                        //foreach (string item in include_spatula.Items.Cast<object>().ToList())
-                        //{
-                        //    tempIncludeSpatula.Add(item);
-                        //}
-                        
-                        Print("SPatula is bugged, disable it");
-                    }
 
                     trait_snake = default_trait.Items[k].ToString();
                     int bp_total = Master["TraitList"][trait_snake]["Breakpoints"].Count;
@@ -285,13 +218,6 @@ namespace TFT_Comp_Creator_2
 
                     tempIncludeTrait.Add(trait_snake);
 
-                    if (emblems_required > 0 && !no_spatula.Checked)
-                    {
-                        for (int i = 0; i < emblems_required; i++)
-                        {
-                            tempIncludeSpatula.Add(trait_snake);
-                        }
-                    }
                 }
 
                 // Process champions in the 'include_champion' ListBox
@@ -371,8 +297,6 @@ namespace TFT_Comp_Creator_2
 
                 int size = Convert.ToInt32(min_comp_size.Value);
                 FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-
-                if (quick_discovery.Checked) break;
             }
 
             Print("done");
@@ -455,7 +379,7 @@ namespace TFT_Comp_Creator_2
 
             List<string> comp = compBox.Text.Split('-').ToList();
             List<string> Optimizedcomp = new List<string>(comp);
-            
+
             List<string> excluded_comp_champions = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
                                                    .Select(s => s.Trim())
                                                    .ToList();
@@ -524,8 +448,140 @@ namespace TFT_Comp_Creator_2
             ResetAllForms();
 
             Master = FirstRun(setList.SelectedIndex);
+
+            //Populate(Master);
+            //InformUtility(Master);
+
+            SetFromScoring(
+                                Master,
+                                no_error,
+                                exclusion_allow_base_trait,
+                                max_cost_5_amount,
+                                max_cost_4_amount,
+                                max_cost_3_amount,
+                                max_cost_2_amount,
+                                max_cost_1_amount,
+                                max_comp_cost,
+                                minTraits,
+                                maxTraits,
+                                max_inactive_traits,
+                                minUpgrades,
+                                minRanged,
+                                maxRanged,
+                                minTank,
+                                maxTank,
+                                trait_3_limiter,
+                                min_upgrades_included,
+                                include_spatula,
+                                bronze_traits
+
+                            );
+
+            SetNodes(
+                Master,
+                max_cost_5_amount,
+                disable_champions_cost_1,
+                disable_champions_cost_2,
+                disable_champions_cost_3,
+                disable_champions_cost_4,
+                disable_champions_cost_5,
+                disable_champions_cost_5_more,
+
+                exclude_trait
+                );
+
             Populate(Master);
+
             InformUtility(Master);
+        }
+
+        private void debugComp_Click(object sender, EventArgs e)
+        {
+            List<string> comp = compBox.Text.Split('-').ToList();
+
+            JObject JTraits = new JObject();
+            List<string> TraitsInComp = new List<string>();
+
+            int rangedAmount = 0;
+            int tankAmount = 0;
+            foreach (var champion in comp)
+            {
+                int cost = (int)Master["Champions"][champion]["cost"];
+
+                if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
+                    rangedAmount++;
+
+                if ((int)Master["Champions"][champion]["stats"]["range"] <= 1)
+                    tankAmount++;
+
+                // Add the trait to the list
+                dynamic Traits = Master["Champions"][champion]["Traits"];
+                foreach (string Trait in Traits)
+                {
+                    if (TraitsInComp.Contains(Trait))
+                        continue;
+
+                    TraitsInComp.Add(Trait);
+                    JProperty item_properties = new JProperty(Trait, 0);
+                    JTraits.Add(item_properties);
+                }
+
+                // Populate JTraits
+                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+
+                dynamic TraitsArray = Master["Champions"][champion]["Traits"];
+
+                for (int k = 0; k < ChampionTraitsAmount; k++)
+                {
+                    string CurrentTrait = (string)TraitsArray[k];
+
+                    if (TraitsInComp.Contains(CurrentTrait))
+                    {
+                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
+                    }
+                }
+            }
+            // Add spatula to jtraits
+            foreach (string trait in include_spatula.Items)
+            {
+                if (JTraits.ContainsKey(trait))
+                {
+                    JTraits[trait] = (int)JTraits[trait] + 1;
+                }
+                else { JTraits[trait] = 1; }
+            }
+
+
+            Print("isBalanced: " + isCompBalanced(JTraits));
+            int ActiveTraits = 0;
+            int InactiveTraits = 0;
+            foreach (dynamic Obj in JTraits.Properties())
+            {
+
+                string Trait = Obj.Name;
+                int BP = CheckBreakPointAmount(JTraits, Trait);
+
+                if (isTraitActive(JTraits, Trait))
+                {
+                    ActiveTraits++;
+                    Print("BreakPoint [" + Trait + "]: " + BP);
+                    Print("JTraits[" + Trait + "]: " + (int)JTraits[Trait]);
+                    Print("-");
+                }
+                else
+                {
+                    InactiveTraits++;
+                }
+
+            }
+            Print("ActiveTraits: " + ActiveTraits);
+            Print("InactiveTraits: " + InactiveTraits);
+            Print("rangedAmount: " + rangedAmount);
+            Print("tankAmount: " + tankAmount);
+            int score = CalculateSynergy(comp, new List<string> { }, new List<string> { }, new List<string> { });
+            Print("Score: " + score);
+            //PrintComp(GetChampionsFromTrait("Bastion"), 0);
+
         }
     }
 }

@@ -28,6 +28,7 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown maxTank = new NumericUpDown();
         private static NumericUpDown trait_3_limiter = new NumericUpDown();
         private static NumericUpDown min_upgrades_included = new NumericUpDown();
+        private static CheckBox bronze_traits = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -53,7 +54,8 @@ namespace TFT_Comp_Creator_2
             NumericUpDown maxTank_,
             NumericUpDown trait_3_limiter_,
             NumericUpDown min_upgrades_included_,
-            ListBox include_spatula_
+            ListBox include_spatula_,
+            CheckBox bronze_traits_
             )
         {
             Master = M;
@@ -77,6 +79,8 @@ namespace TFT_Comp_Creator_2
             min_upgrades_included = min_upgrades_included_;
 
             include_spatula = include_spatula_;
+
+            bronze_traits = bronze_traits_;
 
         }
 
@@ -149,7 +153,7 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
-                float preferredTraitWeight = 2.0f; // anti bias
+                float preferredTraitWeight = 1.3f; // anti bias
 
                 object lockObject = new object();
 
@@ -311,10 +315,16 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
+            // this is a test
+            //if (!CarryWorth(JTraits, comp)) { return false; }
 
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
             if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
+
+            // Ensure all emblems can be used
+            if (!canSpatulaBeUsed(JTraits, comp) && include_spatula.Items.Count > 0)
+                return false;
 
             // Add spatula to jtraits
             foreach (string trait in include_spatula.Items)
@@ -333,21 +343,26 @@ namespace TFT_Comp_Creator_2
 
 
             // Included / Excluded champion check
-            List<string> excluded_champions = new List<string>();
-            foreach (string champion in exclude_champion.Items)
+            if (exclude_champion.Items.Count > 0)
             {
-                excluded_champions.Add(champion);
-            }
-            if (isChampionPresent(comp, excluded_champions) && excluded_champions.Count > 0)
-                return false;
+                foreach (string champion in exclude_champion.Items)
+                {
+                    //excluded_champions.Add(champion);
+                    if (isChampionPresent(comp, champion))
+                        return false;
+                }
 
-            List<string> included_champions = new List<string>();
-            foreach (string champion in include_champion.Items)
-            {
-                included_champions.Add(champion);
             }
-            if (!isChampionPresent(comp, included_champions) && included_champions.Count > 0)
-                return false;
+
+            if (include_champion.Items.Count > 0)
+            {
+                foreach (string champion in include_champion.Items)
+                {
+                    //excluded_champions.Add(champion);
+                    if (!isChampionPresent(comp, champion))
+                        return false;
+                }
+            }
 
 
 
@@ -368,10 +383,14 @@ namespace TFT_Comp_Creator_2
                 else
                 {
                     int BP = CheckBreakPointAmount(JTraits, Trait);
+
                     if (isTraitActive(JTraits, Trait) && BP > 1)
                         return false;
                 }
             }
+
+            
+       
 
             // Ensure specified emblems are used
             foreach (string Trait in include_spatula.Items)
@@ -387,6 +406,14 @@ namespace TFT_Comp_Creator_2
             foreach (dynamic Obj in JTraits.Properties())
             {
                 string Trait = Obj.Name;
+
+                // All bronze traits check
+                if (bronze_traits.Checked)
+                {
+                    int BP = CheckBreakPointAmount(JTraits, Trait);
+                    if(BP > 1) { return false; }
+                }
+
                 if (isTraitActive(JTraits, Trait))
                 {
                     ActiveTraits++;
