@@ -177,7 +177,8 @@ namespace TFT_Comp_Creator_2
 
             // i remember naming this variable in honor of my friend while I was in a call with him
             string trait_snake = "";
-
+            
+            //Dictionary<List<string>, int> allcomps = new Dictionary<List<string>, int>();
             //todo: use parallel
             for (int k = 0; k < default_trait.Items.Count; k++)
             {
@@ -316,10 +317,12 @@ namespace TFT_Comp_Creator_2
                         Pet_SynergyBest = obj.Value;
 
                     PrintComp(obj.Key, obj.Value);
+                    //allcomps.Add(obj.Key, obj.Value);
                     //Console.WriteLine($"List: [{string.Join(", ", entry.Key)}], Score: {entry.Value}");
                 }
             }
 
+            
             Print("done");
 
             // Reset form controls and variables

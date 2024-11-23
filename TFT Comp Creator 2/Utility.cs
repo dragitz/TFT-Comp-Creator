@@ -404,9 +404,6 @@ namespace TFT_Comp_Creator_2
         {
             var combinations = GetCombs(items.Count(), CompSize);
 
-
-            object lockObject = new object();
-
             int Synergy = 0;
 
             Dictionary<List<string>, int> parallel_results = new Dictionary<List<string>, int>();
@@ -414,9 +411,6 @@ namespace TFT_Comp_Creator_2
             CancellationTokenSource cts = new CancellationTokenSource();
             Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
             {
-                if (Pet_SynergyBest >= 999 || cts.Token.IsCancellationRequested)
-                    cts.Cancel();
-
                 List<string> comp = string.Join("-", combination.Select(index => items[index]))
                     .Split(new[] { "-" }, StringSplitOptions.None)
                     .ToList();
@@ -428,18 +422,6 @@ namespace TFT_Comp_Creator_2
                     parallel_results.Add(comp, Synergy);
                 }
 
-                //if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
-                //{
-                //    lock (lockObject)
-                //    {
-                //        if (Synergy >= Pet_SynergyBest)
-                //        {
-                //            Pet_SynergyBest = Synergy;
-                //            PrintComp(comp, Synergy);
-                //            status_text.Text = "Synergy: " + Pet_SynergyBest;
-                //        }
-                //    }
-                //}
             });
 
             return parallel_results;

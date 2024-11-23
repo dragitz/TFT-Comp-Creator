@@ -83,6 +83,7 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
             this.tabOptimize = new System.Windows.Forms.TabPage();
+            this.getCompCode = new System.Windows.Forms.Button();
             this.debugComp = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -129,7 +130,6 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.getCompCode = new System.Windows.Forms.Button();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -680,7 +680,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.depthLevel.Location = new System.Drawing.Point(97, 92);
             this.depthLevel.Maximum = new decimal(new int[] {
-            5,
+            6,
             0,
             0,
             0});
@@ -880,6 +880,16 @@ namespace TFT_Comp_Creator_2
             this.tabOptimize.TabIndex = 1;
             this.tabOptimize.Text = "Optimizer";
             this.tabOptimize.UseVisualStyleBackColor = true;
+            // 
+            // getCompCode
+            // 
+            this.getCompCode.Location = new System.Drawing.Point(19, 171);
+            this.getCompCode.Name = "getCompCode";
+            this.getCompCode.Size = new System.Drawing.Size(75, 23);
+            this.getCompCode.TabIndex = 9;
+            this.getCompCode.Text = "Get code";
+            this.getCompCode.UseVisualStyleBackColor = true;
+            this.getCompCode.Click += new System.EventHandler(this.getCompCode_Click);
             // 
             // debugComp
             // 
@@ -1364,16 +1374,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.Text = "Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // getCompCode
-            // 
-            this.getCompCode.Location = new System.Drawing.Point(19, 171);
-            this.getCompCode.Name = "getCompCode";
-            this.getCompCode.Size = new System.Drawing.Size(75, 23);
-            this.getCompCode.TabIndex = 9;
-            this.getCompCode.Text = "Get code";
-            this.getCompCode.UseVisualStyleBackColor = true;
-            this.getCompCode.Click += new System.EventHandler(this.getCompCode_Click);
             // 
             // Form1
             // 
