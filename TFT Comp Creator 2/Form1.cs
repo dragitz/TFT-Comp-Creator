@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -174,8 +175,10 @@ namespace TFT_Comp_Creator_2
 
             PrintComp(comp, 9999);
 
+            // i remember naming this variable in honor of my friend while I was in a call with him
             string trait_snake = "";
 
+            //todo: use parallel
             for (int k = 0; k < default_trait.Items.Count; k++)
             {
                 List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
@@ -195,7 +198,7 @@ namespace TFT_Comp_Creator_2
                 {
                     if (score_reset.Checked)
                     {
-                        Pet_SynergyBest = 1;
+                        Pet_SynergyBest = -500;
                         Pet_SynergyBest_backup = Pet_SynergyBest - 1;
                     }
 
@@ -292,11 +295,29 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
-                // If the final list meets the required size, continue
+                // If the final list doesn't meet the required size, continue
                 if (newNodes.Count < Convert.ToInt32(min_comp_size.Value)) continue;
 
                 int size = Convert.ToInt32(min_comp_size.Value);
-                FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                
+
+                Dictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+                
+                // Filter, sort, and take the top 10
+                var top10 = parallel_results
+                    .Where(entry => entry.Value > Pet_SynergyBest)  
+                    .OrderByDescending(entry => entry.Value)        
+                    .Take(10);                                      
+
+                foreach (var obj in top10)
+                {
+                    if(obj.Value > Pet_SynergyBest)
+                        Pet_SynergyBest = obj.Value;
+
+                    PrintComp(obj.Key, obj.Value);
+                    //Console.WriteLine($"List: [{string.Join(", ", entry.Key)}], Score: {entry.Value}");
+                }
             }
 
             Print("done");
@@ -313,7 +334,6 @@ namespace TFT_Comp_Creator_2
 
 
 
-        // Traits
         private void Trait_default_to_exclude_Click(object sender, EventArgs e)
         {
             moveData(default_trait.SelectedItem, default_trait, exclude_trait);
@@ -330,7 +350,6 @@ namespace TFT_Comp_Creator_2
         {
             moveData(include_trait.SelectedItem, include_trait, default_trait);
         }
-        // Champions
         private void Champion_default_to_exclude_Click(object sender, EventArgs e)
         {
             moveData(default_champion.SelectedItem, default_champion, exclude_champion);
@@ -347,7 +366,6 @@ namespace TFT_Comp_Creator_2
         {
             moveData(include_champion.SelectedItem, include_champion, default_champion);
         }
-        // Spatula
         private void spatula_default_to_include_Click(object sender, EventArgs e)
         {
             moveData(default_spatula.SelectedItem, default_spatula, include_spatula);
@@ -392,6 +410,7 @@ namespace TFT_Comp_Creator_2
             int possibleBest = score;
 
             Print("initial score: " + score);
+
             // Create our list of champions based on the remainign list of available champions
             List<string> championList = new List<string>();
             foreach (var item in default_champion.Items)
@@ -582,6 +601,39 @@ namespace TFT_Comp_Creator_2
             Print("Score: " + score);
             //PrintComp(GetChampionsFromTrait("Bastion"), 0);
 
+        }
+
+        private void getCompCode_Click(object sender, EventArgs e)
+        {
+            List<string> comp = compBox.Text.Split('-').ToList();
+
+            if(comp.Count > 10) 
+            {
+                Print("Import code does not support more than 10 champions");
+                return;
+            }
+
+            string code = "01";
+            foreach(string champion in comp)
+            {
+                if(Master["Champions"][champion]["hex"] == "")
+                {
+                    Print("No hex data available for current comp/set");
+                    return;
+                }
+                code += Master["Champions"][champion]["hex"];
+            }
+            
+            // comps can be up to 10 champions, if below, fill it with zeros
+            if(comp.Count < 10) 
+            {
+                for(int i = 0; i < 10 - comp.Count; i++) 
+                {
+                    code += "00";
+                }
+            }
+            code += setList.Text; // todo: use a global variable, user might change the text without applying new set
+            Print(code);
         }
     }
 }

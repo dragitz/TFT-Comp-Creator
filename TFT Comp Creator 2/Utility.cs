@@ -11,9 +11,6 @@ namespace TFT_Comp_Creator_2
 {
     class Utility
     {
-        public static JArray TFData = JArray.Parse("[\n{ name: \"Alistar\", id: \"662\" }\n,{ name: \"Annie\", id: \"663\" }\n,{ name: \"Aphelios\", id: \"664\" }\n,{ name: \"Ashe\", id: \"665\" }\n,{ name: \"Aurelion Sol\", id: \"666\" }\n,{ name: \"Belveth\", id: \"667\" }\n,{ name: \"Blitzcrank\", id: \"668\" }\n,{ name: \"Camille\", id: \"669\" }\n,{ name: \"Chogath\", id: \"670\" }\n,{ name: \"Draven\", id: \"671\" }\n,{ name: \"Ekko\", id: \"672\" }\n,{ name: \"Ezreal\", id: \"673\" }\n,{ name: \"Fiddlesticks\", id: \"674\" }\n,{ name: \"Fiora\", id: \"675\" }\n,{ name: \"Galio\", id: \"676\" }\n,{ name: \"Gangplank\", id: \"677\" }\n,{ name: \"Janna\", id: \"678\" }\n,{ name: \"Jax\", id: \"679\" }\n,{ name: \"Jinx\", id: \"680\" }\n,{ name: \"Kaisa\", id: \"681\" }\n,{ name: \"Kayle\", id: \"682\" }\n,{ name: \"Leblanc\", id: \"683\" }\n,{ name: \"Lee Sin\", id: \"684\" }\n,{ name: \"Leona\", id: \"685\" }\n,{ name: \"Lulu\", id: \"686\" }\n,{ name: \"Lux\", id: \"687\" }\n,{ name: \"Malphite\", id: \"688\" }\n,{ name: \"Miss Fortune\", id: \"689\" }\n,{ name: \"Mordekaiser\", id: \"690\" }\n,{ name: \"Nasus\", id: \"691\" }\n,{ name: \"Nilah\", id: \"692\" }\n,{ name: \"Nunu\", id: \"693\" }\n,{ name: \"Poppy\", id: \"694\" }\n,{ name: \"Rammus\", id: \"695\" }\n,{ name: \"Rell\", id: \"696\" }\n,{ name: \"Renekton\", id: \"697\" }\n,{ name: \"Riven\", id: \"698\" }\n,{ name: \"Samira\", id: \"699\" }\n,{ name: \"Sejuani\", id: \"700\" }\n,{ name: \"Senna\", id: \"701\" }\n,{ name: \"Sett\", id: \"702\" }\n,{ name: \"Sivir\", id: \"703\" }\n,{ name: \"Sona\", id: \"704\" }\n,{ name: \"Soraka\", id: \"705\" }\n,{ name: \"Sylas\", id: \"706\" }\n,{ name: \"Syndra\", id: \"707\" }\n,{ name: \"Taliyah\", id: \"708\" }\n,{ name: \"Talon\", id: \"709\" }\n,{ name: \"Urgot\", id: \"710\" }\n,{ name: \"Vayne\", id: \"711\" }\n,{ name: \"Velkoz\", id: \"712\" }\n,{ name: \"Vi\", id: \"713\" }\n,{ name: \"Viego\", id: \"714\" }\n,{ name: \"Wukong\", id: \"715\" }\n,{ name: \"Yasuo\", id: \"716\" }\n,{ name: \"Yuumi\", id: \"717\" }\n,{ name: \"Zac\", id: \"718\" }\n,{ name: \"Zed\", id: \"719\" }\n,{ name: \"Zoe\", id: \"720\" }\n]\n");
-
-
         public static RichTextBox formObj = new RichTextBox();
         public static NumericUpDown targetNodes = new NumericUpDown();
         public static Label status_text = new Label();
@@ -97,6 +94,7 @@ namespace TFT_Comp_Creator_2
         // My favourite function, it has saved me so much time :D
         public static void Print(dynamic data)
         {
+            // Also a try catch in this case isn't the best, but you never know :eyes:
             try
             {
                 formObj.AppendText(data.ToString() + Environment.NewLine);
@@ -115,7 +113,10 @@ namespace TFT_Comp_Creator_2
             if (Pet_SynergyBest > Pet_SynergyBest_backup) { hashmap.Clear(); Pet_SynergyBest_backup = Pet_SynergyBest; } // fixed printing bug
 
             if (comp.All(element => hashmap.Contains(element))) { return; }
-            if (hashmap.Count() > 7)
+
+            // this hashmap is pretty useful when dealing with resets (optimize checkbox)
+            // this way we don't get identical comps with different scores caused by the include trait (preferred) bias in Scoring.cs
+            if (hashmap.Count() > 20)
             {
                 hashmap.Remove(hashmap.First());
             }
@@ -196,21 +197,22 @@ namespace TFT_Comp_Creator_2
             }
             return BP;
         }
+
+        // (test function) ensure champions with 3 or more traits have all of them active
+        // note: doesn't actually produce better comps, just weird ones, but cool function to have just in case
         public static bool CarryWorth(JObject JTraits, List<string> comp)
         {
             List<string> cost3champions = new List<string>();
-            foreach(string champion in comp)
+            foreach (string champion in comp)
             {
                 int traitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
-                if(traitsAmount < 3)
+                if (traitsAmount < 3)
                     continue;
-
-                
 
                 cost3champions.Add(champion);
             }
 
-            if(cost3champions.Count == 0) return false;
+            if (cost3champions.Count == 0) return false;
 
             foreach (string champion in cost3champions)
             {
@@ -244,7 +246,7 @@ namespace TFT_Comp_Creator_2
         }
         public static bool isChampionPresent(List<string> comp, string champion)
         {
-            
+
             if (comp.Contains(champion))
                 return true;
 
@@ -398,7 +400,7 @@ namespace TFT_Comp_Creator_2
          */
 
 
-        public static void FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
+        public static Dictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             var combinations = GetCombs(items.Count(), CompSize);
 
@@ -407,63 +409,40 @@ namespace TFT_Comp_Creator_2
 
             int Synergy = 0;
 
-            if (items.Count >= 2)
+            Dictionary<List<string>, int> parallel_results = new Dictionary<List<string>, int>();
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
             {
-                CancellationTokenSource cts = new CancellationTokenSource();
-                Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
+                if (Pet_SynergyBest >= 999 || cts.Token.IsCancellationRequested)
+                    cts.Cancel();
+
+                List<string> comp = string.Join("-", combination.Select(index => items[index]))
+                    .Split(new[] { "-" }, StringSplitOptions.None)
+                    .ToList();
+
+                Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                if (CheckCompValidity(comp, excluded_comp_champions))
                 {
-                    if (Pet_SynergyBest >= 999 || cts.Token.IsCancellationRequested)
-                        cts.Cancel();
-
-                    List<string> comp = string.Join("-", combination.Select(index => items[index]))
-                        .Split(new[] { "-" }, StringSplitOptions.None)
-                        .ToList();
-
-                    Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-
-                    if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
-                    {
-                        lock (lockObject)
-                        {
-                            if (Synergy >= Pet_SynergyBest)
-                            {
-                                Pet_SynergyBest = Synergy;
-                                PrintComp(comp, Synergy);
-                                status_text.Text = "Synergy: " + Pet_SynergyBest;
-                            }
-                        }
-                    }
-                });
-
-            }
-            else
-            {
-                List<string> comp = new List<string>();
-
-                foreach (var combination in combinations)
-                {
-                    if (Pet_SynergyBest >= 999 ||
-                        ForceStop == true
-                        ) { return; }
-
-                    comp = string.Join("-", combination.Select(index => items[index]))
-                                   .Split(new[] { "-" }, StringSplitOptions.None)
-                                   .ToList();
-
-
-                    Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-
-                    if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
-                    {
-                        Pet_SynergyBest = Synergy;
-
-                        PrintComp(comp, Synergy);
-
-                        status_text.Text = "Synergy: " + Pet_SynergyBest;
-                    }
-
+                    parallel_results.Add(comp, Synergy);
                 }
-            }
+
+                //if (Synergy >= Pet_SynergyBest && CheckCompValidity(comp, excluded_comp_champions))
+                //{
+                //    lock (lockObject)
+                //    {
+                //        if (Synergy >= Pet_SynergyBest)
+                //        {
+                //            Pet_SynergyBest = Synergy;
+                //            PrintComp(comp, Synergy);
+                //            status_text.Text = "Synergy: " + Pet_SynergyBest;
+                //        }
+                //    }
+                //}
+            });
+
+            return parallel_results;
         }
 
 

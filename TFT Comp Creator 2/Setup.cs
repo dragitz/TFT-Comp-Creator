@@ -50,6 +50,7 @@ namespace TFT_Comp_Creator_2
 
         public static dynamic FirstRun(int setData_ID)
         {
+            // Keep this try catch, so future updates simply won't crash the program
             try
             {
                 dynamic Master = new JObject(
@@ -67,14 +68,13 @@ namespace TFT_Comp_Creator_2
 
                 // Create temporary space
                 JObject JDownload = new JObject();
+                JObject JDownload_planner = new JObject();
 
-                string url = "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json";
-                url = "https://raw.communitydragon.org/pbe/cdragon/tft/en_us.json";
+                string url = "https://raw.communitydragon.org/pbe/cdragon/tft/en_us.json";
+                string url_comp_codes = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json";
 
                 // If our custom file already exists, then load it
                 //if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
-
-
 
                 if (!File.Exists("en_us.json"))
                 {
@@ -83,16 +83,23 @@ namespace TFT_Comp_Creator_2
 
                     // If our file does not exist, we download it (this is the link for the most recent update)
                     //var downloaded = new WebClient().DownloadString("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json");
-                    var downloaded = new WebClient().DownloadString(url);
+
+                    // Team planner, refer to https://gist.github.com/bangingheads/243e396f78be1a4d49dc0577abf57a0b
+                    var downloaded = new WebClient().DownloadString(url_comp_codes);
+                    JDownload_planner = JObject.Parse(downloaded);
+                    File.WriteAllText("tftchampions-teamplanner.json", JDownload_planner.ToString());
+
+                    // download setData
+                    downloaded = new WebClient().DownloadString(url);
                     JDownload = JObject.Parse(downloaded);
 
                     File.WriteAllText("en_us.json", JDownload.ToString());
                 }
                 else
                 {
-
-                    Print("Set loaded " + Environment.NewLine);
+                    //Print("Set loaded " + Environment.NewLine);
                     JDownload = JObject.Parse(File.ReadAllText("en_us.json")); ;
+                    JDownload_planner = JObject.Parse(File.ReadAllText("tftchampions-teamplanner.json")); ;
                 }
 
                 // 26 October 2024: fill setup combo box to enable set switching
@@ -104,7 +111,34 @@ namespace TFT_Comp_Creator_2
                         setList.Items.Add(obj["mutator"]);
                     }
 
-                    setList.SelectedIndex = 1;
+                    setList.SelectedIndex = 0;
+
+                    // try to guess newest set
+                    int minSet = 10;
+                    for (int qq = 0; qq < setList.Items.Count; qq++)
+                    {
+                        string str = setList.Items[qq].ToString();
+                        if (str.Contains("_"))
+                            continue;
+
+                        string test = str.Replace("TFTSet", "");
+
+                        if (int.TryParse(test, out int testSetNumber))
+                        {
+                            if (testSetNumber > minSet)
+                            {
+                                setList.SelectedIndex = qq;
+                                minSet = testSetNumber;
+                                setData_ID = qq;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    Print("Found most recent set: " + setList.Text);
                 }
 
                 // now that we got our file, it's time to process it
@@ -141,7 +175,7 @@ namespace TFT_Comp_Creator_2
 
                     // Insert trait's peroperties
                     string Trait = (string)JDownload["setData"][setData_ID]["traits"][i]["name"];
-                    
+
                     JProperty item_properties =
                         new JProperty(Trait,
                             new JObject(
@@ -170,6 +204,8 @@ namespace TFT_Comp_Creator_2
                     string ChampionName = (string)JDownload["setData"][setData_ID]["champions"][i]["name"];
                     ChampionName = ChampionName.Replace(" & Willump", "");
                     ChampionName = ChampionName.Replace("'", "");
+
+                    string apiName = (string)JDownload["setData"][setData_ID]["champions"][i]["apiName"];
 
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
@@ -266,6 +302,8 @@ namespace TFT_Comp_Creator_2
                     // Add Champion properties to the champion pool
                     JProperty item_properties = new JProperty(ChampionName,
                         new JObject(
+                            new JProperty("apiName", apiName),
+                            new JProperty("hex", ""),
                             new JProperty("ChampionName", ChampionName),
                             new JProperty("cost", cost),
                             new JProperty("Armor", Armor),
@@ -287,8 +325,48 @@ namespace TFT_Comp_Creator_2
 
                 // TODO: If a trait has no champions, it is removed
 
-                File.WriteAllText("set.json", Master.ToString());
+                // 22 november 2024 team planner codes should follow "Master" rules
+                //string setKey = JDownload_planner.Properties().First().Name;
+                string setKey = setList.Text;
 
+                // ensure comp code can be defined
+                if (JDownload_planner.ContainsKey(setKey))
+                {
+                    //Print(setKey);
+                    List<string> temp = new List<string> { };
+
+                    JObject MasterChampionList = (JObject)Master["Champions"];
+                    foreach (JProperty item in MasterChampionList.Properties()) // Use JProperty instead of dynamic for clarity
+                    {
+                        string who = item.Name;
+
+                        string apiName = (string)Master["Champions"][who]["apiName"];
+                        temp.Add(apiName);
+                    }
+                    List<string> OrderedAPI = temp.OrderBy(x => x).ToList();
+
+                    JObject AllChampionsInMaster = Master["Champions"];
+                    // assign hex based on its order
+                    for (int a = 0; a < OrderedAPI.Count; a++)
+                    {
+                        string tempApi = OrderedAPI[a];
+
+                        foreach (var item in AllChampionsInMaster.Properties())
+                        {
+                            string key = item.Name;
+                            if (Master["Champions"][key]["apiName"] == tempApi)
+                            {
+                                byte result = (byte)(a + 1);
+
+                                Master["Champions"][key]["hex"] = result.ToString("X2");
+                                //Print(Master["Champions"][key]["hex"]);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                File.WriteAllText("set.json", Master.ToString());
                 return Master;
             }
             catch (Exception ex) { Print(ex); return Master; }

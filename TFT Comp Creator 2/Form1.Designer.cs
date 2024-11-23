@@ -129,6 +129,7 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.getCompCode = new System.Windows.Forms.Button();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -315,7 +316,7 @@ namespace TFT_Comp_Creator_2
             this.max_comp_cost.Size = new System.Drawing.Size(120, 20);
             this.max_comp_cost.TabIndex = 83;
             this.max_comp_cost.Value = new decimal(new int[] {
-            300,
+            400,
             0,
             0,
             0});
@@ -437,7 +438,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.maxTank.Location = new System.Drawing.Point(292, 361);
             this.maxTank.Maximum = new decimal(new int[] {
-            10,
+            11,
             0,
             0,
             0});
@@ -537,7 +538,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.maxRanged.Location = new System.Drawing.Point(292, 312);
             this.maxRanged.Maximum = new decimal(new int[] {
-            10,
+            11,
             0,
             0,
             0});
@@ -865,6 +866,7 @@ namespace TFT_Comp_Creator_2
             // 
             // tabOptimize
             // 
+            this.tabOptimize.Controls.Add(this.getCompCode);
             this.tabOptimize.Controls.Add(this.debugComp);
             this.tabOptimize.Controls.Add(this.label11);
             this.tabOptimize.Controls.Add(this.label9);
@@ -1296,6 +1298,7 @@ namespace TFT_Comp_Creator_2
             // 
             // setList
             // 
+            this.setList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.setList.FormattingEnabled = true;
             this.setList.Location = new System.Drawing.Point(103, 61);
             this.setList.Name = "setList";
@@ -1361,6 +1364,16 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.Text = "Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // getCompCode
+            // 
+            this.getCompCode.Location = new System.Drawing.Point(19, 171);
+            this.getCompCode.Name = "getCompCode";
+            this.getCompCode.Size = new System.Drawing.Size(75, 23);
+            this.getCompCode.TabIndex = 9;
+            this.getCompCode.Text = "Get code";
+            this.getCompCode.UseVisualStyleBackColor = true;
+            this.getCompCode.Click += new System.EventHandler(this.getCompCode_Click);
             // 
             // Form1
             // 
@@ -1518,6 +1531,7 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button debugComp;
         public System.Windows.Forms.CheckBox bronze_traits;
+        private System.Windows.Forms.Button getCompCode;
     }
 }
 
