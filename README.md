@@ -40,9 +40,6 @@ Bug testing is required !
     	TL;DR: If Trait == Anima Squad (3/5/7) but Trait has a value of 6 (so it's active)
         the comp is considered unbalanced, therefore filtered out.
         
-* #### Brute All Champs
-	
-    Brute force every possible comp, node depth is ignored (slow option)
 
 ## Bugs n' stuff
 
