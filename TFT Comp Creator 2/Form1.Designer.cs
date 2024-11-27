@@ -645,7 +645,7 @@ namespace TFT_Comp_Creator_2
             this.max_cost_1_amount.TabIndex = 58;
             this.max_cost_1_amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.max_cost_1_amount.Value = new decimal(new int[] {
-            3,
+            2,
             0,
             0,
             0});

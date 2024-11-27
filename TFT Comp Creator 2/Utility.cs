@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -400,13 +401,14 @@ namespace TFT_Comp_Creator_2
          */
 
 
-        public static Dictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
+        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             var combinations = GetCombs(items.Count(), CompSize);
 
             int Synergy = 0;
 
-            Dictionary<List<string>, int> parallel_results = new Dictionary<List<string>, int>();
+            // this new dictionary is thread safe, keep it or crash the whole program
+            ConcurrentDictionary<List<string>, int> parallel_results = new ConcurrentDictionary<List<string>, int>();
 
             CancellationTokenSource cts = new CancellationTokenSource();
             Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
@@ -419,7 +421,12 @@ namespace TFT_Comp_Creator_2
 
                 if (CheckCompValidity(comp, excluded_comp_champions))
                 {
-                    parallel_results.Add(comp, Synergy);
+                    // ensure we don't insert comp that has already been added by another thread
+                    if (!parallel_results.ContainsKey(comp))
+                    {
+                        parallel_results.TryAdd(comp, Synergy);
+                    }
+
                 }
 
             });

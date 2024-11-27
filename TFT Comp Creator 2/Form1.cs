@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom.Compiler;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -301,9 +302,9 @@ namespace TFT_Comp_Creator_2
 
                 int size = Convert.ToInt32(min_comp_size.Value);
 
-                
 
-                Dictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
+                ConcurrentDictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
                 
                 // Filter, sort, and take the top 10
                 var top10 = parallel_results
@@ -322,6 +323,7 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
+            //Creation();
             
             Print("done");
 
