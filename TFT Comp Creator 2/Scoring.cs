@@ -29,6 +29,7 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown trait_3_limiter = new NumericUpDown();
         private static NumericUpDown min_upgrades_included = new NumericUpDown();
         private static CheckBox bronze_traits = new CheckBox();
+        private static CheckBox carryCheck = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -55,7 +56,8 @@ namespace TFT_Comp_Creator_2
             NumericUpDown trait_3_limiter_,
             NumericUpDown min_upgrades_included_,
             ListBox include_spatula_,
-            CheckBox bronze_traits_
+            CheckBox bronze_traits_,
+            CheckBox carryCheck_
             )
         {
             Master = M;
@@ -81,6 +83,7 @@ namespace TFT_Comp_Creator_2
             include_spatula = include_spatula_;
 
             bronze_traits = bronze_traits_;
+            carryCheck = carryCheck_;
 
         }
 
@@ -317,8 +320,23 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
-            // this is a test
+            // this one isn't good, keep it for reference
             //if (!CarryWorth(JTraits, comp)) { return false; }
+
+            // this one focuses on 4 cost
+            //if (!CarryWorth2(JTraits, comp)) { return false; }
+
+            // this one focuses on included champions
+            if (include_champion.Items.Count > 0 && carryCheck.Checked)
+            {
+                List<string> carry = new List<string>();
+                foreach(string champion in  include_champion.Items)
+                {
+                    carry.Add(champion);
+                }
+                if (!CarryWorth3(JTraits, carry)) { return false; }
+            }
+
 
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }

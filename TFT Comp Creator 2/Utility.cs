@@ -227,6 +227,86 @@ namespace TFT_Comp_Creator_2
 
             return true;
         }
+        public static bool CarryWorth2(JObject JTraits, List<string> comp)
+        {
+            int worth = 0;
+            List<string> carryList = new List<string>();
+            foreach (string champion in comp)
+            {
+                int range = (int)Master["Champions"][champion]["stats"]["range"];
+                int cost = (int)Master["Champions"][champion]["cost"];
+                if (range >= 4 && cost > 3)
+                    carryList.Add(champion);
+            }
+
+            // if a trait from a unit surpasses x amount of BPs, then empowered will increase by 1 for each trait that surpasses that threshold
+            // then --> empowered += 2
+            // the higher, the better (usually)
+            int empowered = 0;
+            // if our empowered requirement is at 2
+            // comps that are allowed to pass are either a single unit with two active traits, that have reached at least the 2nd BP
+            // could also mean, two units with range >= 4 and cost >= 3, that each have a trait that surpasses BP 2 (or defined by code)
+
+            foreach (string champion in carryList)
+            {
+                int traitsAmount = Master["Champions"][champion]["Traits"].Count;
+                int activeTraits = 0;
+                foreach (string trait in Master["Champions"][champion]["Traits"])
+                {
+                    int totalBP = Master["TraitList"][trait]["Breakpoints"].Count;
+                    if (isTraitActive(JTraits, trait))
+                    {
+                        activeTraits++;
+                        if (CheckBreakPointAmount(JTraits, trait) >= 2)
+                            empowered++;
+                    }
+                }
+
+                if (activeTraits == traitsAmount)
+                    worth++;
+            }
+
+            if (worth == 0 || empowered < 1)
+                return false;
+
+            return true;
+        }
+        public static bool CarryWorth3(JObject JTraits, List<string> carryList)
+        {
+            int worth = 0;
+            
+            // if a trait from a unit surpasses x amount of BPs, then empowered will increase by 1 for each trait that surpasses that threshold
+            // then --> empowered += 2
+            // the higher, the better (usually)
+            int empowered = 0;
+            // if our empowered requirement is at 2
+            // comps that are allowed to pass are either a single unit with two active traits, that have reached at least the 2nd BP
+            // could also mean, two units with range >= 4 and cost >= 3, that each have a trait that surpasses BP 2 (or defined by code)
+
+            foreach (string champion in carryList)
+            {
+                int traitsAmount = Master["Champions"][champion]["Traits"].Count;
+                int activeTraits = 0;
+                foreach (string trait in Master["Champions"][champion]["Traits"])
+                {
+                    int totalBP = Master["TraitList"][trait]["Breakpoints"].Count;
+                    if (isTraitActive(JTraits, trait))
+                    {
+                        activeTraits++;
+                        if (CheckBreakPointAmount(JTraits, trait) >= 2)
+                            empowered++;
+                    }
+                }
+
+                if (activeTraits == traitsAmount)
+                    worth++;
+            }
+
+            if (worth == 0 || empowered < 1)
+                return false;
+
+            return true;
+        }
         public static bool isTraitActive(JObject JTraits, string Trait)
         {
             if (!JTraits.ContainsKey(Trait))

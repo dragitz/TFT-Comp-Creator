@@ -102,7 +102,8 @@ namespace TFT_Comp_Creator_2
                     trait_3_limiter,
                     min_upgrades_included,
                     include_spatula,
-                    bronze_traits
+                    bronze_traits,
+                    carryCheck
 
                 );
 
@@ -497,7 +498,8 @@ namespace TFT_Comp_Creator_2
                                 trait_3_limiter,
                                 min_upgrades_included,
                                 include_spatula,
-                                bronze_traits
+                                bronze_traits,
+                                carryCheck
 
                             );
 
@@ -639,6 +641,15 @@ namespace TFT_Comp_Creator_2
             }
             code += setList.Text; // todo: use a global variable, user might change the text without applying new set
             Print(code);
+        }
+
+        private void compareComps_Click(object sender, EventArgs e)
+        {
+            List<string> comp1 = compBox.Text.Split('-').ToList();
+            List<string> comp2 = compBox2.Text.Split('-').ToList();
+
+            // Ensure both are valid
+            // Find out who's the carry, then compute how many active traits they have
         }
     }
 }
