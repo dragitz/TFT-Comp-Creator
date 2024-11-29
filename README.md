@@ -7,7 +7,8 @@ My goal with this project, is to **compute unique non meta comps** to explore an
 Bug testing is required !
 
 
-![immagine](https://github.com/dragitz/TFT-Comp-Creator/assets/8062792/736a07ad-2265-4ac2-b70c-0413ba75e212)
+![image](https://github.com/user-attachments/assets/b3960e33-da9d-4cd5-aa22-ae49866a1d9b)
+
 
 
 
