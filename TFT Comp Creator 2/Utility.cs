@@ -13,6 +13,7 @@ namespace TFT_Comp_Creator_2
     class Utility
     {
         public static RichTextBox formObj = new RichTextBox();
+        public static RichTextBox debugBox = new RichTextBox();
         public static NumericUpDown targetNodes = new NumericUpDown();
         public static Label status_text = new Label();
 
@@ -43,7 +44,9 @@ namespace TFT_Comp_Creator_2
 
         // Create reference of output richtextbox located in Form1, will be ran once
         public static void SetFormUtility(
-            RichTextBox box, NumericUpDown targetNodes_, Label status_text_,
+            RichTextBox box, 
+            RichTextBox debugBox_, 
+            NumericUpDown targetNodes_, Label status_text_,
             NumericUpDown max_cost_5_amount_,
             NumericUpDown max_cost_4_amount_,
             NumericUpDown max_cost_3_amount_,
@@ -64,6 +67,7 @@ namespace TFT_Comp_Creator_2
             )
         {
             formObj = box;
+            debugBox = debugBox_;
             targetNodes = targetNodes_;
             status_text = status_text_;
 
@@ -101,6 +105,15 @@ namespace TFT_Comp_Creator_2
                 formObj.AppendText(data.ToString() + Environment.NewLine);
             }
             catch (Exception e) { formObj.AppendText(e.ToString()); }
+        }
+        public static void PrintDebug(dynamic data)
+        {
+            // Also a try catch in this case isn't the best, but you never know :eyes:
+            try
+            {
+                debugBox.AppendText(data.ToString() + Environment.NewLine);
+            }
+            catch (Exception e) { debugBox.AppendText(e.ToString()); }
         }
 
         public static HashSet<string> hashmap = new HashSet<string>();

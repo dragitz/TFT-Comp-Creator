@@ -35,6 +35,7 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.carryCheck = new System.Windows.Forms.CheckBox();
             this.bronze_traits = new System.Windows.Forms.CheckBox();
             this.min_upgrades_included = new System.Windows.Forms.NumericUpDown();
             this.label28 = new System.Windows.Forms.Label();
@@ -83,8 +84,6 @@ namespace TFT_Comp_Creator_2
             this.disable_champions_cost_2 = new System.Windows.Forms.CheckBox();
             this.disable_champions_cost_1 = new System.Windows.Forms.CheckBox();
             this.tabOptimize = new System.Windows.Forms.TabPage();
-            this.compareComps = new System.Windows.Forms.Button();
-            this.compBox2 = new System.Windows.Forms.TextBox();
             this.getCompCode = new System.Windows.Forms.Button();
             this.debugComp = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
@@ -132,7 +131,7 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.carryCheck = new System.Windows.Forms.CheckBox();
+            this.debugBox = new System.Windows.Forms.RichTextBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -255,6 +254,16 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             this.tabRules.Click += new System.EventHandler(this.tabRules_Click);
+            // 
+            // carryCheck
+            // 
+            this.carryCheck.AutoSize = true;
+            this.carryCheck.Location = new System.Drawing.Point(589, 273);
+            this.carryCheck.Name = "carryCheck";
+            this.carryCheck.Size = new System.Drawing.Size(79, 17);
+            this.carryCheck.TabIndex = 90;
+            this.carryCheck.Text = "Carry Logic";
+            this.carryCheck.UseVisualStyleBackColor = true;
             // 
             // bronze_traits
             // 
@@ -870,8 +879,7 @@ namespace TFT_Comp_Creator_2
             // 
             // tabOptimize
             // 
-            this.tabOptimize.Controls.Add(this.compareComps);
-            this.tabOptimize.Controls.Add(this.compBox2);
+            this.tabOptimize.Controls.Add(this.debugBox);
             this.tabOptimize.Controls.Add(this.getCompCode);
             this.tabOptimize.Controls.Add(this.debugComp);
             this.tabOptimize.Controls.Add(this.label11);
@@ -884,25 +892,8 @@ namespace TFT_Comp_Creator_2
             this.tabOptimize.Padding = new System.Windows.Forms.Padding(3);
             this.tabOptimize.Size = new System.Drawing.Size(880, 438);
             this.tabOptimize.TabIndex = 1;
-            this.tabOptimize.Text = "Optimizer";
+            this.tabOptimize.Text = "Tools";
             this.tabOptimize.UseVisualStyleBackColor = true;
-            // 
-            // compareComps
-            // 
-            this.compareComps.Location = new System.Drawing.Point(514, 142);
-            this.compareComps.Name = "compareComps";
-            this.compareComps.Size = new System.Drawing.Size(75, 23);
-            this.compareComps.TabIndex = 11;
-            this.compareComps.Text = "compare";
-            this.compareComps.UseVisualStyleBackColor = true;
-            this.compareComps.Click += new System.EventHandler(this.compareComps_Click);
-            // 
-            // compBox2
-            // 
-            this.compBox2.Location = new System.Drawing.Point(307, 116);
-            this.compBox2.Name = "compBox2";
-            this.compBox2.Size = new System.Drawing.Size(282, 20);
-            this.compBox2.TabIndex = 10;
             // 
             // getCompCode
             // 
@@ -1398,15 +1389,15 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // carryCheck
+            // debugBox
             // 
-            this.carryCheck.AutoSize = true;
-            this.carryCheck.Location = new System.Drawing.Point(589, 273);
-            this.carryCheck.Name = "carryCheck";
-            this.carryCheck.Size = new System.Drawing.Size(79, 17);
-            this.carryCheck.TabIndex = 90;
-            this.carryCheck.Text = "Carry Logic";
-            this.carryCheck.UseVisualStyleBackColor = true;
+            this.debugBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.debugBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.debugBox.Location = new System.Drawing.Point(19, 197);
+            this.debugBox.Name = "debugBox";
+            this.debugBox.Size = new System.Drawing.Size(780, 195);
+            this.debugBox.TabIndex = 10;
+            this.debugBox.Text = "";
             // 
             // Form1
             // 
@@ -1565,9 +1556,8 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Button debugComp;
         public System.Windows.Forms.CheckBox bronze_traits;
         private System.Windows.Forms.Button getCompCode;
-        private System.Windows.Forms.Button compareComps;
-        private System.Windows.Forms.TextBox compBox2;
         public System.Windows.Forms.CheckBox carryCheck;
+        public System.Windows.Forms.RichTextBox debugBox;
     }
 }
 

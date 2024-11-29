@@ -45,7 +45,9 @@ namespace TFT_Comp_Creator_2
             {
                 // Setup part 1
                 SetFormUtility(
-                    output, targetNodes, status_text,
+                    output,
+                    debugBox,
+                    targetNodes, status_text,
                     max_cost_5_amount,
                     max_cost_4_amount,
                     max_cost_3_amount,
@@ -415,7 +417,7 @@ namespace TFT_Comp_Creator_2
             int score = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
             int possibleBest = score;
 
-            Print("initial score: " + score);
+            PrintDebug("initial score: " + score);
 
             // Create our list of champions based on the remainign list of available champions
             List<string> championList = new List<string>();
@@ -445,7 +447,7 @@ namespace TFT_Comp_Creator_2
 
                         if (possibleBest >= score - 2)
                         {
-                            Print("[+] " + possibleBest + " [+]: " + String.Join("-", tempComp));
+                            PrintDebug("[+] " + possibleBest + " [+]: " + String.Join("-", tempComp));
 
                             Optimizedcomp = tempComp;
                             score = possibleBest;
@@ -456,9 +458,9 @@ namespace TFT_Comp_Creator_2
 
             if (comp.SequenceEqual(Optimizedcomp))
             {
-                Print("Couldn't improve comp");
+                PrintDebug("Couldn't improve comp");
             }
-            else { Print("done."); }
+            else { PrintDebug("done."); }
 
 
         }
@@ -578,7 +580,7 @@ namespace TFT_Comp_Creator_2
             }
 
 
-            Print("isBalanced: " + isCompBalanced(JTraits));
+            PrintDebug("isBalanced: " + isCompBalanced(JTraits));
             int ActiveTraits = 0;
             int InactiveTraits = 0;
             foreach (dynamic Obj in JTraits.Properties())
@@ -590,9 +592,9 @@ namespace TFT_Comp_Creator_2
                 if (isTraitActive(JTraits, Trait))
                 {
                     ActiveTraits++;
-                    Print("BreakPoint [" + Trait + "]: " + BP);
-                    Print("JTraits[" + Trait + "]: " + (int)JTraits[Trait]);
-                    Print("-");
+                    PrintDebug("BreakPoint [" + Trait + "]: " + BP);
+                    PrintDebug("JTraits[" + Trait + "]: " + (int)JTraits[Trait]);
+                    PrintDebug("-");
                 }
                 else
                 {
@@ -600,12 +602,12 @@ namespace TFT_Comp_Creator_2
                 }
 
             }
-            Print("ActiveTraits: " + ActiveTraits);
-            Print("InactiveTraits: " + InactiveTraits);
-            Print("rangedAmount: " + rangedAmount);
-            Print("tankAmount: " + tankAmount);
+            PrintDebug("ActiveTraits: " + ActiveTraits);
+            PrintDebug("InactiveTraits: " + InactiveTraits);
+            PrintDebug("rangedAmount: " + rangedAmount);
+            PrintDebug("tankAmount: " + tankAmount);
             int score = CalculateSynergy(comp, new List<string> { }, new List<string> { }, new List<string> { });
-            Print("Score: " + score);
+            PrintDebug("Score: " + score);
             //PrintComp(GetChampionsFromTrait("Bastion"), 0);
 
         }
@@ -616,7 +618,7 @@ namespace TFT_Comp_Creator_2
 
             if(comp.Count > 10) 
             {
-                Print("Import code does not support more than 10 champions");
+                PrintDebug("Import code does not support more than 10 champions");
                 return;
             }
 
@@ -625,7 +627,7 @@ namespace TFT_Comp_Creator_2
             {
                 if(Master["Champions"][champion]["hex"] == "")
                 {
-                    Print("No hex data available for current comp/set");
+                    PrintDebug("No hex data available for current comp/set");
                     return;
                 }
                 code += Master["Champions"][champion]["hex"];
@@ -640,16 +642,7 @@ namespace TFT_Comp_Creator_2
                 }
             }
             code += setList.Text; // todo: use a global variable, user might change the text without applying new set
-            Print(code);
-        }
-
-        private void compareComps_Click(object sender, EventArgs e)
-        {
-            List<string> comp1 = compBox.Text.Split('-').ToList();
-            List<string> comp2 = compBox2.Text.Split('-').ToList();
-
-            // Ensure both are valid
-            // Find out who's the carry, then compute how many active traits they have
+            PrintDebug(code);
         }
     }
 }
