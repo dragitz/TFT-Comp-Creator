@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -165,9 +164,67 @@ namespace TFT_Comp_Creator_2
 
 
         }
+        public bool CheckSettings()
+        {
+            if (minUpgrades.Value > 0 && bronze_traits.Checked)
+            {
+                Print("Can't have minUpgrades higher than 0 if bronze trait is checked");
+                return false;
+            }
+
+            int maxChampions = 0;
+
+            if(!disable_champions_cost_1.Checked)
+                maxChampions += (int)max_cost_1_amount.Value;
+            if (!disable_champions_cost_2.Checked)
+                maxChampions += (int)max_cost_2_amount.Value;
+            if (!disable_champions_cost_3.Checked)
+                maxChampions += (int)max_cost_3_amount.Value;
+            if (!disable_champions_cost_4.Checked)
+                maxChampions += (int)max_cost_4_amount.Value;
+            if (!disable_champions_cost_5.Checked)
+                maxChampions += (int)max_cost_5_amount.Value;
+
+            if ((int)min_comp_size.Value > maxChampions)
+            {
+                Print("Comp size is can't be higher than the max champ limitations. Increase champion pool");
+                return false;
+            }
+
+            // by default this should not be hit, just in case I accidentally change something in the future
+            if (minTraits.Value > maxTraits.Value)
+            {
+                Print("minTraits can't be higher than maxTraits (active)");
+                return false;
+            }
+
+            int unitType = 0;
+            unitType += (int)maxRanged.Value;
+            unitType += (int)maxTank.Value;
+            if ((int)min_comp_size.Value > unitType)
+            {
+                Print("Either increase maxTanks or maxRanged, as it is surpassed by comp size");
+                return false;
+            }
+
+
+            return true;
+        }
 
         public void Creation()
         {
+            if (!CheckSettings())
+            {
+                ForceStop = false;
+                Utility.ForceStop = false;
+                Scoring.ForceStop = false;
+                CreateButton.Enabled = true;
+                StopButton.Enabled = false;
+
+                return;
+            }
+
+
             // Initialize empty lists for computation
             List<string> comp = new List<string>();
             List<string> nodes = new List<string>();
@@ -181,7 +238,7 @@ namespace TFT_Comp_Creator_2
 
             // i remember naming this variable in honor of my friend while I was in a call with him
             string trait_snake = "";
-            
+
             //Dictionary<List<string>, int> allcomps = new Dictionary<List<string>, int>();
             //todo: use parallel
             for (int k = 0; k < default_trait.Items.Count; k++)
@@ -308,16 +365,16 @@ namespace TFT_Comp_Creator_2
 
 
                 ConcurrentDictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-                
+
                 // Filter, sort, and take the top 10
                 var top10 = parallel_results
-                    .Where(entry => entry.Value > Pet_SynergyBest)  
-                    .OrderByDescending(entry => entry.Value)        
-                    .Take(10);                                      
+                    .Where(entry => entry.Value > Pet_SynergyBest)
+                    .OrderByDescending(entry => entry.Value)
+                    .Take(10);
 
                 foreach (var obj in top10)
                 {
-                    if(obj.Value > Pet_SynergyBest)
+                    if (obj.Value > Pet_SynergyBest)
                         Pet_SynergyBest = obj.Value;
 
                     PrintComp(obj.Key, obj.Value);
@@ -327,7 +384,7 @@ namespace TFT_Comp_Creator_2
             }
 
             //Creation();
-            
+
             Print("done");
 
             // Reset form controls and variables
@@ -616,27 +673,27 @@ namespace TFT_Comp_Creator_2
         {
             List<string> comp = compBox.Text.Split('-').ToList();
 
-            if(comp.Count > 10) 
+            if (comp.Count > 10)
             {
                 PrintDebug("Import code does not support more than 10 champions");
                 return;
             }
 
             string code = "01";
-            foreach(string champion in comp)
+            foreach (string champion in comp)
             {
-                if(Master["Champions"][champion]["hex"] == "")
+                if (Master["Champions"][champion]["hex"] == "")
                 {
                     PrintDebug("No hex data available for current comp/set");
                     return;
                 }
                 code += Master["Champions"][champion]["hex"];
             }
-            
+
             // comps can be up to 10 champions, if below, fill it with zeros
-            if(comp.Count < 10) 
+            if (comp.Count < 10)
             {
-                for(int i = 0; i < 10 - comp.Count; i++) 
+                for (int i = 0; i < 10 - comp.Count; i++)
                 {
                     code += "00";
                 }
@@ -644,5 +701,7 @@ namespace TFT_Comp_Creator_2
             code += setList.Text; // todo: use a global variable, user might change the text without applying new set
             PrintDebug(code);
         }
+
+
     }
 }
