@@ -64,7 +64,10 @@ namespace TFT_Comp_Creator_2
                     include_trait,
                     exclude_champion,
                     default_champion,
-                    include_champion
+                    include_champion,
+
+                    goldTrait
+
                     );
 
                 SetFormSetup(
@@ -104,7 +107,8 @@ namespace TFT_Comp_Creator_2
                     min_upgrades_included,
                     include_spatula,
                     bronze_traits,
-                    carryCheck
+                    carryCheck,
+                    carryCheck_unspecified
 
                 );
 
@@ -137,8 +141,8 @@ namespace TFT_Comp_Creator_2
             CreateButton.Enabled = false;
             StopButton.Enabled = true;
 
-            Pet_SynergyBest = 1;
-            Pet_SynergyBest_backup = 1;
+            Pet_SynergyBest = 0;
+            Pet_SynergyBest_backup = 0;
 
             status_text.Text = "Synergy: " + Pet_SynergyBest;
 
@@ -174,7 +178,7 @@ namespace TFT_Comp_Creator_2
 
             int maxChampions = 0;
 
-            if(!disable_champions_cost_1.Checked)
+            if (!disable_champions_cost_1.Checked)
                 maxChampions += (int)max_cost_1_amount.Value;
             if (!disable_champions_cost_2.Checked)
                 maxChampions += (int)max_cost_2_amount.Value;
@@ -235,6 +239,8 @@ namespace TFT_Comp_Creator_2
 
 
             PrintComp(comp, 9999);
+
+            JObject champions_found = new JObject();
 
             // i remember naming this variable in honor of my friend while I was in a call with him
             string trait_snake = "";
@@ -328,9 +334,10 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
+
+                List<string> newNodes = new List<string>();
                 // Filter nodes using adjacency matrix
                 var adjacencyMatrix = BuildAdjacencyMatrix(comp);
-                List<string> newNodes = new List<string>();
 
                 foreach (var champion in adjacencyMatrix)
                 {
@@ -343,9 +350,23 @@ namespace TFT_Comp_Creator_2
                     }
                 }
 
+                PrintComp(nodes, 9999);
+                if (customNodeList.Text.Length > 0)
+                {
+                    nodes = excludedComp.Text.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(s => s.Trim())
+                                                   .ToList();
+                }
+
+
                 // Failsafe to ensure minimum composition size
+                int tries = 0;
                 while (newNodes.Count < Convert.ToInt32(min_comp_size.Value) + 2 && Pet_SynergyBest < 999)
                 {
+                    tries += 1;
+                    if (tries > 50)
+                        break;
+
                     List<string> TopX = GetTopTraits(newNodes, 3);
                     foreach (var topTrait in TopX)
                     {
@@ -356,6 +377,7 @@ namespace TFT_Comp_Creator_2
                         }
                     }
                 }
+
 
                 // If the final list doesn't meet the required size, continue
                 if (newNodes.Count < Convert.ToInt32(min_comp_size.Value)) continue;
@@ -378,9 +400,27 @@ namespace TFT_Comp_Creator_2
                         Pet_SynergyBest = obj.Value;
 
                     PrintComp(obj.Key, obj.Value);
+
+                    // analysis
+                    //champions_found
+                    foreach (string champion_in_comp in obj.Key)
+                    {
+                        if (champions_found[champion_in_comp] != null)
+                        {
+                            champions_found[champion_in_comp] = (int)champions_found[champion_in_comp] + 1;
+                        }
+                        else
+                        {
+                            champions_found[champion_in_comp] = 0;
+                        }
+                    }
+
                     //allcomps.Add(obj.Key, obj.Value);
                     //Console.WriteLine($"List: [{string.Join(", ", entry.Key)}], Score: {entry.Value}");
                 }
+
+
+
             }
 
             //Creation();
@@ -558,7 +598,8 @@ namespace TFT_Comp_Creator_2
                                 min_upgrades_included,
                                 include_spatula,
                                 bronze_traits,
-                                carryCheck
+                                carryCheck,
+                                carryCheck_unspecified
 
                             );
 
@@ -623,6 +664,7 @@ namespace TFT_Comp_Creator_2
                     if (TraitsInComp.Contains(CurrentTrait))
                     {
                         JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
+                        //Print(JTraits[CurrentTrait] + "  " + CurrentTrait + "   " + champion);
                     }
                 }
             }
@@ -651,6 +693,7 @@ namespace TFT_Comp_Creator_2
                     ActiveTraits++;
                     PrintDebug("BreakPoint [" + Trait + "]: " + BP);
                     PrintDebug("JTraits[" + Trait + "]: " + (int)JTraits[Trait]);
+                    PrintDebug("isTraitActive: "+ isTraitActive(JTraits, Trait));
                     PrintDebug("-");
                 }
                 else
@@ -682,6 +725,7 @@ namespace TFT_Comp_Creator_2
             string code = "01";
             foreach (string champion in comp)
             {
+                Print(champion);
                 if (Master["Champions"][champion]["hex"] == "")
                 {
                     PrintDebug("No hex data available for current comp/set");

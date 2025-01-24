@@ -42,10 +42,11 @@ namespace TFT_Comp_Creator_2
         public static ListBox default_champion = new ListBox();
         public static ListBox include_champion = new ListBox();
 
+        public static CheckBox goldTrait = new CheckBox();
         // Create reference of output richtextbox located in Form1, will be ran once
         public static void SetFormUtility(
-            RichTextBox box, 
-            RichTextBox debugBox_, 
+            RichTextBox box,
+            RichTextBox debugBox_,
             NumericUpDown targetNodes_, Label status_text_,
             NumericUpDown max_cost_5_amount_,
             NumericUpDown max_cost_4_amount_,
@@ -63,7 +64,10 @@ namespace TFT_Comp_Creator_2
             ListBox include_trait_,
             ListBox exclude_champion_,
             ListBox default_champion_,
-            ListBox include_champion_
+            ListBox include_champion_,
+
+            CheckBox goldTrait_
+
             )
         {
             formObj = box;
@@ -89,6 +93,8 @@ namespace TFT_Comp_Creator_2
             exclude_champion = exclude_champion_;
             default_champion = default_champion_;
             include_champion = include_champion_;
+
+            goldTrait = goldTrait_;
 
         }
         public static void InformUtility(dynamic M)
@@ -191,6 +197,20 @@ namespace TFT_Comp_Creator_2
 
             return traits;
         }
+
+        public static bool isGoldTraitPresent(JObject JTraits)
+        {
+            foreach (var item in JTraits.Properties())
+            {
+                string trait = item.Name;
+                int result = CheckBreakPointAmount(JTraits, trait);
+
+                if (result >= 3)
+                    return true;
+            }
+            return false;
+
+        }
         public static int CheckBreakPointAmount(JObject JTraits, string Trait)
         {
 
@@ -287,7 +307,7 @@ namespace TFT_Comp_Creator_2
         public static bool CarryWorth3(JObject JTraits, List<string> carryList)
         {
             int worth = 0;
-            
+
             // if a trait from a unit surpasses x amount of BPs, then empowered will increase by 1 for each trait that surpasses that threshold
             // then --> empowered += 2
             // the higher, the better (usually)
@@ -320,6 +340,31 @@ namespace TFT_Comp_Creator_2
 
             return true;
         }
+
+        public static bool isCarryPresent(JObject JTraits, List<string> comp)
+        {
+            foreach (string champion in comp)
+            {
+                int traitsAmount = Master["Champions"][champion]["Traits"].Count;
+
+                if (Master["Champions"][champion]["cost"] < 3 || traitsAmount < 2)
+                    continue;
+
+                int activeTraits = 0;
+                foreach (string trait in Master["Champions"][champion]["Traits"])
+                {
+                    int totalBP = Master["TraitList"][trait]["Breakpoints"].Count;
+                    if (isTraitActive(JTraits, trait))
+                    {
+                        activeTraits++;
+                    }
+                }
+
+                if (traitsAmount == activeTraits) { return true; }
+            }
+            return false;
+        }
+
         public static bool isTraitActive(JObject JTraits, string Trait)
         {
             if (!JTraits.ContainsKey(Trait))
@@ -329,10 +374,22 @@ namespace TFT_Comp_Creator_2
             if ((int)Master["TraitList"][Trait]["Breakpoints"].Count <= 1)
                 return false;
 
+            //Print("AAAA: "+(int)JTraits["Ninja"]);
+
             int TraitScore = (int)JTraits[Trait];
-            int minBreakPoint = (int)Master["TraitList"][Trait]["Breakpoints"][0];
+            var breakpoints = Master["TraitList"][Trait]["Breakpoints"];
+            int minBreakPoint = (int)breakpoints[0];
 
+            // Specific case for Ninja trait (must be exactly 1 or 4)
+            if (Trait == "Ninja")
+            {
+                int secondBreakPoint = (int)breakpoints[1];
+                if (TraitScore != minBreakPoint && TraitScore != secondBreakPoint)
+                    return false; // Ninja is inactive if TraitScore isn't 1 or 4
+                return true; // Ninja is active for 1 or 4
+            }
 
+            // General case
             if (TraitScore >= minBreakPoint)
                 return true;
 

@@ -30,6 +30,7 @@ namespace TFT_Comp_Creator_2
         private static NumericUpDown min_upgrades_included = new NumericUpDown();
         private static CheckBox bronze_traits = new CheckBox();
         private static CheckBox carryCheck = new CheckBox();
+        private static CheckBox carryCheck_unspecified = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -57,7 +58,8 @@ namespace TFT_Comp_Creator_2
             NumericUpDown min_upgrades_included_,
             ListBox include_spatula_,
             CheckBox bronze_traits_,
-            CheckBox carryCheck_
+            CheckBox carryCheck_,
+            CheckBox carryCheck_unspecified_
             )
         {
             Master = M;
@@ -84,6 +86,7 @@ namespace TFT_Comp_Creator_2
 
             bronze_traits = bronze_traits_;
             carryCheck = carryCheck_;
+            carryCheck_unspecified = carryCheck_unspecified_;
 
         }
 
@@ -155,6 +158,7 @@ namespace TFT_Comp_Creator_2
                         userPreferredTraits.Add(trait);
                     }
                 }
+
 
                 // This weight helps with scoring a comp that adheres to included traits
                 // meaning preferences have a higher impact (1.3 - 2.0 is an ok range)
@@ -241,6 +245,9 @@ namespace TFT_Comp_Creator_2
 
                 int cost = (int)Master["Champions"][champion]["cost"];
 
+                if (cost > 5 && disable_champions_cost_5_more.Checked)
+                    return false;
+
                 if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
                     rangedAmount++;
 
@@ -254,35 +261,33 @@ namespace TFT_Comp_Creator_2
                     case 1:
                         if (disable_champions_cost_1.Checked) { return false; }
                         cost1Amount++;
-                        totalCost += 1;
+                        totalCost += 1 * 3;
                         break;
                     case 2:
                         if (disable_champions_cost_2.Checked) { return false; }
                         cost2Amount++;
-                        totalCost += 2;
+                        totalCost += 2 * 3;
                         break;
                     case 3:
                         if (disable_champions_cost_3.Checked) { return false; }
                         cost3Amount++;
-                        totalCost += 3;
+                        totalCost += 3 * 3;
                         break;
                     case 4:
                         if (disable_champions_cost_4.Checked) { return false; }
                         cost4Amount++;
-                        totalCost += 4;
+                        totalCost += 4 * 3;
                         break;
                     case 5:
                         if (disable_champions_cost_5.Checked) { return false; }
                         cost5Amount++;
-                        totalCost += 5;
+                        totalCost += 5 * 3;
                         break;
                 }
 
                 if (totalCost > Convert.ToInt32(max_comp_cost.Value))
                     return false;
 
-                if (cost > 5 && disable_champions_cost_5_more.Checked)
-                    return false;
 
                 // Size can't be higher than x
                 if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return false; }
@@ -337,6 +342,19 @@ namespace TFT_Comp_Creator_2
                 if (!CarryWorth3(JTraits, carry)) { return false; }
             }
 
+            if(carryCheck_unspecified.Checked)
+            {
+                if(!isCarryPresent(JTraits, comp))
+                    return false;
+            }
+            
+            // Only comps with at least one trait that reaches BP 3 (gold) are considered valid.
+            // Note: traits that only have 2 BP (therefore gold at 2) are ignored
+            if (goldTrait.Checked)
+            {
+                if (!isGoldTraitPresent(JTraits))
+                    return false;
+            }
 
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
@@ -410,6 +428,7 @@ namespace TFT_Comp_Creator_2
             }
 
             
+
        
 
             // Ensure specified emblems are used

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -206,6 +207,7 @@ namespace TFT_Comp_Creator_2
                     ChampionName = ChampionName.Replace("'", "");
 
                     string apiName = (string)JDownload["setData"][setData_ID]["champions"][i]["apiName"];
+                    
 
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
@@ -214,7 +216,7 @@ namespace TFT_Comp_Creator_2
                         JArray LoggedChampionTraits = Master["Champions"][ChampionName]["Traits"];
                         var PotentialNew = JDownload["setData"][setData_ID]["champions"][i]["traits"];
 
-                        if (LoggedChampionTraits == PotentialNew) { i++; continue; }
+                        if (LoggedChampionTraits == PotentialNew) {  i++; continue; }
 
                         List<string> Original = LoggedChampionTraits.Select(j => (string)j).ToList();
                         List<string> New = PotentialNew.Select(j => (string)j).ToList();
@@ -234,7 +236,7 @@ namespace TFT_Comp_Creator_2
                     int traitCount = (int)JDownload["setData"][setData_ID]["champions"][i]["traits"].Count();
 
                     // Ignore invalid champions, they usually cost more than 5 gold or have no traits
-                    if (traitCount < 1 || cost <= 0 || cost > 5) { i++; continue; }
+                    if (traitCount < 1 || cost <= 0 || cost > 5) {   i++; continue; }
 
                     // Verify if trait exists in our previously defined traitlist
                     bool should_skip = false;
@@ -302,7 +304,7 @@ namespace TFT_Comp_Creator_2
                     // Add Champion properties to the champion pool
                     JProperty item_properties = new JProperty(ChampionName,
                         new JObject(
-                            new JProperty("apiName", apiName),
+                            new JProperty("apiName", apiName.Replace("a_", "_").Replace("b_", "_").Replace("c_", "_")),
                             new JProperty("hex", ""),
                             new JProperty("ChampionName", ChampionName),
                             new JProperty("cost", cost),
@@ -339,9 +341,10 @@ namespace TFT_Comp_Creator_2
                     foreach (JProperty item in MasterChampionList.Properties()) // Use JProperty instead of dynamic for clarity
                     {
                         string who = item.Name;
+                        //Print("who: " + who);
+                        string apiName = ((string)Master["Champions"][who]["apiName"]).Replace("a_", "_").Replace("b_", "_").Replace("c_", "_");
 
-                        string apiName = (string)Master["Champions"][who]["apiName"];
-                        temp.Add(apiName);
+                        temp.Add(apiName.Replace("a_","_").Replace("b_","_").Replace("c_","_"));
                     }
                     List<string> OrderedAPI = temp.OrderBy(x => x).ToList();
 
@@ -359,7 +362,7 @@ namespace TFT_Comp_Creator_2
                                 byte result = (byte)(a + 1);
 
                                 Master["Champions"][key]["hex"] = result.ToString("X2");
-                                //Print(Master["Champions"][key]["hex"]);
+                                //Print(key + "   " + Master["Champions"][key]["hex"]);
                                 break;
                             }
                         }
