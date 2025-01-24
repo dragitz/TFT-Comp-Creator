@@ -117,7 +117,17 @@ namespace TFT_Comp_Creator_2
             // Also a try catch in this case isn't the best, but you never know :eyes:
             try
             {
-                debugBox.AppendText(data.ToString() + Environment.NewLine);
+                string currentText = debugBox.Text;
+
+                // check if the last line is empty, avoid empty lines 
+                if (string.IsNullOrWhiteSpace(currentText))
+                {
+                    debugBox.Text = currentText.TrimEnd() + data.ToString() + Environment.NewLine;
+                }
+                else
+                {
+                    debugBox.AppendText(data.ToString() + Environment.NewLine);
+                }
             }
             catch (Exception e) { debugBox.AppendText(e.ToString()); }
         }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Utility;
 
@@ -99,8 +98,20 @@ namespace TFT_Comp_Creator_2
                 else
                 {
                     //Print("Set loaded " + Environment.NewLine);
-                    JDownload = JObject.Parse(File.ReadAllText("en_us.json")); ;
-                    JDownload_planner = JObject.Parse(File.ReadAllText("tftchampions-teamplanner.json")); ;
+                    JDownload = JObject.Parse(File.ReadAllText("en_us.json"));
+
+                    // 24 January 2025: avoid errors
+                    if (!File.Exists("tftchampions-teamplanner.json"))
+                    {
+                        var downloaded = new WebClient().DownloadString(url_comp_codes);
+                        JDownload_planner = JObject.Parse(downloaded);
+                        File.WriteAllText("tftchampions-teamplanner.json", JDownload_planner.ToString());
+                    }
+                    else
+                    {
+                        JDownload_planner = JObject.Parse(File.ReadAllText("tftchampions-teamplanner.json"));
+                    }
+
                 }
 
                 // 26 October 2024: fill setup combo box to enable set switching
@@ -207,7 +218,7 @@ namespace TFT_Comp_Creator_2
                     ChampionName = ChampionName.Replace("'", "");
 
                     string apiName = (string)JDownload["setData"][setData_ID]["champions"][i]["apiName"];
-                    
+
 
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
@@ -216,7 +227,7 @@ namespace TFT_Comp_Creator_2
                         JArray LoggedChampionTraits = Master["Champions"][ChampionName]["Traits"];
                         var PotentialNew = JDownload["setData"][setData_ID]["champions"][i]["traits"];
 
-                        if (LoggedChampionTraits == PotentialNew) {  i++; continue; }
+                        if (LoggedChampionTraits == PotentialNew) { i++; continue; }
 
                         List<string> Original = LoggedChampionTraits.Select(j => (string)j).ToList();
                         List<string> New = PotentialNew.Select(j => (string)j).ToList();
@@ -236,7 +247,7 @@ namespace TFT_Comp_Creator_2
                     int traitCount = (int)JDownload["setData"][setData_ID]["champions"][i]["traits"].Count();
 
                     // Ignore invalid champions, they usually cost more than 5 gold or have no traits
-                    if (traitCount < 1 || cost <= 0 || cost > 5) {   i++; continue; }
+                    if (traitCount < 1 || cost <= 0 || cost > 5) { i++; continue; }
 
                     // Verify if trait exists in our previously defined traitlist
                     bool should_skip = false;
@@ -344,7 +355,7 @@ namespace TFT_Comp_Creator_2
                         //Print("who: " + who);
                         string apiName = ((string)Master["Champions"][who]["apiName"]).Replace("a_", "_").Replace("b_", "_").Replace("c_", "_");
 
-                        temp.Add(apiName.Replace("a_","_").Replace("b_","_").Replace("c_","_"));
+                        temp.Add(apiName.Replace("a_", "_").Replace("b_", "_").Replace("c_", "_"));
                     }
                     List<string> OrderedAPI = temp.OrderBy(x => x).ToList();
 

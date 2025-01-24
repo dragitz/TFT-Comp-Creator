@@ -725,7 +725,7 @@ namespace TFT_Comp_Creator_2
             string code = "01";
             foreach (string champion in comp)
             {
-                Print(champion);
+                //Print(champion);
                 if (Master["Champions"][champion]["hex"] == "")
                 {
                     PrintDebug("No hex data available for current comp/set");
