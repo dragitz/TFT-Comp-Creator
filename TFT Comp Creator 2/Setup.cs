@@ -71,7 +71,7 @@ namespace TFT_Comp_Creator_2
                 JObject JDownload_planner = new JObject();
 
                 string url = "https://raw.communitydragon.org/pbe/cdragon/tft/en_us.json";
-                string url_comp_codes = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json";
+                string url_comp_codes = "https://raw.communitydragon.org/pbe/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json";
 
                 // If our custom file already exists, then load it
                 //if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
@@ -214,6 +214,9 @@ namespace TFT_Comp_Creator_2
                     if (i >= ChampionList.Count) { break; }
 
                     string ChampionName = (string)JDownload["setData"][setData_ID]["champions"][i]["name"];
+
+                    if(ChampionName == null) { continue; }
+
                     ChampionName = ChampionName.Replace(" & Willump", "");
                     ChampionName = ChampionName.Replace("'", "");
 
