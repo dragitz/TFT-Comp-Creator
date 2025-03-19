@@ -11,7 +11,8 @@ My goal with this project, is to **compute unique non meta comps** to explore an
 Bug testing is required !
 
 
-![image](https://github.com/user-attachments/assets/b3960e33-da9d-4cd5-aa22-ae49866a1d9b)
+![immagine](https://github.com/user-attachments/assets/fceccfe9-2254-47c5-a34f-688c7349b5a5)
+
 
 
 
