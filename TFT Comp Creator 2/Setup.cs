@@ -348,37 +348,23 @@ namespace TFT_Comp_Creator_2
                 // ensure comp code can be defined
                 if (JDownload_planner.ContainsKey(setKey))
                 {
-                    //Print(setKey);
-                    List<string> temp = new List<string> { };
+                    JArray champions = (JArray)JDownload_planner[setKey];
 
-                    JObject MasterChampionList = (JObject)Master["Champions"];
-                    foreach (JProperty item in MasterChampionList.Properties()) // Use JProperty instead of dynamic for clarity
+                    foreach (JToken token in champions) // Iterate over the array
                     {
-                        string who = item.Name;
-                        //Print("who: " + who);
-                        string apiName = ((string)Master["Champions"][who]["apiName"]).Replace("a_", "_").Replace("b_", "_").Replace("c_", "_");
+                        string ChampName = (string)token["display_name"];
+                        if(ChampName == null) { continue; }
 
-                        temp.Add(apiName.Replace("a_", "_").Replace("b_", "_").Replace("c_", "_"));
-                    }
-                    List<string> OrderedAPI = temp.OrderBy(x => x).ToList();
+                        ChampName = ChampName.Replace("'", "");
+                        
+                        int teamPlannerCode = (int)token["team_planner_code"];
 
-                    JObject AllChampionsInMaster = Master["Champions"];
-                    // assign hex based on its order
-                    for (int a = 0; a < OrderedAPI.Count; a++)
-                    {
-                        string tempApi = OrderedAPI[a];
+                        //Print(teamPlannerCode + "  " + ChampName);
+                        string hexCode = teamPlannerCode.ToString("X2"); // dec to hex
 
-                        foreach (var item in AllChampionsInMaster.Properties())
+                        if (Master["Champions"].ContainsKey(ChampName))
                         {
-                            string key = item.Name;
-                            if (Master["Champions"][key]["apiName"] == tempApi)
-                            {
-                                byte result = (byte)(a + 1);
-
-                                Master["Champions"][key]["hex"] = result.ToString("X2");
-                                //Print(key + "   " + Master["Champions"][key]["hex"]);
-                                break;
-                            }
+                            Master["Champions"][ChampName]["hex"] = hexCode;
                         }
                     }
                 }

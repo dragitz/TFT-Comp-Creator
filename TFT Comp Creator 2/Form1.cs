@@ -716,19 +716,19 @@ namespace TFT_Comp_Creator_2
         {
             List<string> comp = compBox.Text.Split('-').ToList();
 
-            if (comp.Count > 10)
+            if (comp.Count < 1)
             {
-                PrintDebug("Import code does not support more than 10 champions");
+                PrintDebug("Invalid comp size");
                 return;
             }
 
-            string code = "01";
+            string code = "02";
             foreach (string champion in comp)
             {
                 //Print(champion);
                 if (Master["Champions"][champion]["hex"] == "")
                 {
-                    PrintDebug("No hex data available for current comp/set");
+                    PrintDebug("No hex data available for current comp/set: "+ champion);
                     return;
                 }
                 code += Master["Champions"][champion]["hex"];
@@ -742,7 +742,7 @@ namespace TFT_Comp_Creator_2
                     code += "00";
                 }
             }
-            code += setList.Text; // todo: use a global variable, user might change the text without applying new set
+            code += "0" + setList.Text; // todo: use a global variable, user might change the text without applying new set
             PrintDebug(code);
         }
 
