@@ -1,6 +1,6 @@
 # TFT Comp Creator
 
-I've made a wiki to learn about the features: https://github.com/dragitz/TFT-Comp-Creator/wiki/Wiki
+I've made a WIP wiki to learn about the features: https://github.com/dragitz/TFT-Comp-Creator/wiki/Wiki
 
 
 This is a project that I've been working on for a while. With many tests I decided that it was stable enough to be released.
