@@ -35,6 +35,9 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.label29 = new System.Windows.Forms.Label();
+            this.customNodeList = new System.Windows.Forms.TextBox();
+            this.goldTrait = new System.Windows.Forms.CheckBox();
             this.carryCheck_unspecified = new System.Windows.Forms.CheckBox();
             this.carryCheck = new System.Windows.Forms.CheckBox();
             this.bronze_traits = new System.Windows.Forms.CheckBox();
@@ -133,9 +136,6 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.goldTrait = new System.Windows.Forms.CheckBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.customNodeList = new System.Windows.Forms.TextBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -262,6 +262,32 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             this.tabRules.Click += new System.EventHandler(this.tabRules_Click);
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(15, 334);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(74, 13);
+            this.label29.TabIndex = 94;
+            this.label29.Text = "Custom nodes";
+            // 
+            // customNodeList
+            // 
+            this.customNodeList.Location = new System.Drawing.Point(18, 350);
+            this.customNodeList.Name = "customNodeList";
+            this.customNodeList.Size = new System.Drawing.Size(237, 20);
+            this.customNodeList.TabIndex = 93;
+            // 
+            // goldTrait
+            // 
+            this.goldTrait.AutoSize = true;
+            this.goldTrait.Location = new System.Drawing.Point(301, 231);
+            this.goldTrait.Name = "goldTrait";
+            this.goldTrait.Size = new System.Drawing.Size(232, 17);
+            this.goldTrait.TabIndex = 92;
+            this.goldTrait.Text = "Ensure at least one trait has 3 BP (gold trait)";
+            this.goldTrait.UseVisualStyleBackColor = true;
             // 
             // carryCheck_unspecified
             // 
@@ -1406,32 +1432,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.Text = "Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // goldTrait
-            // 
-            this.goldTrait.AutoSize = true;
-            this.goldTrait.Location = new System.Drawing.Point(301, 231);
-            this.goldTrait.Name = "goldTrait";
-            this.goldTrait.Size = new System.Drawing.Size(232, 17);
-            this.goldTrait.TabIndex = 92;
-            this.goldTrait.Text = "Ensure at least one trait has 3 BP (gold trait)";
-            this.goldTrait.UseVisualStyleBackColor = true;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(15, 334);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(74, 13);
-            this.label29.TabIndex = 94;
-            this.label29.Text = "Custom nodes";
-            // 
-            // customNodeList
-            // 
-            this.customNodeList.Location = new System.Drawing.Point(18, 350);
-            this.customNodeList.Name = "customNodeList";
-            this.customNodeList.Size = new System.Drawing.Size(237, 20);
-            this.customNodeList.TabIndex = 93;
             // 
             // Form1
             // 
