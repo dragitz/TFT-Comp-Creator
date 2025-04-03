@@ -108,7 +108,9 @@ namespace TFT_Comp_Creator_2
                     include_spatula,
                     bronze_traits,
                     carryCheck,
-                    carryCheck_unspecified
+                    carryCheck_unspecified,
+                    mustMaxOutTraitLevel,
+                    mustMaxOutTraitLevelCurrent
 
                 );
 
@@ -252,6 +254,8 @@ namespace TFT_Comp_Creator_2
                 List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
                 List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
 
+                trait_snake = default_trait.Items[k].ToString();
+
                 if (ForceStop)
                 {
                     CreateButton.Enabled = false;
@@ -282,7 +286,7 @@ namespace TFT_Comp_Creator_2
 
                     Print(String.Join("-", tempIncludeTrait));
 
-                    trait_snake = default_trait.Items[k].ToString();
+                    
                     int bp_total = Master["TraitList"][trait_snake]["Breakpoints"].Count;
                     int biggest_bp = Master["TraitList"][trait_snake]["Breakpoints"][bp_total - 1];
                     int emblems_required = biggest_bp - Master["TraitChampions"][trait_snake].Count;
@@ -386,13 +390,50 @@ namespace TFT_Comp_Creator_2
 
 
 
-                ConcurrentDictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+                ConcurrentDictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula, trait_snake);
+
+                ConcurrentDictionary<List<string>, int> parallel_results_best = new ConcurrentDictionary<List<string>, int>();
+                if (mustMaxOutTraitLevelCurrent.Checked)
+                {
+                    foreach (List<string> compParallel in parallel_results.Keys)
+                    {
+                        JObject JTraits = constructJTraits(compParallel);
+                        if (!JTraits.ContainsKey(trait_snake)) { continue; } // Ignore if trait isn't present
+
+                        int maxTotalChamps = Master["TraitChampions"][trait_snake].Count;
+                        JArray breakpoints = Master["TraitList"][trait_snake]["Breakpoints"] as JArray;
+
+                        // Get the highest breakpoint that can be reached without emblems
+                        int maxValidBP = breakpoints.Where(bp => (int)bp <= maxTotalChamps).DefaultIfEmpty(0).Max(bp => (int)bp);
+
+                        int result = (int)JTraits[trait_snake];
+
+                        // If the highest breakpoint is unreachable without emblems, check previous valid BP
+                        if (maxValidBP < breakpoints.Max(bp => (int)bp))  // There's a higher BP that we can't reach
+                        {
+                            if (result == maxValidBP)
+                                parallel_results_best[compParallel] = parallel_results[compParallel];
+                        }
+                        else
+                        {
+                            if (result == maxValidBP)  // No need for `-1`, just compare with maxValidBP
+                                parallel_results_best[compParallel] = parallel_results[compParallel];
+                        }
+                    }
+
+                }
+                else
+                {
+                    parallel_results_best = parallel_results;
+                }
+
+                
 
                 // Filter, sort, and take the top 10
-                var top10 = parallel_results
+                var top10 = parallel_results_best
                     .Where(entry => entry.Value > Pet_SynergyBest)
                     .OrderByDescending(entry => entry.Value)
-                    .Take(10);
+                    .Take(20);
 
                 foreach (var obj in top10)
                 {
@@ -599,7 +640,9 @@ namespace TFT_Comp_Creator_2
                                 include_spatula,
                                 bronze_traits,
                                 carryCheck,
-                                carryCheck_unspecified
+                                carryCheck_unspecified,
+                                mustMaxOutTraitLevel,
+                                mustMaxOutTraitLevelCurrent
 
                             );
 

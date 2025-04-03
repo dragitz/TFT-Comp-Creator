@@ -31,6 +31,8 @@ namespace TFT_Comp_Creator_2
         private static CheckBox bronze_traits = new CheckBox();
         private static CheckBox carryCheck = new CheckBox();
         private static CheckBox carryCheck_unspecified = new CheckBox();
+        private static CheckBox mustMaxOutTraitLevel = new CheckBox();
+        private static CheckBox mustMaxOutTraitLevelCurrent = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -59,7 +61,9 @@ namespace TFT_Comp_Creator_2
             ListBox include_spatula_,
             CheckBox bronze_traits_,
             CheckBox carryCheck_,
-            CheckBox carryCheck_unspecified_
+            CheckBox carryCheck_unspecified_,
+            CheckBox mustMaxOutTraitLevel_,
+            CheckBox mustMaxOutTraitLevelCurrent_
             )
         {
             Master = M;
@@ -88,6 +92,8 @@ namespace TFT_Comp_Creator_2
             carryCheck = carryCheck_;
             carryCheck_unspecified = carryCheck_unspecified_;
 
+            mustMaxOutTraitLevel = mustMaxOutTraitLevel_;
+            mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
         }
 
         /// <summary>
@@ -335,19 +341,23 @@ namespace TFT_Comp_Creator_2
             if (include_champion.Items.Count > 0 && carryCheck.Checked)
             {
                 List<string> carry = new List<string>();
-                foreach(string champion in  include_champion.Items)
+                foreach (string champion in include_champion.Items)
                 {
                     carry.Add(champion);
                 }
                 if (!CarryWorth3(JTraits, carry)) { return false; }
+
+                // 
+
+
             }
 
-            if(carryCheck_unspecified.Checked)
+            if (carryCheck_unspecified.Checked)
             {
-                if(!isCarryPresent(JTraits, comp))
+                if (!isCarryPresent(JTraits, comp))
                     return false;
             }
-            
+
             // Only comps with at least one trait that reaches BP 3 (gold) are considered valid.
             // Note: traits that only have 2 BP (therefore gold at 2) are ignored
             if (goldTrait.Checked)
@@ -403,12 +413,25 @@ namespace TFT_Comp_Creator_2
             }
 
 
-
             // Included / Excluded trait check
             foreach (string Trait in include_trait.Items)
             {
                 if (!isTraitActive(JTraits, Trait))
                     return false;
+
+                if (mustMaxOutTraitLevel.Checked)
+                {
+                    // compute max potential without a spatula
+                    List<string> wantedTraitList = new List<string>();
+
+                    foreach (dynamic item in include_trait.Items)
+                    {
+                        wantedTraitList.Add(item.ToString());
+                    }
+                    if (!isTraitMaxedOutNoSpatula(JTraits, wantedTraitList))
+                        return false;
+                    //int amount = JTraitsMaster["TraitChampions"]
+                }
             }
 
             foreach (string Trait in exclude_trait.Items)
@@ -427,9 +450,9 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
-            
 
-       
+
+
 
             // Ensure specified emblems are used
             foreach (string Trait in include_spatula.Items)
@@ -450,7 +473,7 @@ namespace TFT_Comp_Creator_2
                 if (bronze_traits.Checked)
                 {
                     int BP = CheckBreakPointAmount(JTraits, Trait);
-                    if(BP > 1) { return false; }
+                    if (BP > 1) { return false; }
                 }
 
                 if (isTraitActive(JTraits, Trait))

@@ -208,6 +208,7 @@ namespace TFT_Comp_Creator_2
             return traits;
         }
 
+
         public static bool isGoldTraitPresent(JObject JTraits)
         {
             foreach (var item in JTraits.Properties())
@@ -240,6 +241,71 @@ namespace TFT_Comp_Creator_2
                     BP = i + 1;
             }
             return BP;
+        }
+
+        public static JObject constructJTraits(List<string> comp)
+        {
+            JObject JTraits = new JObject();
+            List<string> TraitsInComp = new List<string>();
+
+            foreach (string champion in comp)
+            {
+                // Add the trait to the list
+                dynamic Traits = Master["Champions"][champion]["Traits"];
+                foreach (string Trait in Traits)
+                {
+                    if (TraitsInComp.Contains(Trait))
+                        continue;
+
+                    TraitsInComp.Add(Trait);
+                    JProperty item_properties = new JProperty(Trait, 0);
+                    JTraits.Add(item_properties);
+                }
+
+                // Populate JTraits
+                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+
+                dynamic TraitsArray = Master["Champions"][champion]["Traits"];
+
+                for (int k = 0; k < ChampionTraitsAmount; k++)
+                {
+                    string CurrentTrait = (string)TraitsArray[k];
+
+                    if (TraitsInComp.Contains(CurrentTrait))
+                    {
+                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
+                    }
+                }
+            }
+            return JTraits;
+        }
+        public static bool isTraitMaxedOutNoSpatula(JObject JTraits, List<string> wantedTraitList)
+        {
+            foreach (string trait in wantedTraitList)
+            {
+                JArray breakpoints = Master["TraitList"][trait]["Breakpoints"] as JArray;
+                int maxTotalChamps = Master["TraitChampions"][trait].Count;
+
+                // Get the highest achievable breakpoint
+                int maxValidBP = breakpoints.Where(bp => (int)bp <= maxTotalChamps).DefaultIfEmpty(0).Max(bp => (int)bp);
+
+                if (!JTraits.ContainsKey(trait)) return false; // Trait not present at all
+
+                int result = (int)JTraits[trait];
+
+                // If the highest breakpoint is unreachable without emblems, check the previous one
+                if (maxValidBP < breakpoints.Max(bp => (int)bp))  // If there's a higher BP that we can't reach
+                {
+                    if (result != maxValidBP)
+                        return false;
+                }
+                else
+                {
+                    if (result != maxValidBP)  // Don't subtract 1, use the highest valid BP
+                        return false;
+                }
+            }
+            return true;
         }
 
         // (test function) ensure champions with 3 or more traits have all of them active
@@ -561,7 +627,7 @@ namespace TFT_Comp_Creator_2
          */
 
 
-        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
+        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string trait_snake)
         {
             var combinations = GetCombs(items.Count(), CompSize);
 

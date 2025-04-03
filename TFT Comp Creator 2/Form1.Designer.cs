@@ -136,6 +136,8 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.mustMaxOutTraitLevel = new System.Windows.Forms.CheckBox();
+            this.mustMaxOutTraitLevelCurrent = new System.Windows.Forms.CheckBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -202,6 +204,8 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.mustMaxOutTraitLevelCurrent);
+            this.tabRules.Controls.Add(this.mustMaxOutTraitLevel);
             this.tabRules.Controls.Add(this.label29);
             this.tabRules.Controls.Add(this.customNodeList);
             this.tabRules.Controls.Add(this.goldTrait);
@@ -1433,6 +1437,26 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // mustMaxOutTraitLevel
+            // 
+            this.mustMaxOutTraitLevel.AutoSize = true;
+            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(300, 273);
+            this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
+            this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
+            this.mustMaxOutTraitLevel.TabIndex = 95;
+            this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level if possible";
+            this.mustMaxOutTraitLevel.UseVisualStyleBackColor = true;
+            // 
+            // mustMaxOutTraitLevelCurrent
+            // 
+            this.mustMaxOutTraitLevelCurrent.AutoSize = true;
+            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(300, 293);
+            this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
+            this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
+            this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
+            this.mustMaxOutTraitLevelCurrent.Text = "Current checked trait must reach max level if possible";
+            this.mustMaxOutTraitLevelCurrent.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1596,6 +1620,8 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox goldTrait;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox customNodeList;
+        public System.Windows.Forms.CheckBox mustMaxOutTraitLevel;
+        public System.Windows.Forms.CheckBox mustMaxOutTraitLevelCurrent;
     }
 }
 

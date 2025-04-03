@@ -206,7 +206,6 @@ namespace TFT_Comp_Creator_2
 
 
 
-
                 // Create population of champions
                 i = 0;
                 foreach (dynamic items in ChampionList)
@@ -215,17 +214,18 @@ namespace TFT_Comp_Creator_2
 
                     string ChampionName = (string)JDownload["setData"][setData_ID]["champions"][i]["name"];
 
-                    if(ChampionName == null) { continue; }
+                    if (ChampionName == null) { i++; continue; }
 
                     ChampionName = ChampionName.Replace(" & Willump", "");
                     ChampionName = ChampionName.Replace("'", "");
 
                     string apiName = (string)JDownload["setData"][setData_ID]["champions"][i]["apiName"];
-
+                    
 
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
                     {
+                        
 
                         JArray LoggedChampionTraits = Master["Champions"][ChampionName]["Traits"];
                         var PotentialNew = JDownload["setData"][setData_ID]["champions"][i]["traits"];
@@ -353,7 +353,10 @@ namespace TFT_Comp_Creator_2
                     foreach (JToken token in champions) // Iterate over the array
                     {
                         string ChampName = (string)token["display_name"];
-                        if(ChampName == null) { continue; }
+
+
+
+                        if (ChampName == null) { continue; }
 
                         ChampName = ChampName.Replace("'", "");
                         
