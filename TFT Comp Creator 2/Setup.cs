@@ -186,9 +186,10 @@ namespace TFT_Comp_Creator_2
                     JArray br = new JArray();
                     for (int b = 0; b < breakPoints; b++)
                     {
-                        int en = (int)JDownload["setData"][setData_ID]["traits"][i]["effects"][b]["minUnits"];
 
+                        int en = (int)JDownload["setData"][setData_ID]["traits"][i]["effects"][b]["minUnits"];
                         br.Add(en);
+
                     }
 
 
@@ -211,7 +212,11 @@ namespace TFT_Comp_Creator_2
                     i++;
                 }
 
-
+                // This ain't good for future proofing, might need to use a switch statement
+                if (setList.Text == "TFTSet15")
+                {
+                    Master["TraitList"]["The Crew"]["Breakpoints"] = new JArray(5, 6);
+                }
 
                 // Create population of champions
                 i = 0;
@@ -227,7 +232,7 @@ namespace TFT_Comp_Creator_2
                     ChampionName = ChampionName.Replace("'", "");
 
                     string apiName = (string)JDownload["setData"][setData_ID]["champions"][i]["apiName"];
-                    
+
 
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
@@ -251,7 +256,7 @@ namespace TFT_Comp_Creator_2
 
                         ChampionName += "_";
                         //Print(notInCommon);
-                        
+
 
                     }
 
@@ -371,7 +376,7 @@ namespace TFT_Comp_Creator_2
                         if (ChampName == null) { continue; }
 
                         ChampName = ChampName.Replace("'", "");
-                        
+
                         int teamPlannerCode = (int)token["team_planner_code"];
 
                         //Print(teamPlannerCode + "  " + ChampName);

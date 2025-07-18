@@ -382,13 +382,13 @@ namespace TFT_Comp_Creator_2
             // max_comp_cost
             // 
             this.max_comp_cost.Increment = new decimal(new int[] {
-            50,
+            10,
             0,
             0,
             0});
             this.max_comp_cost.Location = new System.Drawing.Point(13, 247);
             this.max_comp_cost.Maximum = new decimal(new int[] {
-            500,
+            200,
             0,
             0,
             0});
@@ -396,7 +396,7 @@ namespace TFT_Comp_Creator_2
             this.max_comp_cost.Size = new System.Drawing.Size(120, 20);
             this.max_comp_cost.TabIndex = 83;
             this.max_comp_cost.Value = new decimal(new int[] {
-            400,
+            90,
             0,
             0,
             0});
@@ -451,6 +451,8 @@ namespace TFT_Comp_Creator_2
             // champion_optimizer
             // 
             this.champion_optimizer.AutoSize = true;
+            this.champion_optimizer.Checked = true;
+            this.champion_optimizer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.champion_optimizer.Location = new System.Drawing.Point(589, 310);
             this.champion_optimizer.Name = "champion_optimizer";
             this.champion_optimizer.Size = new System.Drawing.Size(69, 17);
