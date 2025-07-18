@@ -106,11 +106,18 @@ namespace TFT_Comp_Creator_2
         public static void Print(dynamic data)
         {
             // Also a try catch in this case isn't the best, but you never know :eyes:
-            try
+            if (formObj.InvokeRequired)
+            {
+                formObj.Invoke(new Action(() =>
+                {
+                    formObj.AppendText(data.ToString() + Environment.NewLine);
+                }));
+            }
+            else
             {
                 formObj.AppendText(data.ToString() + Environment.NewLine);
             }
-            catch (Exception e) { formObj.AppendText(e.ToString()); }
+
         }
         public static void PrintDebug(dynamic data)
         {
@@ -156,9 +163,53 @@ namespace TFT_Comp_Creator_2
                 .ThenBy(component => Master["Champions"][component]["ChampionName"])
                 .ToList();
 
-            Print(score + " - " + String.Join("-", comp));
+            JObject JTraits = GetJTraits(comp);
+            double VerticalityScore = CalculateVerticalityScore(comp, JTraits);
+
+
+            Print(score + " - " + String.Join("-", comp) + " - V: " + VerticalityScore);
+
         }
 
+        public static JObject GetJTraits(List<string> comp)
+        {
+
+            JObject JTraits = new JObject();
+            List<string> TraitsInComp = new List<string>();
+            foreach (var champion in comp)
+            {
+                // Add the trait to the list
+                dynamic Traits = Master["Champions"][champion]["Traits"];
+                foreach (string Trait in Traits)
+                {
+                    if (TraitsInComp.Contains(Trait))
+                        continue;
+
+                    TraitsInComp.Add(Trait);
+                    JProperty item_properties = new JProperty(Trait, 0);
+                    JTraits.Add(item_properties);
+                }
+
+                // Populate JTraits
+                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+
+                //dynamic TraitsArray = Master["Champions"][champion]["Traits"];
+                var TraitsArray = (JArray)Master["Champions"][champion]["Traits"];
+
+                for (int k = 0; k < ChampionTraitsAmount; k++)
+                {
+                    string CurrentTrait = (string)TraitsArray[k];
+
+                    if (TraitsInComp.Contains(CurrentTrait))
+                    {
+                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
+
+                    }
+                }
+            }
+            return JTraits;
+
+        }
 
         public static List<string> GetChampionsFromTrait(string trait)
         {
@@ -192,7 +243,7 @@ namespace TFT_Comp_Creator_2
 
                 champions.Add(item);
             }
-
+            //PrintComp(champions, 0);
             return champions;
         }
         public static List<string> GetTraitsFromChampion(string champion)
@@ -225,19 +276,20 @@ namespace TFT_Comp_Creator_2
         public static int CheckBreakPointAmount(JObject JTraits, string Trait)
         {
 
-            dynamic BreakPoints = Master["TraitList"][Trait]["Breakpoints"];
-            int maxBreakpointValue = (int)Master["TraitList"][Trait]["Breakpoints"][BreakPoints.Count - 1];
+            var breakPoints = (JArray)Master["TraitList"][Trait]["Breakpoints"];
+            int maxBreakpointValue = (int)breakPoints.Last;
 
-            if (!JTraits.ContainsKey(Trait) || maxBreakpointValue <= 1)
+
+            if (!JTraits.ContainsKey(Trait) || breakPoints.Count == 0 || (int)breakPoints.Last == 1)
                 return 0;
 
             int Score = (int)JTraits[Trait];
             int BP = 0;
 
-            for (int i = 0; i < BreakPoints.Count; i++)
+            for (int i = 0; i < breakPoints.Count; i++)
             {
                 //Print(Trait + " - " +Score + "  " + (int)BreakPoints[i]);
-                if (Score >= (int)BreakPoints[i])
+                if (Score >= (int)breakPoints[i])
                     BP = i + 1;
             }
             return BP;
@@ -448,7 +500,10 @@ namespace TFT_Comp_Creator_2
 
             // Unique traits do not count as active
             if ((int)Master["TraitList"][Trait]["Breakpoints"].Count <= 1)
+            {
+                //Print(Trait + " no..");
                 return false;
+            }
 
             //Print("AAAA: "+(int)JTraits["Ninja"]);
 
@@ -467,7 +522,11 @@ namespace TFT_Comp_Creator_2
 
             // General case
             if (TraitScore >= minBreakPoint)
+            {
+                //Print(Trait + " no..");
                 return true;
+            }
+
 
             return false;
         }
@@ -643,13 +702,14 @@ namespace TFT_Comp_Creator_2
                     .Split(new[] { "-" }, StringSplitOptions.None)
                     .ToList();
 
-                Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
+
 
                 if (CheckCompValidity(comp, excluded_comp_champions))
                 {
                     // ensure we don't insert comp that has already been added by another thread
                     if (!parallel_results.ContainsKey(comp))
                     {
+                        Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
                         parallel_results.TryAdd(comp, Synergy);
                     }
 

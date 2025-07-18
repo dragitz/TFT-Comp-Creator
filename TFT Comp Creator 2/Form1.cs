@@ -275,7 +275,7 @@ namespace TFT_Comp_Creator_2
                     }
 
                     hashmap.Clear();
-                    status_text.Text = "Synergy: " + Pet_SynergyBest;
+                    //status_text.Text = "Synergy: " + Pet_SynergyBest;
 
                     // Use temporary lists instead of modifying the actual ListBox items
                     //tempIncludeTrait.Clear();
@@ -469,7 +469,7 @@ namespace TFT_Comp_Creator_2
             Print("done");
 
             // Reset form controls and variables
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(1000);
             ForceStop = false;
             Utility.ForceStop = false;
             Scoring.ForceStop = false;
@@ -603,10 +603,6 @@ namespace TFT_Comp_Creator_2
 
         }
 
-        private void tabRules_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void applySet_Click(object sender, EventArgs e)
         {
@@ -676,6 +672,7 @@ namespace TFT_Comp_Creator_2
             foreach (var champion in comp)
             {
                 int cost = (int)Master["Champions"][champion]["cost"];
+                Print(champion + "  " + cost);
 
                 if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
                     rangedAmount++;
@@ -749,6 +746,9 @@ namespace TFT_Comp_Creator_2
             PrintDebug("InactiveTraits: " + InactiveTraits);
             PrintDebug("rangedAmount: " + rangedAmount);
             PrintDebug("tankAmount: " + tankAmount);
+
+            JTraits = GetJTraits(comp);
+            PrintDebug("Verticality: " + CalculateVerticalityScore(comp, JTraits));
             int score = CalculateSynergy(comp, new List<string> { }, new List<string> { }, new List<string> { });
             PrintDebug("Score: " + score);
             //PrintComp(GetChampionsFromTrait("Bastion"), 0);
@@ -788,7 +788,5 @@ namespace TFT_Comp_Creator_2
             code += "0" + setList.Text; // todo: use a global variable, user might change the text without applying new set
             PrintDebug(code);
         }
-
-        
     }
 }

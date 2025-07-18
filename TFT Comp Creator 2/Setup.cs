@@ -76,7 +76,14 @@ namespace TFT_Comp_Creator_2
                 // If our custom file already exists, then load it
                 //if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
 
-                if (!File.Exists("en_us.json"))
+                if (File.Exists("set.json"))
+                {
+                    Print("Loading from en_us.json..." + Environment.NewLine);
+                    Master = JObject.Parse(File.ReadAllText("set.json"));
+                    return Master;
+                }
+
+                if (!File.Exists("set.json"))
                 {
 
                     Print("Downloaded " + url + Environment.NewLine);
@@ -225,7 +232,9 @@ namespace TFT_Comp_Creator_2
                     // Ignore duplicates, unless the same champion is considered different (compare its traits first)
                     if (Master["Champions"].ContainsKey(ChampionName))
                     {
-                        
+
+                        apiName = (string)Master["Champions"][ChampionName]["hex"];
+                        Print(ChampionName);
 
                         JArray LoggedChampionTraits = Master["Champions"][ChampionName]["Traits"];
                         var PotentialNew = JDownload["setData"][setData_ID]["champions"][i]["traits"];
@@ -239,7 +248,10 @@ namespace TFT_Comp_Creator_2
                         // Retrieve elements that are not in common
                         var notInCommon = Original.Except(New).Union(New.Except(Original)).ToList().Last();
 
-                        ChampionName += "-(" + notInCommon + ")";
+
+                        ChampionName += "_";
+                        //Print(notInCommon);
+                        
 
                     }
 

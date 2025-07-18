@@ -95,6 +95,46 @@ namespace TFT_Comp_Creator_2
             mustMaxOutTraitLevel = mustMaxOutTraitLevel_;
             mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
         }
+        public static double CalculateVerticalityScore(List<string> comp, JObject JTraits)
+        {
+            if (ForceStop || comp.Count == 0) return 0.0;
+
+            try
+            {
+                // Step 2: Calculate the breakpoints for each trait in the comp
+                Dictionary<string, int> traitBreakpoints = new Dictionary<string, int>();
+                foreach (var trait in JTraits)
+                {
+                    string traitName = trait.Key;
+                    int unitCount = (int)trait.Value;
+
+                    // Use the CheckBreakPointAmount function to determine breakpoints for each trait
+                    int breakpointsHit = CheckBreakPointAmount(JTraits, traitName);
+                    traitBreakpoints[traitName] = breakpointsHit;
+                }
+
+                // Step 3: Calculate verticality score based on the breakpoints
+                int totalBreakpoints = traitBreakpoints.Values.Sum();
+                int traitCount = traitBreakpoints.Count;
+                if (totalBreakpoints == 0 || traitCount == 0) return 0.0;
+
+                double weightedSum = 0.0;
+                foreach (var bp in traitBreakpoints.Values)
+                {
+                    weightedSum += bp * bp; // Non-linear emphasis on deeper traits
+                }
+
+                // Normalize the verticality score
+                double verticality = weightedSum / (totalBreakpoints * traitCount);
+                return Math.Max(0.0, Math.Min(1.0, verticality));
+            }
+            catch (Exception)
+            {
+                return 0.0;
+            }
+        }
+
+
 
         /// <summary>
         /// 
@@ -208,9 +248,6 @@ namespace TFT_Comp_Creator_2
         }
 
 
-
-
-
         /// <summary>
         /// 
         /// This CheckCompValidity method checks the validity of a list of champions (comp) based on various criteria.
@@ -229,7 +266,7 @@ namespace TFT_Comp_Creator_2
         {
 
             JObject JTraits = new JObject();
-            List<string> JTraits_active = new List<string>();
+
 
             int cost5Amount = 0;
             int cost4Amount = 0;
@@ -241,11 +278,19 @@ namespace TFT_Comp_Creator_2
             int rangedAmount = 0;
             int tankAmount = 0;
 
+            int currentCost1 = Convert.ToInt32(max_cost_1_amount.Value);
+            int currentCost2 = Convert.ToInt32(max_cost_2_amount.Value);
+            int currentCost3 = Convert.ToInt32(max_cost_3_amount.Value);
+            int currentCost4 = Convert.ToInt32(max_cost_4_amount.Value);
+            int currentCost5 = Convert.ToInt32(max_cost_5_amount.Value);
+            
 
             List<string> TraitsInComp = new List<string>();
 
             foreach (var champion in comp)
             {
+
+
                 // Avoid contected comp
                 if (excluded_comp_champions.Contains(champion)) { return false; }
 
@@ -257,7 +302,7 @@ namespace TFT_Comp_Creator_2
                 if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
                     rangedAmount++;
 
-                if ((int)Master["Champions"][champion]["stats"]["range"] <= 1)
+                if ((int)Master["Champions"][champion]["stats"]["range"] == 1)
                     tankAmount++;
 
 
@@ -296,40 +341,19 @@ namespace TFT_Comp_Creator_2
 
 
                 // Size can't be higher than x
-                if (cost5Amount > Convert.ToInt32(max_cost_5_amount.Value)) { return false; }
-                if (cost4Amount > Convert.ToInt32(max_cost_4_amount.Value)) { return false; }
-                if (cost3Amount > Convert.ToInt32(max_cost_3_amount.Value)) { return false; }
-                if (cost2Amount > Convert.ToInt32(max_cost_2_amount.Value)) { return false; }
-                if (cost1Amount > Convert.ToInt32(max_cost_1_amount.Value)) { return false; }
+                if (cost5Amount > currentCost5 ){ return false; }
+                if (cost4Amount > currentCost4 ){ return false; }
+                if (cost3Amount > currentCost3 ){ return false; }
+                if (cost2Amount > currentCost2 ){ return false; }
+                if (cost1Amount > currentCost1 ){ return false; }
 
-
-                // Add the trait to the list
-                dynamic Traits = Master["Champions"][champion]["Traits"];
-                foreach (string Trait in Traits)
-                {
-                    if (TraitsInComp.Contains(Trait))
-                        continue;
-
-                    TraitsInComp.Add(Trait);
-                    JProperty item_properties = new JProperty(Trait, 0);
-                    JTraits.Add(item_properties);
-                }
-
-                // Populate JTraits
-                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
-
-                dynamic TraitsArray = Master["Champions"][champion]["Traits"];
-
-                for (int k = 0; k < ChampionTraitsAmount; k++)
-                {
-                    string CurrentTrait = (string)TraitsArray[k];
-
-                    if (TraitsInComp.Contains(CurrentTrait))
-                    {
-                        JTraits[CurrentTrait] = (int)JTraits[CurrentTrait] + 1;
-                    }
-                }
             }
+
+            JTraits = GetJTraits(comp);
+
+            double Verticality = CalculateVerticalityScore(comp, JTraits);
+            if (Verticality >= 0.9 || Verticality <= 0.09)
+                return false;
 
             // this one isn't good, keep it for reference
             //if (!CarryWorth(JTraits, comp)) { return false; }
@@ -445,7 +469,7 @@ namespace TFT_Comp_Creator_2
                 {
                     int BP = CheckBreakPointAmount(JTraits, Trait);
 
-                    if (isTraitActive(JTraits, Trait) && BP > 1)
+                    if (isTraitActive(JTraits, Trait) && BP >= 1)
                         return false;
                 }
             }
@@ -507,7 +531,10 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
+
             // Check if all champions have contributed to the whole comp
+            List<string> JTraits_active = new List<string>();
+
             foreach (string champion in comp)
             {
                 List<string> champion_traits = GetTraitsFromChampion(champion);
@@ -529,7 +556,8 @@ namespace TFT_Comp_Creator_2
 
                 foreach (string Trait in ChampTraits)
                 {
-                    if (JTraits_active.Contains(Trait)) { has_contributed = true; break; };
+                    if (JTraits_active.Contains(Trait)) { has_contributed = true; break; }
+                    ;
                 }
                 if (!has_contributed) { return false; }
 

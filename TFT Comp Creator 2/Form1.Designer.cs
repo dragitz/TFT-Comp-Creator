@@ -35,6 +35,8 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.mustMaxOutTraitLevelCurrent = new System.Windows.Forms.CheckBox();
+            this.mustMaxOutTraitLevel = new System.Windows.Forms.CheckBox();
             this.label29 = new System.Windows.Forms.Label();
             this.customNodeList = new System.Windows.Forms.TextBox();
             this.goldTrait = new System.Windows.Forms.CheckBox();
@@ -136,8 +138,6 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.mustMaxOutTraitLevel = new System.Windows.Forms.CheckBox();
-            this.mustMaxOutTraitLevelCurrent = new System.Windows.Forms.CheckBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -265,7 +265,26 @@ namespace TFT_Comp_Creator_2
             this.tabRules.TabIndex = 0;
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
-            this.tabRules.Click += new System.EventHandler(this.tabRules_Click);
+            // 
+            // mustMaxOutTraitLevelCurrent
+            // 
+            this.mustMaxOutTraitLevelCurrent.AutoSize = true;
+            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(300, 293);
+            this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
+            this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
+            this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
+            this.mustMaxOutTraitLevelCurrent.Text = "Current checked trait must reach max level if possible";
+            this.mustMaxOutTraitLevelCurrent.UseVisualStyleBackColor = true;
+            // 
+            // mustMaxOutTraitLevel
+            // 
+            this.mustMaxOutTraitLevel.AutoSize = true;
+            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(300, 273);
+            this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
+            this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
+            this.mustMaxOutTraitLevel.TabIndex = 95;
+            this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level if possible";
+            this.mustMaxOutTraitLevel.UseVisualStyleBackColor = true;
             // 
             // label29
             // 
@@ -404,7 +423,7 @@ namespace TFT_Comp_Creator_2
             this.max_inactive_traits.Size = new System.Drawing.Size(120, 20);
             this.max_inactive_traits.TabIndex = 81;
             this.max_inactive_traits.Value = new decimal(new int[] {
-            15,
+            10,
             0,
             0,
             0});
@@ -852,7 +871,7 @@ namespace TFT_Comp_Creator_2
             this.minTraits.Size = new System.Drawing.Size(120, 20);
             this.minTraits.TabIndex = 36;
             this.minTraits.Value = new decimal(new int[] {
-            2,
+            5,
             0,
             0,
             0});
@@ -1436,26 +1455,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.Text = "Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // mustMaxOutTraitLevel
-            // 
-            this.mustMaxOutTraitLevel.AutoSize = true;
-            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(300, 273);
-            this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
-            this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
-            this.mustMaxOutTraitLevel.TabIndex = 95;
-            this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level if possible";
-            this.mustMaxOutTraitLevel.UseVisualStyleBackColor = true;
-            // 
-            // mustMaxOutTraitLevelCurrent
-            // 
-            this.mustMaxOutTraitLevelCurrent.AutoSize = true;
-            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(300, 293);
-            this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
-            this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
-            this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
-            this.mustMaxOutTraitLevelCurrent.Text = "Current checked trait must reach max level if possible";
-            this.mustMaxOutTraitLevelCurrent.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
