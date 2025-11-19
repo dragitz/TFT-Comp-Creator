@@ -14,6 +14,7 @@ using static TFT_Comp_Creator_2.VisualForms;
 namespace TFT_Comp_Creator_2
 {
 
+
     public partial class Form1 : Form
     {
         public static string status;
@@ -41,12 +42,16 @@ namespace TFT_Comp_Creator_2
 
         public struct UnlockConditions
         {
-            public string[] Champions;
-            public int minChampions;        // Field 5 Yordles or Bilgewater units + Level 7
-            public string[] Traits;
-            public int[] TraitMinBP;
-            public int minLevel;
+            public List<string> Champions;
+            public List<int> minChampions;        // Field 5 Yordles or Bilgewater units + Level 7
 
+            public List<string> Traits;
+            public List<int> TraitMinBP;
+
+            public List<string> ChampTraitCount;
+            public List<int> minChampTraitCount;
+
+            public int minLevel;
             public bool isAnd;              // eg. unlock requires 2 champions or either one of them
         }
 
@@ -71,7 +76,21 @@ namespace TFT_Comp_Creator_2
         public static Dictionary<string, Trait> TraitList = new Dictionary<string, Trait>();
 
 
+        public struct CompKey : IEquatable<CompKey>
+        {
+            public readonly string Key;
+            public readonly List<string> Comp;
 
+            public CompKey(List<string> comp)
+            {
+                Comp = comp;
+                Key = string.Join(",", comp); // stable hash
+            }
+
+            public bool Equals(CompKey other) => Key == other.Key;
+            public override bool Equals(object obj) => obj is CompKey other && Equals(other);
+            public override int GetHashCode() => Key.GetHashCode();
+        }
 
 
         public bool ForceStop = false;
@@ -152,7 +171,8 @@ namespace TFT_Comp_Creator_2
                     carryCheck_unspecified,
                     mustMaxOutTraitLevel,
                     mustMaxOutTraitLevelCurrent,
-                    isSpatulaGolem
+                    isSpatulaGolem,
+                    ignoreUnlock
 
                 );
                 
@@ -476,14 +496,16 @@ namespace TFT_Comp_Creator_2
         {
             JObject champions_found = new JObject();
 
-            ConcurrentDictionary<List<string>, int> parallel_results = FindCombinations2(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
+            ConcurrentDictionary<CompKey, int> parallel_results = FindCombinations2(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
 
-            ConcurrentDictionary<List<string>, int> parallel_results_best = new ConcurrentDictionary<List<string>, int>();
+            ConcurrentDictionary<CompKey, int> parallel_results_best = new ConcurrentDictionary<CompKey, int>();
 
             if (mustMaxOutTraitLevelCurrent.Checked)
             {
-                foreach (List<string> compParallel in parallel_results.Keys)
+                foreach (var compKey in parallel_results.Keys)
                 {
+                    List<string> compParallel = compKey.Comp;
+
                     JObject JTraits = constructJTraits(compParallel);
                     if (!JTraits.ContainsKey(current_trait)) { continue; }
 
@@ -502,12 +524,12 @@ namespace TFT_Comp_Creator_2
                     if (maxValidBP < breakpoints.Max(bp => (int)bp))
                     {
                         if (result == maxValidBP)
-                            parallel_results_best[compParallel] = parallel_results[compParallel];
+                            parallel_results_best[compKey] = parallel_results[compKey];
                     }
                     else
                     {
                         if (result == maxValidBP)
-                            parallel_results_best[compParallel] = parallel_results[compParallel];
+                            parallel_results_best[compKey] = parallel_results[compKey];
                     }
                 }
             }
@@ -525,8 +547,10 @@ namespace TFT_Comp_Creator_2
                         emblemMaxBP = breakpoints.DefaultIfEmpty(0).Max(bp => (int)bp);
                     }
 
-                    foreach (List<string> compParallel in parallel_results.Keys)
+                    foreach (var compKey in parallel_results.Keys)
                     {
+                        List<string> compParallel = compKey.Comp;
+
                         JObject JTraits = constructJTraits(compParallel);
                         if (!JTraits.ContainsKey(selectedEmblemTrait)) { continue; }
 
@@ -538,7 +562,7 @@ namespace TFT_Comp_Creator_2
 
                         if (result == emblemMaxBP)
                         {
-                            parallel_results_best[compParallel] = parallel_results[compParallel];
+                            parallel_results_best[compKey] = parallel_results[compKey];
                         }
                     }
                 }
@@ -561,11 +585,11 @@ namespace TFT_Comp_Creator_2
                 if (obj.Value > Pet_SynergyBest)
                     Pet_SynergyBest = obj.Value;
 
-                PrintComp(obj.Key, obj.Value);
+                PrintComp(obj.Key.Comp, obj.Value);
 
                 // analysis
                 //champions_found
-                foreach (string champion_in_comp in obj.Key)
+                foreach (string champion_in_comp in obj.Key.Comp)
                 {
                     if (champions_found[champion_in_comp] != null)
                     {

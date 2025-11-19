@@ -34,6 +34,7 @@ namespace TFT_Comp_Creator_2
         private static CheckBox mustMaxOutTraitLevel = new CheckBox();
         private static CheckBox mustMaxOutTraitLevelCurrent = new CheckBox();
         private static CheckBox isSpatulaGolem = new CheckBox();
+        private static CheckBox ignoreUnlock = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -64,7 +65,8 @@ namespace TFT_Comp_Creator_2
             CheckBox carryCheck_unspecified_,
             CheckBox mustMaxOutTraitLevel_,
             CheckBox mustMaxOutTraitLevelCurrent_,
-            CheckBox isSpatulaGolem_
+            CheckBox isSpatulaGolem_,
+            CheckBox ignoreUnlock_
             )
         {
             no_error = NO;
@@ -95,6 +97,8 @@ namespace TFT_Comp_Creator_2
             mustMaxOutTraitLevel = mustMaxOutTraitLevel_;
             mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
             isSpatulaGolem = isSpatulaGolem_;
+            
+            ignoreUnlock = ignoreUnlock_;
         }
         public static double CalculateVerticalityScore(List<string> comp, JObject JTraits)
         {
@@ -444,6 +448,12 @@ namespace TFT_Comp_Creator_2
                 // 
 
 
+            }
+
+            // set 16
+            if(!ignoreUnlock.Checked)
+            {
+                if(!checkUnlockConditions(JTraits, comp)) {  return false; }
             }
 
             if (carryCheck_unspecified.Checked)

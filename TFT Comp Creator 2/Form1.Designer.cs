@@ -135,6 +135,7 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.ignoreUnlock = new System.Windows.Forms.CheckBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -200,6 +201,7 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.ignoreUnlock);
             this.tabRules.Controls.Add(this.maximizeEmblem);
             this.tabRules.Controls.Add(this.isSpatulaGolem);
             this.tabRules.Controls.Add(this.random_traits);
@@ -1430,6 +1432,16 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // ignoreUnlock
+            // 
+            this.ignoreUnlock.AutoSize = true;
+            this.ignoreUnlock.Location = new System.Drawing.Point(589, 395);
+            this.ignoreUnlock.Name = "ignoreUnlock";
+            this.ignoreUnlock.Size = new System.Drawing.Size(142, 17);
+            this.ignoreUnlock.TabIndex = 100;
+            this.ignoreUnlock.Text = "Ignore unlock conditions";
+            this.ignoreUnlock.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1591,6 +1603,7 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox random_traits;
         public System.Windows.Forms.CheckBox isSpatulaGolem;
         public System.Windows.Forms.CheckBox maximizeEmblem;
+        public System.Windows.Forms.CheckBox ignoreUnlock;
     }
 }
 

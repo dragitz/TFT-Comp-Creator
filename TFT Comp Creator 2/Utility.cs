@@ -488,6 +488,56 @@ namespace TFT_Comp_Creator_2
             return false;
         }
 
+        public static bool checkUnlockConditions(JObject JTraits, List<string> comp)
+        {
+            foreach (string champion in comp)
+            {
+                if (!ChampionList[champion].isLocked) { continue; }
+                bool isAnd = ChampionList[champion].UnlockConditions.isAnd;
+                // level
+                int minChampLevel = ChampionList[champion].UnlockConditions.minLevel;
+                if (comp.Count < minChampLevel) { return false; }
+
+                List<string> reqChampList = ChampionList[champion].UnlockConditions.Champions;
+                //List<string> reqTraitsList = ChampionList[champion].UnlockConditions.Traits;
+                List<string> reqChampTraitCountList = ChampionList[champion].UnlockConditions.ChampTraitCount;
+
+                // do we have that/those champions in the comp?
+                if (reqChampList.Count > 0)
+                {
+                    int foundConditions = 0;
+                    int totalConditions = reqChampList.Count;
+                    foreach (string Champ in reqChampList)
+                    {
+                        if (comp.Contains(Champ)) { foundConditions++; }
+                    }
+                    if (foundConditions < totalConditions && isAnd) { return false; }
+                    if (foundConditions == 0 && !isAnd) { return false; }
+                }
+
+
+                // note: skip traitslist check because there's none (talking about specific breakpoints)
+
+                // ChampTraitCount (how many minimum champions from specified trait must be there)
+                if (reqChampTraitCountList.Count > 0)
+                {
+                    int foundConditions = 0;
+                    int totalConditions = reqChampTraitCountList.Count;
+                    
+
+                    for (int i = 0; i < totalConditions; i++) {
+                        string trait = reqChampTraitCountList[i];
+                        int amount = ChampionList[champion].UnlockConditions.minChampTraitCount[i];
+
+                        int currentCount = (int?)JTraits[trait] ?? 0;
+                        if (currentCount >= amount) { foundConditions++; }
+                    }
+                    if (foundConditions == 0 && !isAnd) { return false; }
+                }
+            }
+            return true;
+        }
+
         public static bool isTraitActive(JObject JTraits, string Trait)
         {
             if (!JTraits.ContainsKey(Trait))
@@ -678,7 +728,7 @@ namespace TFT_Comp_Creator_2
          */
 
 
-        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string trait_snake, List<string> comp)
+        public static ConcurrentDictionary<CompKey, int> FindCombinations2(int CompSize, List<string> items, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string trait_snake, List<string> comp)
         {
             // Get indices of predefined champions
             var predefinedIndices = comp.Select(champion => items.IndexOf(champion)).Where(index => index != -1).ToList();
@@ -701,16 +751,17 @@ namespace TFT_Comp_Creator_2
                 }
             });
 
-            ConcurrentDictionary<List<string>, int> parallel_results = new ConcurrentDictionary<List<string>, int>();
+            ConcurrentDictionary<CompKey, int> parallel_results = new ConcurrentDictionary<CompKey, int>();
 
             Parallel.ForEach(allGeneratedCompIndices, compIndices =>
             {
                 List<string> compResult = compIndices.Select(index => items[index]).ToList();
-                
+
                 if (CheckCompValidity(compResult))
                 {
                     int Synergy = CalculateSynergy(compResult, tempIncludeTrait, tempIncludeSpatula);
-                    parallel_results.TryAdd(compResult, Synergy);
+                    parallel_results.TryAdd(new CompKey(compResult), Synergy);
+
                 }
             });
 
