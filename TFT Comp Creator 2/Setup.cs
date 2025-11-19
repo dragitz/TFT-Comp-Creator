@@ -50,6 +50,16 @@ namespace TFT_Comp_Creator_2
 
         public static dynamic FirstRun(int setData_ID)
         {
+
+            /*
+             Rewriting the setup as of 19th of november, switching to structs instead of json
+
+            I originally make this tool with future proof in mind, but as sets were released, more and more tinkering is required.
+            Removing this autoupdate aspects and focussing on verion specific, allows me to handle each set with more care.
+             
+             */
+
+
             // Keep this try catch, so future updates simply won't crash the program
             try
             {
@@ -74,54 +84,39 @@ namespace TFT_Comp_Creator_2
                 string url_comp_codes = "https://raw.communitydragon.org/pbe/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json";
 
                 // If our custom file already exists, then load it
-                //if (File.Exists("set.json")) { Master = JObject.Parse(File.ReadAllText("set.json")); Print("File loaded! "); return Master; }
-
                 if (File.Exists("set.json"))
                 {
-                    Print("Loading from en_us.json..." + Environment.NewLine);
+                    Print("Loading from set.json..." + Environment.NewLine);
                     Master = JObject.Parse(File.ReadAllText("set.json"));
                     return Master;
                 }
 
-                if (!File.Exists("set.json"))
+                // Download necessary files if they don't exist
+                if (!File.Exists("en_us.json"))
                 {
-
-                    Print("Downloaded " + url + Environment.NewLine);
-
-                    // If our file does not exist, we download it (this is the link for the most recent update)
-                    //var downloaded = new WebClient().DownloadString("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json");
-
-                    // Team planner, refer to https://gist.github.com/bangingheads/243e396f78be1a4d49dc0577abf57a0b
-                    var downloaded = new WebClient().DownloadString(url_comp_codes);
-                    JDownload_planner = JObject.Parse(downloaded);
-                    File.WriteAllText("tftchampions-teamplanner.json", JDownload_planner.ToString());
-
-                    // download setData
-                    downloaded = new WebClient().DownloadString(url);
+                    Print("Downloading " + url + Environment.NewLine);
+                    var downloaded = new WebClient().DownloadString(url);
                     JDownload = JObject.Parse(downloaded);
-
                     File.WriteAllText("en_us.json", JDownload.ToString());
                 }
                 else
                 {
-                    //Print("Set loaded " + Environment.NewLine);
                     JDownload = JObject.Parse(File.ReadAllText("en_us.json"));
-
-                    // 24 January 2025: avoid errors
-                    if (!File.Exists("tftchampions-teamplanner.json"))
-                    {
-                        var downloaded = new WebClient().DownloadString(url_comp_codes);
-                        JDownload_planner = JObject.Parse(downloaded);
-                        File.WriteAllText("tftchampions-teamplanner.json", JDownload_planner.ToString());
-                    }
-                    else
-                    {
-                        JDownload_planner = JObject.Parse(File.ReadAllText("tftchampions-teamplanner.json"));
-                    }
-
                 }
 
-                // 26 October 2024: fill setup combo box to enable set switching
+                if (!File.Exists("tftchampions-teamplanner.json"))
+                {
+                    Print("Downloading " + url_comp_codes + Environment.NewLine);
+                    var downloaded_planner = new WebClient().DownloadString(url_comp_codes);
+                    JDownload_planner = JObject.Parse(downloaded_planner);
+                    File.WriteAllText("tftchampions-teamplanner.json", JDownload_planner.ToString());
+                }
+                else
+                {
+                    JDownload_planner = JObject.Parse(File.ReadAllText("tftchampions-teamplanner.json"));
+                }
+
+                // Fill setup combo box to enable set switching
                 if (setList.Items.Count == 0)
                 {
                     dynamic setData = JDownload["setData"];
@@ -159,11 +154,6 @@ namespace TFT_Comp_Creator_2
 
                     Print("Found most recent set: " + setList.Text);
                 }
-
-                // now that we got our file, it's time to process it
-                // 1) Put all champions into the Champions object
-                // 2) Put all traits into Trait_List & Populate Trait_Champions
-                // 3) Put all champions into the their respective traits in Trait_Champions
 
                 // Store basic info
                 dynamic TraitList = JDownload["setData"][setData_ID]["traits"];
@@ -267,7 +257,7 @@ namespace TFT_Comp_Creator_2
                     int traitCount = (int)JDownload["setData"][setData_ID]["champions"][i]["traits"].Count();
 
                     // Ignore invalid champions, they usually cost more than 5 gold or have no traits
-                    if (traitCount < 1 || cost <= 0 || cost > 5) { i++; continue; }
+                    if (traitCount <= 1 || cost <= 0 || cost > 5) { i++; continue; }
 
                     // Verify if trait exists in our previously defined traitlist
                     bool should_skip = false;

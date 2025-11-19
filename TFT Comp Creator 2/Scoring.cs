@@ -33,6 +33,7 @@ namespace TFT_Comp_Creator_2
         private static CheckBox carryCheck_unspecified = new CheckBox();
         private static CheckBox mustMaxOutTraitLevel = new CheckBox();
         private static CheckBox mustMaxOutTraitLevelCurrent = new CheckBox();
+        private static CheckBox isSpatulaGolem = new CheckBox();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -63,7 +64,8 @@ namespace TFT_Comp_Creator_2
             CheckBox carryCheck_,
             CheckBox carryCheck_unspecified_,
             CheckBox mustMaxOutTraitLevel_,
-            CheckBox mustMaxOutTraitLevelCurrent_
+            CheckBox mustMaxOutTraitLevelCurrent_,
+            CheckBox isSpatulaGolem_
             )
         {
             Master = M;
@@ -94,6 +96,7 @@ namespace TFT_Comp_Creator_2
 
             mustMaxOutTraitLevel = mustMaxOutTraitLevel_;
             mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
+            isSpatulaGolem = isSpatulaGolem_;
         }
         public static double CalculateVerticalityScore(List<string> comp, JObject JTraits)
         {
@@ -150,7 +153,7 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         /// <param name="comp"></param>
         /// <returns></returns>
-        public static int CalculateSynergy(List<string> comp, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
+        public static int CalculateSynergy(List<string> comp, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
         {
             if (ForceStop) { return 0; }
 
@@ -247,7 +250,78 @@ namespace TFT_Comp_Creator_2
 
         }
 
+        /// <summary>
+        /// Calculates the synergy score of a composition.
+        /// The score is determined by the total number of active traits that each champion contributes to.
+        /// For instance, if a champion has three traits and all three are active in the final comp, that champion adds 3 to the total score.
+        /// A bonus is added for each active trait that the user explicitly included in the search criteria.
+        /// </summary>
+        /// <param name="comp">The list of champion names in the composition.</param>
+        /// <param name="excluded_comp_champions">List of champions to exclude (parameter maintained for signature compatibility).</param>
+        /// <param name="tempIncludeTrait">List of user-specified traits to include.</param>
+        /// <param name="tempIncludeSpatula">List of traits added via spatula items.</param>
+        /// <returns>The calculated synergy score.</returns>
+        public static int CalculateSynergy2(List<string> comp, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula)
+        {
+            if (ForceStop) { return 0; }
 
+            try
+            {
+                // First, build a JObject representing the trait counts for the given composition.
+                JObject JTraits = GetJTraits(comp);
+
+                // Account for spatula items by incrementing their respective trait counts.
+                foreach (string trait in tempIncludeSpatula)
+                {
+                    if (JTraits.ContainsKey(trait))
+                    {
+                        JTraits[trait] = (int)JTraits[trait] + 1;
+                    }
+                    else
+                    {
+                        // If the trait doesn't exist in the comp yet, the spatula adds it with a count of 1.
+                        JTraits.Add(new JProperty(trait, 1));
+                    }
+                }
+
+                int synergyScore = 0;
+
+                // Iterate through each champion in the composition to assess their contribution.
+                foreach (string champion in comp)
+                {
+                    // Retrieve the list of traits for the current champion.
+                    List<string> championTraits = GetTraitsFromChampion(champion);
+
+                    // For each of the champion's traits, check if it's active in the overall comp.
+                    foreach (string trait in championTraits)
+                    {
+                        // Use the existing utility function to determine if a trait has met its breakpoint.
+                        if (isTraitActive(JTraits, trait))
+                        {
+                            // If the trait is active, this champion's contribution is counted.
+                            synergyScore++;
+                        }
+                    }
+                }
+
+                // Add a bonus for each active trait that was part of the user's "include" list.
+                // This prioritizes comps that fulfill the user's specific requests.
+                foreach (string includedTrait in tempIncludeTrait)
+                {
+                    if (isTraitActive(JTraits, includedTrait))
+                    {
+                        synergyScore += 3; // Bonus can be adjusted
+                    }
+                }
+
+                return synergyScore;
+            }
+            catch (Exception)
+            {
+                // Maintain the original function's safety net.
+                return 0;
+            }
+        }
         /// <summary>
         /// 
         /// This CheckCompValidity method checks the validity of a list of champions (comp) based on various criteria.
@@ -262,7 +336,7 @@ namespace TFT_Comp_Creator_2
         /// </summary>
         /// <param name="comp"></param>
         /// <returns></returns>
-        public static bool CheckCompValidity(List<string> comp, List<string> excluded_comp_champions)
+        public static bool CheckCompValidity(List<string> comp)
         {
 
             JObject JTraits = new JObject();
@@ -283,16 +357,12 @@ namespace TFT_Comp_Creator_2
             int currentCost3 = Convert.ToInt32(max_cost_3_amount.Value);
             int currentCost4 = Convert.ToInt32(max_cost_4_amount.Value);
             int currentCost5 = Convert.ToInt32(max_cost_5_amount.Value);
-            
+
 
             List<string> TraitsInComp = new List<string>();
 
             foreach (var champion in comp)
             {
-
-
-                // Avoid contected comp
-                if (excluded_comp_champions.Contains(champion)) { return false; }
 
                 int cost = (int)Master["Champions"][champion]["cost"];
 
@@ -341,11 +411,11 @@ namespace TFT_Comp_Creator_2
 
 
                 // Size can't be higher than x
-                if (cost5Amount > currentCost5 ){ return false; }
-                if (cost4Amount > currentCost4 ){ return false; }
-                if (cost3Amount > currentCost3 ){ return false; }
-                if (cost2Amount > currentCost2 ){ return false; }
-                if (cost1Amount > currentCost1 ){ return false; }
+                if (cost5Amount > currentCost5) { return false; }
+                if (cost4Amount > currentCost4) { return false; }
+                if (cost3Amount > currentCost3) { return false; }
+                if (cost2Amount > currentCost2) { return false; }
+                if (cost1Amount > currentCost1) { return false; }
 
             }
 
@@ -395,7 +465,7 @@ namespace TFT_Comp_Creator_2
             if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
 
             // Ensure all emblems can be used
-            if (!canSpatulaBeUsed(JTraits, comp) && include_spatula.Items.Count > 0)
+            if (!isSpatulaGolem.Checked && !canSpatulaBeUsed(JTraits, comp) && include_spatula.Items.Count > 0)
                 return false;
 
             // Add spatula to jtraits
@@ -557,7 +627,6 @@ namespace TFT_Comp_Creator_2
                 foreach (string Trait in ChampTraits)
                 {
                     if (JTraits_active.Contains(Trait)) { has_contributed = true; break; }
-                    ;
                 }
                 if (!has_contributed) { return false; }
 

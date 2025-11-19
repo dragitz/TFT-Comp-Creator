@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Scoring;
@@ -167,7 +166,7 @@ namespace TFT_Comp_Creator_2
             double VerticalityScore = CalculateVerticalityScore(comp, JTraits);
 
 
-            Print(score + " - " + String.Join("-", comp) + " - V: " + VerticalityScore);
+            Print(score + " - " + String.Join("-", comp) + " - V: " + VerticalityScore.ToString("F3"));
 
         }
 
@@ -686,35 +685,39 @@ namespace TFT_Comp_Creator_2
          */
 
 
-        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> excluded_comp_champions, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string trait_snake)
+        public static ConcurrentDictionary<List<string>, int> FindCombinations2(int CompSize, List<string> items, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string trait_snake, List<string> comp)
         {
-            var combinations = GetCombs(items.Count(), CompSize);
+            // Get indices of predefined champions
+            var predefinedIndices = comp.Select(champion => items.IndexOf(champion)).Where(index => index != -1).ToList();
 
-            int Synergy = 0;
+            int remainingSlots = CompSize - predefinedIndices.Count;
 
-            // this new dictionary is thread safe, keep it or crash the whole program
+            // Get combinations of remaining items (excluding predefined ones)
+            var availableIndices = Enumerable.Range(0, items.Count).Except(predefinedIndices).ToList();
+            var combinations = GetCombs(availableIndices.Count, remainingSlots);
+
+            List<int[]> allGeneratedCompIndices = new List<int[]>();
+
+            Parallel.ForEach(combinations, combination =>
+            {
+                // Combine predefined indices with the combination
+                var fullCombination = predefinedIndices.Concat(combination.Select(i => availableIndices[i])).ToArray();
+                lock (allGeneratedCompIndices)
+                {
+                    allGeneratedCompIndices.Add(fullCombination);
+                }
+            });
+
             ConcurrentDictionary<List<string>, int> parallel_results = new ConcurrentDictionary<List<string>, int>();
 
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Parallel.ForEach(combinations, new ParallelOptions { CancellationToken = cts.Token }, combination =>
+            Parallel.ForEach(allGeneratedCompIndices, compIndices =>
             {
-                List<string> comp = string.Join("-", combination.Select(index => items[index]))
-                    .Split(new[] { "-" }, StringSplitOptions.None)
-                    .ToList();
-
-
-
-                if (CheckCompValidity(comp, excluded_comp_champions))
+                List<string> compResult = compIndices.Select(index => items[index]).ToList();
+                if (CheckCompValidity(compResult))
                 {
-                    // ensure we don't insert comp that has already been added by another thread
-                    if (!parallel_results.ContainsKey(comp))
-                    {
-                        Synergy = CalculateSynergy(comp, excluded_comp_champions, tempIncludeTrait, tempIncludeSpatula);
-                        parallel_results.TryAdd(comp, Synergy);
-                    }
-
+                    int Synergy = CalculateSynergy(compResult, tempIncludeTrait, tempIncludeSpatula);
+                    parallel_results.TryAdd(compResult, Synergy);
                 }
-
             });
 
             return parallel_results;

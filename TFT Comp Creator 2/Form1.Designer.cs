@@ -35,18 +35,17 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.maximizeEmblem = new System.Windows.Forms.CheckBox();
+            this.isSpatulaGolem = new System.Windows.Forms.CheckBox();
+            this.random_traits = new System.Windows.Forms.CheckBox();
             this.mustMaxOutTraitLevelCurrent = new System.Windows.Forms.CheckBox();
             this.mustMaxOutTraitLevel = new System.Windows.Forms.CheckBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.customNodeList = new System.Windows.Forms.TextBox();
             this.goldTrait = new System.Windows.Forms.CheckBox();
             this.carryCheck_unspecified = new System.Windows.Forms.CheckBox();
             this.carryCheck = new System.Windows.Forms.CheckBox();
             this.bronze_traits = new System.Windows.Forms.CheckBox();
             this.min_upgrades_included = new System.Windows.Forms.NumericUpDown();
             this.label28 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.excludedComp = new System.Windows.Forms.TextBox();
             this.max_comp_cost = new System.Windows.Forms.NumericUpDown();
             this.label26 = new System.Windows.Forms.Label();
             this.max_inactive_traits = new System.Windows.Forms.NumericUpDown();
@@ -138,6 +137,8 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.algorithm = new System.Windows.Forms.ComboBox();
+            this.label29 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -204,18 +205,19 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
+            this.tabRules.Controls.Add(this.label29);
+            this.tabRules.Controls.Add(this.algorithm);
+            this.tabRules.Controls.Add(this.maximizeEmblem);
+            this.tabRules.Controls.Add(this.isSpatulaGolem);
+            this.tabRules.Controls.Add(this.random_traits);
             this.tabRules.Controls.Add(this.mustMaxOutTraitLevelCurrent);
             this.tabRules.Controls.Add(this.mustMaxOutTraitLevel);
-            this.tabRules.Controls.Add(this.label29);
-            this.tabRules.Controls.Add(this.customNodeList);
             this.tabRules.Controls.Add(this.goldTrait);
             this.tabRules.Controls.Add(this.carryCheck_unspecified);
             this.tabRules.Controls.Add(this.carryCheck);
             this.tabRules.Controls.Add(this.bronze_traits);
             this.tabRules.Controls.Add(this.min_upgrades_included);
             this.tabRules.Controls.Add(this.label28);
-            this.tabRules.Controls.Add(this.label27);
-            this.tabRules.Controls.Add(this.excludedComp);
             this.tabRules.Controls.Add(this.max_comp_cost);
             this.tabRules.Controls.Add(this.label26);
             this.tabRules.Controls.Add(this.max_inactive_traits);
@@ -266,10 +268,40 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             // 
+            // maximizeEmblem
+            // 
+            this.maximizeEmblem.AutoSize = true;
+            this.maximizeEmblem.Location = new System.Drawing.Point(317, 378);
+            this.maximizeEmblem.Name = "maximizeEmblem";
+            this.maximizeEmblem.Size = new System.Drawing.Size(129, 17);
+            this.maximizeEmblem.TabIndex = 99;
+            this.maximizeEmblem.Text = "Maximize one emblem";
+            this.maximizeEmblem.UseVisualStyleBackColor = true;
+            // 
+            // isSpatulaGolem
+            // 
+            this.isSpatulaGolem.AutoSize = true;
+            this.isSpatulaGolem.Location = new System.Drawing.Point(301, 357);
+            this.isSpatulaGolem.Name = "isSpatulaGolem";
+            this.isSpatulaGolem.Size = new System.Drawing.Size(101, 17);
+            this.isSpatulaGolem.TabIndex = 98;
+            this.isSpatulaGolem.Text = "Golem Emblems";
+            this.isSpatulaGolem.UseVisualStyleBackColor = true;
+            // 
+            // random_traits
+            // 
+            this.random_traits.AutoSize = true;
+            this.random_traits.Location = new System.Drawing.Point(303, 320);
+            this.random_traits.Name = "random_traits";
+            this.random_traits.Size = new System.Drawing.Size(133, 17);
+            this.random_traits.TabIndex = 97;
+            this.random_traits.Text = "Include 3 random traits";
+            this.random_traits.UseVisualStyleBackColor = true;
+            // 
             // mustMaxOutTraitLevelCurrent
             // 
             this.mustMaxOutTraitLevelCurrent.AutoSize = true;
-            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(300, 293);
+            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(302, 282);
             this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
             this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
             this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
@@ -279,33 +311,17 @@ namespace TFT_Comp_Creator_2
             // mustMaxOutTraitLevel
             // 
             this.mustMaxOutTraitLevel.AutoSize = true;
-            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(300, 273);
+            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(302, 262);
             this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
             this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
             this.mustMaxOutTraitLevel.TabIndex = 95;
             this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level if possible";
             this.mustMaxOutTraitLevel.UseVisualStyleBackColor = true;
             // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(15, 334);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(74, 13);
-            this.label29.TabIndex = 94;
-            this.label29.Text = "Custom nodes";
-            // 
-            // customNodeList
-            // 
-            this.customNodeList.Location = new System.Drawing.Point(18, 350);
-            this.customNodeList.Name = "customNodeList";
-            this.customNodeList.Size = new System.Drawing.Size(237, 20);
-            this.customNodeList.TabIndex = 93;
-            // 
             // goldTrait
             // 
             this.goldTrait.AutoSize = true;
-            this.goldTrait.Location = new System.Drawing.Point(301, 231);
+            this.goldTrait.Location = new System.Drawing.Point(303, 220);
             this.goldTrait.Name = "goldTrait";
             this.goldTrait.Size = new System.Drawing.Size(232, 17);
             this.goldTrait.TabIndex = 92;
@@ -335,7 +351,7 @@ namespace TFT_Comp_Creator_2
             // bronze_traits
             // 
             this.bronze_traits.AutoSize = true;
-            this.bronze_traits.Location = new System.Drawing.Point(301, 207);
+            this.bronze_traits.Location = new System.Drawing.Point(303, 196);
             this.bronze_traits.Name = "bronze_traits";
             this.bronze_traits.Size = new System.Drawing.Size(220, 17);
             this.bronze_traits.TabIndex = 89;
@@ -362,22 +378,6 @@ namespace TFT_Comp_Creator_2
             this.label28.Size = new System.Drawing.Size(124, 13);
             this.label28.TabIndex = 88;
             this.label28.Text = "Min BP on included traits";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(586, 384);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(74, 13);
-            this.label27.TabIndex = 86;
-            this.label27.Text = "Exluded comp";
-            // 
-            // excludedComp
-            // 
-            this.excludedComp.Location = new System.Drawing.Point(589, 400);
-            this.excludedComp.Name = "excludedComp";
-            this.excludedComp.Size = new System.Drawing.Size(237, 20);
-            this.excludedComp.TabIndex = 85;
             // 
             // max_comp_cost
             // 
@@ -441,7 +441,7 @@ namespace TFT_Comp_Creator_2
             // score_reset
             // 
             this.score_reset.AutoSize = true;
-            this.score_reset.Location = new System.Drawing.Point(607, 333);
+            this.score_reset.Location = new System.Drawing.Point(607, 357);
             this.score_reset.Name = "score_reset";
             this.score_reset.Size = new System.Drawing.Size(145, 17);
             this.score_reset.TabIndex = 80;
@@ -453,11 +453,11 @@ namespace TFT_Comp_Creator_2
             this.champion_optimizer.AutoSize = true;
             this.champion_optimizer.Checked = true;
             this.champion_optimizer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.champion_optimizer.Location = new System.Drawing.Point(589, 310);
+            this.champion_optimizer.Location = new System.Drawing.Point(589, 334);
             this.champion_optimizer.Name = "champion_optimizer";
-            this.champion_optimizer.Size = new System.Drawing.Size(69, 17);
+            this.champion_optimizer.Size = new System.Drawing.Size(174, 17);
             this.champion_optimizer.TabIndex = 78;
-            this.champion_optimizer.Text = "Optimizer";
+            this.champion_optimizer.Text = "Optimizer (intensive calculation)";
             this.champion_optimizer.UseVisualStyleBackColor = true;
             // 
             // maxTraits
@@ -496,7 +496,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(366, 125);
+            this.label14.Location = new System.Drawing.Point(368, 114);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(95, 13);
             this.label14.TabIndex = 75;
@@ -505,7 +505,7 @@ namespace TFT_Comp_Creator_2
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(424, 147);
+            this.label22.Location = new System.Drawing.Point(426, 136);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(51, 13);
             this.label22.TabIndex = 74;
@@ -513,7 +513,7 @@ namespace TFT_Comp_Creator_2
             // 
             // maxTank
             // 
-            this.maxTank.Location = new System.Drawing.Point(427, 163);
+            this.maxTank.Location = new System.Drawing.Point(429, 152);
             this.maxTank.Maximum = new decimal(new int[] {
             11,
             0,
@@ -531,7 +531,7 @@ namespace TFT_Comp_Creator_2
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(298, 147);
+            this.label23.Location = new System.Drawing.Point(300, 136);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(48, 13);
             this.label23.TabIndex = 72;
@@ -539,7 +539,7 @@ namespace TFT_Comp_Creator_2
             // 
             // minTank
             // 
-            this.minTank.Location = new System.Drawing.Point(301, 163);
+            this.minTank.Location = new System.Drawing.Point(303, 152);
             this.minTank.Maximum = new decimal(new int[] {
             10,
             0,
@@ -558,7 +558,7 @@ namespace TFT_Comp_Creator_2
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(366, 39);
+            this.label21.Location = new System.Drawing.Point(368, 28);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(95, 13);
             this.label21.TabIndex = 70;
@@ -605,7 +605,7 @@ namespace TFT_Comp_Creator_2
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(424, 56);
+            this.label17.Location = new System.Drawing.Point(426, 45);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(63, 13);
             this.label17.TabIndex = 65;
@@ -613,7 +613,7 @@ namespace TFT_Comp_Creator_2
             // 
             // maxRanged
             // 
-            this.maxRanged.Location = new System.Drawing.Point(427, 72);
+            this.maxRanged.Location = new System.Drawing.Point(429, 61);
             this.maxRanged.Maximum = new decimal(new int[] {
             11,
             0,
@@ -730,7 +730,7 @@ namespace TFT_Comp_Creator_2
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(298, 56);
+            this.label15.Location = new System.Drawing.Point(300, 45);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(60, 13);
             this.label15.TabIndex = 57;
@@ -738,7 +738,7 @@ namespace TFT_Comp_Creator_2
             // 
             // minRanged
             // 
-            this.minRanged.Location = new System.Drawing.Point(301, 72);
+            this.minRanged.Location = new System.Drawing.Point(303, 61);
             this.minRanged.Maximum = new decimal(new int[] {
             10,
             0,
@@ -1458,6 +1458,28 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // algorithm
+            // 
+            this.algorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.algorithm.FormattingEnabled = true;
+            this.algorithm.Items.AddRange(new object[] {
+            "Greedy-Trait",
+            "Greedy-5star"});
+            this.algorithm.Location = new System.Drawing.Point(12, 374);
+            this.algorithm.Name = "algorithm";
+            this.algorithm.Size = new System.Drawing.Size(121, 21);
+            this.algorithm.TabIndex = 1;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(10, 358);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(50, 13);
+            this.label29.TabIndex = 101;
+            this.label29.Text = "Algorithm";
+            this.label29.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1608,8 +1630,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.TabPage setup;
         private System.Windows.Forms.ComboBox setList;
         private System.Windows.Forms.Button applySet;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.TextBox excludedComp;
         private System.Windows.Forms.NumericUpDown min_upgrades_included;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button debugComp;
@@ -1619,10 +1639,13 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.RichTextBox debugBox;
         public System.Windows.Forms.CheckBox carryCheck_unspecified;
         public System.Windows.Forms.CheckBox goldTrait;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.TextBox customNodeList;
         public System.Windows.Forms.CheckBox mustMaxOutTraitLevel;
         public System.Windows.Forms.CheckBox mustMaxOutTraitLevelCurrent;
+        public System.Windows.Forms.CheckBox random_traits;
+        public System.Windows.Forms.CheckBox isSpatulaGolem;
+        public System.Windows.Forms.CheckBox maximizeEmblem;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.ComboBox algorithm;
     }
 }
 
