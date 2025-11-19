@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Threading;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Nodes;
@@ -21,22 +20,25 @@ namespace TFT_Comp_Creator_2
 
         public struct Trait
         {
-            public int[] Breakpoints;
-            public string[] Champions;
+            public string name;
+            public List<int> Breakpoints;
+            public List<string> Champions;
         }
+
         public struct ChampionStats
         {
-            float armor;
-            float magicResist;
-            float attackSpeed;
-            float critChance;
-            float critMultiplier;
-            float damage;
-            float hp;
-            float initialMana;
-            float mana;
-            float range;
+            public float armor;
+            public float magicResist;
+            public float attackSpeed;
+            public float critChance;
+            public float critMultiplier;
+            public float damage;
+            public float hp;
+            public float initialMana;
+            public float mana;
+            public int range;
         }
+
         public struct UnlockConditions
         {
             public string[] Champions;
@@ -50,11 +52,14 @@ namespace TFT_Comp_Creator_2
 
         public struct Champion
         {
-            public string Name;
-            public string APINAME;
-            public string Cost;
-            public string[] Traits;
-            public ChampionStats Stats;
+            public string name;
+            public string apiName;
+            public string role;
+            public int cost;
+            public string planner_id;
+            public ChampionStats stats;
+            public List<string> Traits;
+
 
             // set 16
             public bool isLocked;
@@ -62,19 +67,10 @@ namespace TFT_Comp_Creator_2
         }
 
 
+        public static Dictionary<string, Champion> ChampionList = new Dictionary<string, Champion>();
+        public static Dictionary<string, Trait> TraitList = new Dictionary<string, Trait>();
 
-        public dynamic Master = new JObject(
-            new JProperty("Champions", new JObject()),
-            new JProperty("TraitList", new JObject()),
-            new JProperty("TraitChampions", new JObject()),
-            new JProperty("Costs", new JObject(
-                    new JProperty("1", new JArray()),
-                    new JProperty("2", new JArray()),
-                    new JProperty("3", new JArray()),
-                    new JProperty("4", new JArray()),
-                    new JProperty("5", new JArray())
-                ))
-        );
+
 
 
 
@@ -128,10 +124,10 @@ namespace TFT_Comp_Creator_2
                 );
 
                 // Setup part 2
-                Master = FirstRun(0);
+                FirstRun(0);
+
 
                 SetFromScoring(
-                    Master,
                     no_error,
                     exclusion_allow_base_trait,
                     max_cost_5_amount,
@@ -159,9 +155,8 @@ namespace TFT_Comp_Creator_2
                     isSpatulaGolem
 
                 );
-
+                
                 SetNodes(
-                    Master,
                     max_cost_5_amount,
                     disable_champions_cost_1,
                     disable_champions_cost_2,
@@ -173,10 +168,7 @@ namespace TFT_Comp_Creator_2
                     exclude_trait
                     );
 
-                Populate(Master);
-
-                InformUtility(Master);
-
+                Populate();
             }
             catch (Exception ex) { Print(ex); }
         }
@@ -278,19 +270,8 @@ namespace TFT_Comp_Creator_2
                 return;
             }
 
-            switch (algorithm.Text)
-            {
-                case "Greedy-Trait":
-                    greedyTraitSearch();
-                    break;
-                case "Greedy-5star":
-                    greedy5starSearch();
-                    break;
-
-                default:
-                    break;
-
-            }
+            // Default algo
+            greedyTraitSearch();
 
 
             //Creation();
@@ -304,118 +285,6 @@ namespace TFT_Comp_Creator_2
             Scoring.ForceStop = false;
             CreateButton.Enabled = true;
             StopButton.Enabled = false;
-        }
-
-
-        // 18th August 2025
-        public void greedy5starSearch()
-        {
-            List<string> comp = new List<string>();
-            List<string> nodes = new List<string>();
-
-
-
-            //string current_trait = "";
-
-            JArray champs5cost = Master["Costs"]["5"];
-            foreach (string champion in champs5cost)
-            {
-                if (ForceStop)
-                {
-                    CreateButton.Enabled = false;
-                    break;
-                }
-
-                List<string> tempIncludeTrait = include_trait.Items.Cast<string>().ToList();
-                List<string> tempIncludeSpatula = include_spatula.Items.Cast<string>().ToList();
-
-                // Reset
-                comp.Clear();
-                nodes.Clear();
-
-                comp.Add(champion);
-
-                foreach (string trait in GetTraitsFromChampion(champion))
-                {
-                    List<string> champs = GetChampionsFromTrait(trait);
-                    nodes = nodes.Union(champs).ToList();
-                }
-
-                // We have all champions directly related to the current 5 cost champ
-                // Now include (and exclude) all required champions
-                foreach (string included_champ in include_champion.Items)
-                {
-                    if (!nodes.Contains(included_champ))
-                        nodes.Add(included_champ);
-
-                    if (!comp.Contains(included_champ))
-                        comp.Add(included_champ);
-                }
-
-                foreach (string excluded_champ in exclude_champion.Items)
-                {
-                    if (nodes.Contains(excluded_champ))
-                        nodes.Remove(excluded_champ);
-                }
-
-                // Include champions from specified traits in the spatula list (emblem)
-                foreach (var spatulaTrait in tempIncludeSpatula)
-                {
-                    foreach (string champ in GetChampionsFromTrait(spatulaTrait))
-                    {
-                        if (!nodes.Contains(champ) && !comp.Contains(champ))
-                            nodes.Add(champ);
-                    }
-                }
-
-                int size = Convert.ToInt32(min_comp_size.Value);
-
-                // Failsafe, gets related champions from the 4cost champions in the node list
-                int cost = 4;
-                int target_size = size + 3 * Convert.ToInt32(depthLevel.Value);
-
-                while (nodes.Count <= target_size && cost > 0)
-                {
-                    foreach (string champ in nodes)
-                    {
-                        if ((int)Master["Champions"][champ]["cost"] != cost)
-                            continue;
-
-                        foreach (string trait in GetTraitsFromChampion(champ))
-                        {
-                            List<string> champs = GetChampionsFromTrait(trait);
-                            nodes = nodes.Union(champs).ToList();
-                        }
-
-                        if (nodes.Count > target_size)
-                            break;
-                    }
-
-                    cost--;
-                }
-
-                Print(champion + " - Nodes " + nodes.Count);
-
-                foreach (string current_trait in default_trait.Items)
-                {
-                    if (ForceStop)
-                    {
-                        CreateButton.Enabled = false;
-                        break;
-                    }
-
-                    if (tempIncludeTrait.Count == 0)
-                        tempIncludeTrait.Add(current_trait);
-
-                    n_choose_k(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
-
-                    if (tempIncludeTrait.Count > 0)
-                        break;
-                }
-
-            }
-
-
         }
 
 
@@ -492,9 +361,13 @@ namespace TFT_Comp_Creator_2
                     Print(String.Join("-", tempIncludeTrait));
 
 
-                    int bp_total = Master["TraitList"][trait_snake]["Breakpoints"].Count;
-                    int biggest_bp = Master["TraitList"][trait_snake]["Breakpoints"][bp_total - 1];
-                    int emblems_required = biggest_bp - Master["TraitChampions"][trait_snake].Count;
+                    //int bp_total = Master["TraitList"][trait_snake]["Breakpoints"].Count;
+                    //int biggest_bp = Master["TraitList"][trait_snake]["Breakpoints"][bp_total - 1];
+                    //int emblems_required = biggest_bp - Master["TraitChampions"][trait_snake].Count;
+
+                    int bp_total = TraitList[trait_snake].Breakpoints.Count;
+                    int biggest_bp = TraitList[trait_snake].Breakpoints[bp_total - 1];
+                    int emblems_required = biggest_bp - TraitList[trait_snake].Champions.Count;
 
                     tempIncludeTrait.Add(trait_snake);
 
@@ -614,10 +487,17 @@ namespace TFT_Comp_Creator_2
                     JObject JTraits = constructJTraits(compParallel);
                     if (!JTraits.ContainsKey(current_trait)) { continue; }
 
-                    int maxTotalChamps = Master["TraitChampions"][current_trait].Count;
-                    JArray breakpoints = Master["TraitList"][current_trait]["Breakpoints"] as JArray;
+                    //int maxTotalChamps = Master["TraitChampions"][current_trait].Count;
+                    //JArray breakpoints = Master["TraitList"][current_trait]["Breakpoints"] as JArray;
+                    //int maxValidBP = breakpoints.Where(bp => (int)bp <= maxTotalChamps).DefaultIfEmpty(0).Max(bp => (int)bp);
+                    //int result = (int)JTraits[current_trait];
+
+                    int maxTotalChamps = TraitList[current_trait].Breakpoints.Count;
+                    List<int> breakpoints = TraitList[current_trait].Breakpoints;
                     int maxValidBP = breakpoints.Where(bp => (int)bp <= maxTotalChamps).DefaultIfEmpty(0).Max(bp => (int)bp);
                     int result = (int)JTraits[current_trait];
+
+
 
                     if (maxValidBP < breakpoints.Max(bp => (int)bp))
                     {
@@ -639,9 +519,9 @@ namespace TFT_Comp_Creator_2
 
                     int emblemMaxBP = 0;
 
-                    if (Master["TraitList"].ContainsKey(selectedEmblemTrait))
+                    if (TraitList.ContainsKey(selectedEmblemTrait))
                     {
-                        JArray breakpoints = Master["TraitList"][selectedEmblemTrait]["Breakpoints"] as JArray;
+                        List<int> breakpoints = TraitList[selectedEmblemTrait].Breakpoints;
                         emblemMaxBP = breakpoints.DefaultIfEmpty(0).Max(bp => (int)bp);
                     }
 
@@ -832,62 +712,6 @@ namespace TFT_Comp_Creator_2
         }
 
 
-        private void applySet_Click(object sender, EventArgs e)
-        {
-            ResetAllForms();
-
-            Master = FirstRun(setList.SelectedIndex);
-
-            //Populate(Master);
-            //InformUtility(Master);
-
-            SetFromScoring(
-                                Master,
-                                no_error,
-                                exclusion_allow_base_trait,
-                                max_cost_5_amount,
-                                max_cost_4_amount,
-                                max_cost_3_amount,
-                                max_cost_2_amount,
-                                max_cost_1_amount,
-                                max_comp_cost,
-                                minTraits,
-                                maxTraits,
-                                max_inactive_traits,
-                                minUpgrades,
-                                minRanged,
-                                maxRanged,
-                                minTank,
-                                maxTank,
-                                trait_3_limiter,
-                                min_upgrades_included,
-                                include_spatula,
-                                bronze_traits,
-                                carryCheck,
-                                carryCheck_unspecified,
-                                mustMaxOutTraitLevel,
-                                mustMaxOutTraitLevelCurrent,
-                                isSpatulaGolem
-
-                            );
-
-            SetNodes(
-                Master,
-                max_cost_5_amount,
-                disable_champions_cost_1,
-                disable_champions_cost_2,
-                disable_champions_cost_3,
-                disable_champions_cost_4,
-                disable_champions_cost_5,
-                disable_champions_cost_5_more,
-
-                exclude_trait
-                );
-
-            Populate(Master);
-
-            InformUtility(Master);
-        }
 
         private void debugComp_Click(object sender, EventArgs e)
         {
@@ -900,17 +724,17 @@ namespace TFT_Comp_Creator_2
             int tankAmount = 0;
             foreach (var champion in comp)
             {
-                int cost = (int)Master["Champions"][champion]["cost"];
+                int cost = (int)ChampionList[champion].cost;
                 Print(champion + "  " + cost);
 
-                if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
+                if ((int)ChampionList[champion].stats.range >= 4)
                     rangedAmount++;
 
-                if ((int)Master["Champions"][champion]["stats"]["range"] <= 1)
+                if ((int)ChampionList[champion].stats.range <= 1)
                     tankAmount++;
 
                 // Add the trait to the list
-                dynamic Traits = Master["Champions"][champion]["Traits"];
+                dynamic Traits = ChampionList[champion].Traits;
                 foreach (string Trait in Traits)
                 {
                     if (TraitsInComp.Contains(Trait))
@@ -922,9 +746,9 @@ namespace TFT_Comp_Creator_2
                 }
 
                 // Populate JTraits
-                int ChampionTraitsAmount = (int)Master["Champions"][champion]["Traits"].Count;
+                int ChampionTraitsAmount = (int)ChampionList[champion].Traits.Count;
 
-                dynamic TraitsArray = Master["Champions"][champion]["Traits"];
+                dynamic TraitsArray = ChampionList[champion].Traits;
 
                 for (int k = 0; k < ChampionTraitsAmount; k++)
                 {
@@ -998,12 +822,12 @@ namespace TFT_Comp_Creator_2
             foreach (string champion in comp)
             {
                 //Print(champion);
-                if (Master["Champions"][champion]["hex"] == "")
+                if (ChampionList[champion].planner_id == "")
                 {
                     PrintDebug("No hex data available for current comp/set: " + champion);
                     return;
                 }
-                code += Master["Champions"][champion]["hex"];
+                code += ChampionList[champion].planner_id;
             }
 
             // comps can be up to 10 champions, if below, fill it with zeros

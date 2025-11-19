@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using static TFT_Comp_Creator_2.Form1;
 using static TFT_Comp_Creator_2.Utility;
 
 namespace TFT_Comp_Creator_2
 {
     public class Scoring
     {
-        public static dynamic Master = new JObject();
         private static CheckBox no_error = new CheckBox();
         private static CheckBox exclusion_allow_base_trait = new CheckBox();
         private static NumericUpDown max_cost_5_amount = new NumericUpDown();
@@ -40,7 +40,6 @@ namespace TFT_Comp_Creator_2
 
         public static bool ForceStop = false;
         public static void SetFromScoring(
-            dynamic M,
             CheckBox NO,
             CheckBox exclusion_allow_base_trait_,
             NumericUpDown max_cost_5_amount_,
@@ -68,7 +67,6 @@ namespace TFT_Comp_Creator_2
             CheckBox isSpatulaGolem_
             )
         {
-            Master = M;
             no_error = NO;
             exclusion_allow_base_trait = exclusion_allow_base_trait_;
             max_cost_5_amount = max_cost_5_amount_;
@@ -175,13 +173,13 @@ namespace TFT_Comp_Creator_2
 
                 foreach (var champ in comp)
                 {
-                    var champTraitsAmount = Master["Champions"][champ]["Traits"].Count - 1;
+                    var champTraitsAmount = ChampionList[champ].Traits.Count - 1;
 
                     List<string> champTraitList = new List<string>();
 
-                    foreach (var trait in Master["Champions"][champ]["Traits"])
+                    foreach (string trait in ChampionList[champ].Traits)
                     {
-                        champTraitList.Add((string)trait);
+                        champTraitList.Add(trait);
                     }
 
                     championsData.Add(champ, champTraitList);
@@ -201,7 +199,7 @@ namespace TFT_Comp_Creator_2
                 }
                 foreach (string champion in include_champion.Items)
                 {
-                    JArray traits = Master["Champions"][champion]["Traits"];
+                    List<string> traits = ChampionList[champion].Traits;
                     foreach (string trait in traits)
                     {
                         userPreferredTraits.Add(trait);
@@ -364,15 +362,15 @@ namespace TFT_Comp_Creator_2
             foreach (var champion in comp)
             {
 
-                int cost = (int)Master["Champions"][champion]["cost"];
+                int cost = ChampionList[champion].cost;
 
                 if (cost > 5 && disable_champions_cost_5_more.Checked)
                     return false;
 
-                if ((int)Master["Champions"][champion]["stats"]["range"] >= 4)
+                if (ChampionList[champion].stats.range >= 4)
                     rangedAmount++;
 
-                if ((int)Master["Champions"][champion]["stats"]["range"] == 1)
+                if (ChampionList[champion].stats.range == 1)
                     tankAmount++;
 
 
@@ -409,7 +407,6 @@ namespace TFT_Comp_Creator_2
                 if (totalCost > Convert.ToInt32(max_comp_cost.Value))
                     return false;
 
-
                 // Size can't be higher than x
                 if (cost5Amount > currentCost5) { return false; }
                 if (cost4Amount > currentCost4) { return false; }
@@ -418,6 +415,9 @@ namespace TFT_Comp_Creator_2
                 if (cost1Amount > currentCost1) { return false; }
 
             }
+
+
+            
 
             JTraits = GetJTraits(comp);
 
@@ -459,7 +459,7 @@ namespace TFT_Comp_Creator_2
                 if (!isGoldTraitPresent(JTraits))
                     return false;
             }
-
+            
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
             if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
@@ -477,12 +477,12 @@ namespace TFT_Comp_Creator_2
                 }
                 else { JTraits[trait] = 1; }
             }
-
+            
             //
             // Check if comp is balanced
             if (no_error.Checked && !isCompBalanced(JTraits))
                 return false;
-
+            
 
             // Included / Excluded champion check
             if (exclude_champion.Items.Count > 0)
@@ -506,7 +506,7 @@ namespace TFT_Comp_Creator_2
                 }
             }
 
-
+            
             // Included / Excluded trait check
             foreach (string Trait in include_trait.Items)
             {
@@ -620,7 +620,7 @@ namespace TFT_Comp_Creator_2
             // Ensure all champions have contributed to the active trait list at least once
             foreach (string champion in comp)
             {
-                JArray ChampTraits = Master["Champions"][champion]["Traits"];
+                List<string> ChampTraits = ChampionList[champion].Traits;
 
                 bool has_contributed = false;
 
@@ -630,7 +630,7 @@ namespace TFT_Comp_Creator_2
                 }
                 if (!has_contributed) { return false; }
 
-                int NumberOfTraits = Master["Champions"][champion]["Traits"].Count;
+                int NumberOfTraits = ChampionList[champion].Traits.Count;
                 if (NumberOfTraits >= 3)
                     championsWith_3_traits_or_more++;
 

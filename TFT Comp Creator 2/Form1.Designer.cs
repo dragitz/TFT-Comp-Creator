@@ -130,15 +130,11 @@ namespace TFT_Comp_Creator_2
             this.label19 = new System.Windows.Forms.Label();
             this.include_spatula = new System.Windows.Forms.ListBox();
             this.setup = new System.Windows.Forms.TabPage();
-            this.setList = new System.Windows.Forms.ComboBox();
-            this.applySet = new System.Windows.Forms.Button();
             this.status_text = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.algorithm = new System.Windows.Forms.ComboBox();
-            this.label29 = new System.Windows.Forms.Label();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -167,7 +163,6 @@ namespace TFT_Comp_Creator_2
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.setup.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuTab
@@ -205,8 +200,6 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
-            this.tabRules.Controls.Add(this.label29);
-            this.tabRules.Controls.Add(this.algorithm);
             this.tabRules.Controls.Add(this.maximizeEmblem);
             this.tabRules.Controls.Add(this.isSpatulaGolem);
             this.tabRules.Controls.Add(this.random_traits);
@@ -1380,33 +1373,12 @@ namespace TFT_Comp_Creator_2
             // 
             // setup
             // 
-            this.setup.Controls.Add(this.setList);
-            this.setup.Controls.Add(this.applySet);
             this.setup.Location = new System.Drawing.Point(4, 22);
             this.setup.Name = "setup";
             this.setup.Size = new System.Drawing.Size(897, 472);
             this.setup.TabIndex = 2;
             this.setup.Text = "Setup";
             this.setup.UseVisualStyleBackColor = true;
-            // 
-            // setList
-            // 
-            this.setList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.setList.FormattingEnabled = true;
-            this.setList.Location = new System.Drawing.Point(103, 61);
-            this.setList.Name = "setList";
-            this.setList.Size = new System.Drawing.Size(121, 21);
-            this.setList.TabIndex = 1;
-            // 
-            // applySet
-            // 
-            this.applySet.Location = new System.Drawing.Point(230, 61);
-            this.applySet.Name = "applySet";
-            this.applySet.Size = new System.Drawing.Size(75, 23);
-            this.applySet.TabIndex = 0;
-            this.applySet.Text = "Change set";
-            this.applySet.UseVisualStyleBackColor = true;
-            this.applySet.Click += new System.EventHandler(this.applySet_Click);
             // 
             // status_text
             // 
@@ -1458,28 +1430,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // algorithm
-            // 
-            this.algorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.algorithm.FormattingEnabled = true;
-            this.algorithm.Items.AddRange(new object[] {
-            "Greedy-Trait",
-            "Greedy-5star"});
-            this.algorithm.Location = new System.Drawing.Point(12, 374);
-            this.algorithm.Name = "algorithm";
-            this.algorithm.Size = new System.Drawing.Size(121, 21);
-            this.algorithm.TabIndex = 1;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(10, 358);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(50, 13);
-            this.label29.TabIndex = 101;
-            this.label29.Text = "Algorithm";
-            this.label29.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1530,7 +1480,6 @@ namespace TFT_Comp_Creator_2
             this.tabPage5.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.setup.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1628,8 +1577,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.NumericUpDown max_comp_cost;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.TabPage setup;
-        private System.Windows.Forms.ComboBox setList;
-        private System.Windows.Forms.Button applySet;
         private System.Windows.Forms.NumericUpDown min_upgrades_included;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button debugComp;
@@ -1644,8 +1591,6 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox random_traits;
         public System.Windows.Forms.CheckBox isSpatulaGolem;
         public System.Windows.Forms.CheckBox maximizeEmblem;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.ComboBox algorithm;
     }
 }
 
