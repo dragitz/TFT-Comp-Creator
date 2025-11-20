@@ -1,4 +1,4 @@
-# TFT Comp Creator
+# TFT Comp Creator - (Current: Set 16 Experimental)
 
 I've made a WIP wiki to learn about the features: https://github.com/dragitz/TFT-Comp-Creator/wiki/Wiki
 
