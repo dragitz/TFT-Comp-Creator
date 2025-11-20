@@ -46,7 +46,7 @@ Bug testing is required !
         
 
 ## Bugs n' stuff
-
+* Team planner code generator does not work
 
 
 ## Design
