@@ -556,14 +556,6 @@ namespace TFT_Comp_Creator_2
             var breakpoints = TraitList[Trait].Breakpoints;
             int minBreakPoint = (int)breakpoints[0];
 
-            // Specific case for Ninja trait (must be exactly 1 or 4)
-            if (Trait == "Ninja")
-            {
-                int secondBreakPoint = (int)breakpoints[1];
-                if (TraitScore != minBreakPoint && TraitScore != secondBreakPoint)
-                    return false; // Ninja is inactive if TraitScore isn't 1 or 4
-                return true; // Ninja is active for 1 or 4
-            }
 
             // General case
             if (TraitScore >= minBreakPoint)
@@ -768,6 +760,98 @@ namespace TFT_Comp_Creator_2
             return parallel_results;
         }
 
+        public static ConcurrentDictionary<CompKey, int> FindCombinationsBronzeForLife(
+            int CompSize,
+            List<string> items,
+            List<string> tempIncludeTrait,
+            List<string> tempIncludeSpatula,
+            string trait_snake,
+            List<string> comp)
+        {
+            // Precompute indices of predefined champions
+            var predefinedIndices = comp.Select(ch => items.IndexOf(ch)).Where(i => i != -1).ToList();
+            int remainingSlots = CompSize - predefinedIndices.Count;
+
+            // Available indices to pick from
+            var availableIndices = Enumerable.Range(0, items.Count).Except(predefinedIndices).ToList();
+
+            var parallelResults = new ConcurrentDictionary<CompKey, int>();
+
+            // Recursive lookahead generator
+            void Generate(List<int> currentCombination, Dictionary<string, int> currentTraitCounts, int start)
+            {
+                if (currentCombination.Count == remainingSlots)
+                {
+                    var fullIndices = predefinedIndices.Concat(currentCombination).ToList();
+                    var compResult = fullIndices.Select(idx => items[idx]).ToList();
+
+                    if (CheckCompValidity(compResult))
+                    {
+                        int synergy = CalculateSynergy(compResult, tempIncludeTrait, tempIncludeSpatula);
+                        parallelResults.TryAdd(new CompKey(compResult), synergy);
+                    }
+                    return;
+                }
+
+                for (int i = start; i < availableIndices.Count; i++)
+                {
+                    int idx = availableIndices[i];
+                    string candidate = items[idx];
+
+                    // Simulate adding candidate
+                    var simulatedCounts = new Dictionary<string, int>(currentTraitCounts);
+                    bool losesBronze = false;
+
+                    foreach (var t in ChampionList[candidate].Traits)
+                    {
+                        // Only consider non-unique traits
+                        if (TraitList[t].Champions.Count <= 1)
+                            continue;
+
+                        if (!simulatedCounts.ContainsKey(t))
+                            simulatedCounts[t] = 0;
+
+                        simulatedCounts[t]++;
+
+                        // Bronze-for-Life: if adding candidate pushes trait past Bronze, prune
+                        List<int> breakpoints = TraitList[t].Breakpoints;
+                        if (breakpoints.Count > 0 && simulatedCounts[t] > breakpoints[0])
+                        {
+                            losesBronze = true;
+                            break;
+                        }
+                    }
+
+                    if (losesBronze)
+                        continue;
+
+                    // Add candidate and recurse
+                    currentCombination.Add(idx);
+                    Generate(currentCombination, simulatedCounts, i + 1);
+                    currentCombination.RemoveAt(currentCombination.Count - 1);
+                }
+            }
+
+            // Initialize trait counts for predefined champions
+            var initialTraitCounts = new Dictionary<string, int>();
+            foreach (var ch in comp)
+            {
+                foreach (var t in ChampionList[ch].Traits)
+                {
+                    if (TraitList[t].Champions.Count <= 1)
+                        continue;
+
+                    if (!initialTraitCounts.ContainsKey(t))
+                        initialTraitCounts[t] = 0;
+
+                    initialTraitCounts[t]++;
+                }
+            }
+
+            Generate(new List<int>(), initialTraitCounts, 0);
+
+            return parallelResults;
+        }
 
         public static Dictionary<string, Dictionary<string, int>> BuildAdjacencyMatrix(List<string> nodes)
         {

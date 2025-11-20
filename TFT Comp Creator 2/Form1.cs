@@ -175,7 +175,7 @@ namespace TFT_Comp_Creator_2
                     ignoreUnlock
 
                 );
-                
+
                 SetNodes(
                     max_cost_5_amount,
                     disable_champions_cost_1,
@@ -290,6 +290,7 @@ namespace TFT_Comp_Creator_2
                 return;
             }
 
+
             // Default algo
             greedyTraitSearch();
 
@@ -306,6 +307,8 @@ namespace TFT_Comp_Creator_2
             CreateButton.Enabled = true;
             StopButton.Enabled = false;
         }
+
+        // Represents a champion with its traits
 
 
 
@@ -495,8 +498,18 @@ namespace TFT_Comp_Creator_2
         public void n_choose_k(int size, List<string> nodes, List<string> tempIncludeTrait, List<string> tempIncludeSpatula, string current_trait, List<string> comp)
         {
             JObject champions_found = new JObject();
+            ConcurrentDictionary<CompKey, int> parallel_results;
 
-            ConcurrentDictionary<CompKey, int> parallel_results = FindCombinations2(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
+            // All bronze traits check
+            if (bronze_traits.Checked)
+            {
+                parallel_results = FindCombinationsBronzeForLife(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
+            }
+            else
+            {
+                parallel_results = FindCombinations2(size, nodes, tempIncludeTrait, tempIncludeSpatula, current_trait, comp);
+            }
+
 
             ConcurrentDictionary<CompKey, int> parallel_results_best = new ConcurrentDictionary<CompKey, int>();
 

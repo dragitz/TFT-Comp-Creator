@@ -573,12 +573,6 @@ namespace TFT_Comp_Creator_2
             {
                 string Trait = Obj.Name;
 
-                // All bronze traits check
-                if (bronze_traits.Checked)
-                {
-                    int BP = CheckBreakPointAmount(JTraits, Trait);
-                    if (BP > 1) { return false; }
-                }
 
                 if (isTraitActive(JTraits, Trait))
                 {

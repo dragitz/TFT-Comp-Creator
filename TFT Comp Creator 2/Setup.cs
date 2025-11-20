@@ -225,11 +225,9 @@ namespace TFT_Comp_Creator_2
                 tr.Champions = traitJson["Champions"]?.Select(x => (string)x).ToList() ?? new List<string>();
 
                 int breakPoints = Data["Traits"][traitName]["Breakpoints"].Count();
-                for (int q = 0; q < breakPoints; q++)
-                {
-                    int minValue = (int)Data["Traits"][traitName]["Breakpoints"][q];
-                    tr.Breakpoints.Add(minValue);
-                }
+                
+
+
 
                 JArray championsArray = (JArray)Data["Traits"][traitName]["Champions"];
                 tr.Champions = championsArray.Select(x => (string)x).ToList();
@@ -237,7 +235,6 @@ namespace TFT_Comp_Creator_2
                 //TraitList[tr.name].Add(tr); // wrong way to do this (
                 TraitList.Add(tr.name, tr);
             }
-
 
             ///////////////////////////////////////////////////////////
             JObject Champions = (JObject)Data["Champions"];
