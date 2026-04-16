@@ -10,6 +10,7 @@ using static TFT_Comp_Creator_2.Scoring;
 using static TFT_Comp_Creator_2.Setup;
 using static TFT_Comp_Creator_2.Utility;
 using static TFT_Comp_Creator_2.VisualForms;
+using static TFT_Comp_Creator_2.Markov;
 
 namespace TFT_Comp_Creator_2
 {
@@ -40,21 +41,6 @@ namespace TFT_Comp_Creator_2
             public int range;
         }
 
-        public struct UnlockConditions
-        {
-            public List<string> Champions;
-            public List<int> minChampions;        // Field 5 Yordles or Bilgewater units + Level 7
-
-            public List<string> Traits;
-            public List<int> TraitMinBP;
-
-            public List<string> ChampTraitCount;
-            public List<int> minChampTraitCount;
-
-            public int minLevel;
-            public bool isAnd;              // eg. unlock requires 2 champions or either one of them
-        }
-
         public struct Champion
         {
             public string name;
@@ -64,11 +50,6 @@ namespace TFT_Comp_Creator_2
             public string planner_id;
             public ChampionStats stats;
             public List<string> Traits;
-
-
-            // set 16
-            public bool isLocked;
-            public UnlockConditions UnlockConditions;
         }
 
 
@@ -94,6 +75,9 @@ namespace TFT_Comp_Creator_2
 
 
         public bool ForceStop = false;
+
+
+
 
         public Form1()
         {
@@ -172,8 +156,7 @@ namespace TFT_Comp_Creator_2
                     mustMaxOutTraitLevel,
                     mustMaxOutTraitLevelCurrent,
                     isSpatulaGolem,
-                    ignoreUnlock
-
+                    traitBiasStrength
                 );
 
                 SetNodes(
@@ -294,6 +277,16 @@ namespace TFT_Comp_Creator_2
             // Default algo
             greedyTraitSearch();
 
+            // Markov
+            for (int k = 0; k < default_trait.Items.Count; k++)
+            {
+                string tempIncludeTrait = (string)default_trait.Items[k];
+
+                //Print(String.Join("-", tempIncludeTrait));
+                
+
+            }
+            //mk(include_champion, ChampionList, TraitList);
 
             //Creation();
 
@@ -309,7 +302,6 @@ namespace TFT_Comp_Creator_2
         }
 
         // Represents a champion with its traits
-
 
 
         public void greedyTraitSearch()

@@ -161,7 +161,8 @@ namespace TFT_Comp_Creator_2
             double VerticalityScore = CalculateVerticalityScore(comp, JTraits);
 
 
-            Print(score + " - " + String.Join("-", comp) + " - V: " + VerticalityScore.ToString("F3"));
+            Print(score + " - " + String.Join("-", comp));
+            //Print(score + " - " + String.Join("-", comp) + " - V: " + VerticalityScore.ToString("F3"));
 
         }
 
@@ -488,55 +489,6 @@ namespace TFT_Comp_Creator_2
             return false;
         }
 
-        public static bool checkUnlockConditions(JObject JTraits, List<string> comp)
-        {
-            foreach (string champion in comp)
-            {
-                if (!ChampionList[champion].isLocked) { continue; }
-                bool isAnd = ChampionList[champion].UnlockConditions.isAnd;
-                // level
-                int minChampLevel = ChampionList[champion].UnlockConditions.minLevel;
-                if (comp.Count < minChampLevel) { return false; }
-
-                List<string> reqChampList = ChampionList[champion].UnlockConditions.Champions;
-                //List<string> reqTraitsList = ChampionList[champion].UnlockConditions.Traits;
-                List<string> reqChampTraitCountList = ChampionList[champion].UnlockConditions.ChampTraitCount;
-
-                // do we have that/those champions in the comp?
-                if (reqChampList.Count > 0)
-                {
-                    int foundConditions = 0;
-                    int totalConditions = reqChampList.Count;
-                    foreach (string Champ in reqChampList)
-                    {
-                        if (comp.Contains(Champ)) { foundConditions++; }
-                    }
-                    if (foundConditions < totalConditions && isAnd) { return false; }
-                    if (foundConditions == 0 && !isAnd) { return false; }
-                }
-
-
-                // note: skip traitslist check because there's none (talking about specific breakpoints)
-
-                // ChampTraitCount (how many minimum champions from specified trait must be there)
-                if (reqChampTraitCountList.Count > 0)
-                {
-                    int foundConditions = 0;
-                    int totalConditions = reqChampTraitCountList.Count;
-                    
-
-                    for (int i = 0; i < totalConditions; i++) {
-                        string trait = reqChampTraitCountList[i];
-                        int amount = ChampionList[champion].UnlockConditions.minChampTraitCount[i];
-
-                        int currentCount = (int?)JTraits[trait] ?? 0;
-                        if (currentCount >= amount) { foundConditions++; }
-                    }
-                    if (foundConditions == 0 && !isAnd) { return false; }
-                }
-            }
-            return true;
-        }
 
         public static bool isTraitActive(JObject JTraits, string Trait)
         {
@@ -768,16 +720,26 @@ namespace TFT_Comp_Creator_2
             string trait_snake,
             List<string> comp)
         {
-            // Precompute indices of predefined champions
+            // 1. Precompute indices
             var predefinedIndices = comp.Select(ch => items.IndexOf(ch)).Where(i => i != -1).ToList();
             int remainingSlots = CompSize - predefinedIndices.Count;
-
-            // Available indices to pick from
             var availableIndices = Enumerable.Range(0, items.Count).Except(predefinedIndices).ToList();
 
             var parallelResults = new ConcurrentDictionary<CompKey, int>();
 
-            // Recursive lookahead generator
+            // 2. Initialize trait counts for predefined champions
+            var initialTraitCounts = new Dictionary<string, int>();
+            foreach (var ch in comp)
+            {
+                foreach (var t in ChampionList[ch].Traits)
+                {
+                    if (TraitList[t].Champions.Count <= 1) continue;
+                    if (!initialTraitCounts.ContainsKey(t)) initialTraitCounts[t] = 0;
+                    initialTraitCounts[t]++;
+                }
+            }
+
+            // 3. Recursive Generator (Standard Serial DFS)
             void Generate(List<int> currentCombination, Dictionary<string, int> currentTraitCounts, int start)
             {
                 if (currentCombination.Count == remainingSlots)
@@ -798,22 +760,17 @@ namespace TFT_Comp_Creator_2
                     int idx = availableIndices[i];
                     string candidate = items[idx];
 
-                    // Simulate adding candidate
+                    // Check constraints
                     var simulatedCounts = new Dictionary<string, int>(currentTraitCounts);
                     bool losesBronze = false;
 
                     foreach (var t in ChampionList[candidate].Traits)
                     {
-                        // Only consider non-unique traits
-                        if (TraitList[t].Champions.Count <= 1)
-                            continue;
+                        if (TraitList[t].Champions.Count <= 1) continue;
 
-                        if (!simulatedCounts.ContainsKey(t))
-                            simulatedCounts[t] = 0;
-
+                        if (!simulatedCounts.ContainsKey(t)) simulatedCounts[t] = 0;
                         simulatedCounts[t]++;
 
-                        // Bronze-for-Life: if adding candidate pushes trait past Bronze, prune
                         List<int> breakpoints = TraitList[t].Breakpoints;
                         if (breakpoints.Count > 0 && simulatedCounts[t] > breakpoints[0])
                         {
@@ -822,37 +779,52 @@ namespace TFT_Comp_Creator_2
                         }
                     }
 
-                    if (losesBronze)
-                        continue;
+                    if (losesBronze) continue;
 
-                    // Add candidate and recurse
+                    // Add and recurse
                     currentCombination.Add(idx);
                     Generate(currentCombination, simulatedCounts, i + 1);
                     currentCombination.RemoveAt(currentCombination.Count - 1);
                 }
             }
 
-            // Initialize trait counts for predefined champions
-            var initialTraitCounts = new Dictionary<string, int>();
-            foreach (var ch in comp)
+            // 4. Parallel Execution (Root Level Only)
+            // We manually unroll the first level of recursion to distribute work
+            Parallel.For(0, availableIndices.Count, i =>
             {
-                foreach (var t in ChampionList[ch].Traits)
+                int idx = availableIndices[i];
+                string candidate = items[idx];
+
+                // Thread-local state initialization
+                var threadCounts = new Dictionary<string, int>(initialTraitCounts);
+                bool losesBronze = false;
+
+                // Replicate logic for the *first* item added in this thread
+                foreach (var t in ChampionList[candidate].Traits)
                 {
-                    if (TraitList[t].Champions.Count <= 1)
-                        continue;
+                    if (TraitList[t].Champions.Count <= 1) continue;
 
-                    if (!initialTraitCounts.ContainsKey(t))
-                        initialTraitCounts[t] = 0;
+                    if (!threadCounts.ContainsKey(t)) threadCounts[t] = 0;
+                    threadCounts[t]++;
 
-                    initialTraitCounts[t]++;
+                    List<int> breakpoints = TraitList[t].Breakpoints;
+                    if (breakpoints.Count > 0 && threadCounts[t] > breakpoints[0])
+                    {
+                        losesBronze = true;
+                        break;
+                    }
                 }
-            }
 
-            Generate(new List<int>(), initialTraitCounts, 0);
+                if (!losesBronze)
+                {
+                    // Start recursion for this branch with a fresh List
+                    var threadCombination = new List<int> { idx };
+                    Generate(threadCombination, threadCounts, i + 1);
+                }
+            });
 
             return parallelResults;
         }
-
         public static Dictionary<string, Dictionary<string, int>> BuildAdjacencyMatrix(List<string> nodes)
         {
             // Initialize adjacency matrix

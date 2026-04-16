@@ -34,7 +34,7 @@ namespace TFT_Comp_Creator_2
         private static CheckBox mustMaxOutTraitLevel = new CheckBox();
         private static CheckBox mustMaxOutTraitLevelCurrent = new CheckBox();
         private static CheckBox isSpatulaGolem = new CheckBox();
-        private static CheckBox ignoreUnlock = new CheckBox();
+        private static NumericUpDown traitBiasStength = new NumericUpDown();
 
 
         public static ListBox include_spatula = new ListBox();
@@ -66,7 +66,7 @@ namespace TFT_Comp_Creator_2
             CheckBox mustMaxOutTraitLevel_,
             CheckBox mustMaxOutTraitLevelCurrent_,
             CheckBox isSpatulaGolem_,
-            CheckBox ignoreUnlock_
+            NumericUpDown traitBiasStength_
             )
         {
             no_error = NO;
@@ -98,7 +98,7 @@ namespace TFT_Comp_Creator_2
             mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
             isSpatulaGolem = isSpatulaGolem_;
             
-            ignoreUnlock = ignoreUnlock_;
+            traitBiasStength = traitBiasStength_;
         }
         public static double CalculateVerticalityScore(List<string> comp, JObject JTraits)
         {
@@ -213,7 +213,8 @@ namespace TFT_Comp_Creator_2
 
                 // This weight helps with scoring a comp that adheres to included traits
                 // meaning preferences have a higher impact (1.3 - 2.0 is an ok range)
-                float preferredTraitWeight = 1.3f; // anti bias
+                float preferredTraitWeight = Convert.ToSingle(traitBiasStength.Value); // anti bias 
+                //preferredTraitWeight = 2.5f;
 
                 object lockObject = new object();
 
@@ -450,11 +451,6 @@ namespace TFT_Comp_Creator_2
 
             }
 
-            // set 16
-            if(!ignoreUnlock.Checked)
-            {
-                if(!checkUnlockConditions(JTraits, comp)) {  return false; }
-            }
 
             if (carryCheck_unspecified.Checked)
             {

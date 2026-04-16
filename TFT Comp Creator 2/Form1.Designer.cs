@@ -35,6 +35,8 @@ namespace TFT_Comp_Creator_2
             this.main = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabRules = new System.Windows.Forms.TabPage();
+            this.traitBiasStrength = new System.Windows.Forms.NumericUpDown();
+            this.label27 = new System.Windows.Forms.Label();
             this.maximizeEmblem = new System.Windows.Forms.CheckBox();
             this.isSpatulaGolem = new System.Windows.Forms.CheckBox();
             this.random_traits = new System.Windows.Forms.CheckBox();
@@ -129,17 +131,16 @@ namespace TFT_Comp_Creator_2
             this.default_spatula = new System.Windows.Forms.ListBox();
             this.label19 = new System.Windows.Forms.Label();
             this.include_spatula = new System.Windows.Forms.ListBox();
-            this.setup = new System.Windows.Forms.TabPage();
             this.status_text = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.RichTextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.ignoreUnlock = new System.Windows.Forms.CheckBox();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.traitBiasStrength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_upgrades_included)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_comp_cost)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_inactive_traits)).BeginInit();
@@ -170,7 +171,6 @@ namespace TFT_Comp_Creator_2
             // 
             this.MenuTab.Controls.Add(this.main);
             this.MenuTab.Controls.Add(this.incEx);
-            this.MenuTab.Controls.Add(this.setup);
             this.MenuTab.Location = new System.Drawing.Point(12, 12);
             this.MenuTab.Name = "MenuTab";
             this.MenuTab.SelectedIndex = 0;
@@ -201,7 +201,8 @@ namespace TFT_Comp_Creator_2
             // 
             // tabRules
             // 
-            this.tabRules.Controls.Add(this.ignoreUnlock);
+            this.tabRules.Controls.Add(this.traitBiasStrength);
+            this.tabRules.Controls.Add(this.label27);
             this.tabRules.Controls.Add(this.maximizeEmblem);
             this.tabRules.Controls.Add(this.isSpatulaGolem);
             this.tabRules.Controls.Add(this.random_traits);
@@ -263,10 +264,49 @@ namespace TFT_Comp_Creator_2
             this.tabRules.Text = "Rules";
             this.tabRules.UseVisualStyleBackColor = true;
             // 
+            // traitBiasStrength
+            // 
+            this.traitBiasStrength.DecimalPlaces = 2;
+            this.traitBiasStrength.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.traitBiasStrength.Location = new System.Drawing.Point(13, 375);
+            this.traitBiasStrength.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.traitBiasStrength.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.traitBiasStrength.Name = "traitBiasStrength";
+            this.traitBiasStrength.Size = new System.Drawing.Size(120, 20);
+            this.traitBiasStrength.TabIndex = 102;
+            this.traitBiasStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.traitBiasStrength.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            65536});
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(10, 359);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(91, 13);
+            this.label27.TabIndex = 101;
+            this.label27.Text = "Trait bias strength";
+            this.label27.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // maximizeEmblem
             // 
             this.maximizeEmblem.AutoSize = true;
-            this.maximizeEmblem.Location = new System.Drawing.Point(317, 378);
+            this.maximizeEmblem.Location = new System.Drawing.Point(317, 372);
             this.maximizeEmblem.Name = "maximizeEmblem";
             this.maximizeEmblem.Size = new System.Drawing.Size(129, 17);
             this.maximizeEmblem.TabIndex = 99;
@@ -276,7 +316,7 @@ namespace TFT_Comp_Creator_2
             // isSpatulaGolem
             // 
             this.isSpatulaGolem.AutoSize = true;
-            this.isSpatulaGolem.Location = new System.Drawing.Point(301, 357);
+            this.isSpatulaGolem.Location = new System.Drawing.Point(301, 351);
             this.isSpatulaGolem.Name = "isSpatulaGolem";
             this.isSpatulaGolem.Size = new System.Drawing.Size(101, 17);
             this.isSpatulaGolem.TabIndex = 98;
@@ -286,7 +326,7 @@ namespace TFT_Comp_Creator_2
             // random_traits
             // 
             this.random_traits.AutoSize = true;
-            this.random_traits.Location = new System.Drawing.Point(303, 320);
+            this.random_traits.Location = new System.Drawing.Point(301, 311);
             this.random_traits.Name = "random_traits";
             this.random_traits.Size = new System.Drawing.Size(133, 17);
             this.random_traits.TabIndex = 97;
@@ -296,7 +336,7 @@ namespace TFT_Comp_Creator_2
             // mustMaxOutTraitLevelCurrent
             // 
             this.mustMaxOutTraitLevelCurrent.AutoSize = true;
-            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(302, 282);
+            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(302, 278);
             this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
             this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
             this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
@@ -306,7 +346,7 @@ namespace TFT_Comp_Creator_2
             // mustMaxOutTraitLevel
             // 
             this.mustMaxOutTraitLevel.AutoSize = true;
-            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(302, 262);
+            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(302, 258);
             this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
             this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
             this.mustMaxOutTraitLevel.TabIndex = 95;
@@ -316,7 +356,7 @@ namespace TFT_Comp_Creator_2
             // goldTrait
             // 
             this.goldTrait.AutoSize = true;
-            this.goldTrait.Location = new System.Drawing.Point(303, 220);
+            this.goldTrait.Location = new System.Drawing.Point(301, 215);
             this.goldTrait.Name = "goldTrait";
             this.goldTrait.Size = new System.Drawing.Size(232, 17);
             this.goldTrait.TabIndex = 92;
@@ -326,7 +366,7 @@ namespace TFT_Comp_Creator_2
             // carryCheck_unspecified
             // 
             this.carryCheck_unspecified.AutoSize = true;
-            this.carryCheck_unspecified.Location = new System.Drawing.Point(589, 266);
+            this.carryCheck_unspecified.Location = new System.Drawing.Point(610, 277);
             this.carryCheck_unspecified.Name = "carryCheck_unspecified";
             this.carryCheck_unspecified.Size = new System.Drawing.Size(142, 17);
             this.carryCheck_unspecified.TabIndex = 91;
@@ -336,7 +376,7 @@ namespace TFT_Comp_Creator_2
             // carryCheck
             // 
             this.carryCheck.AutoSize = true;
-            this.carryCheck.Location = new System.Drawing.Point(589, 247);
+            this.carryCheck.Location = new System.Drawing.Point(610, 258);
             this.carryCheck.Name = "carryCheck";
             this.carryCheck.Size = new System.Drawing.Size(130, 17);
             this.carryCheck.TabIndex = 90;
@@ -346,7 +386,7 @@ namespace TFT_Comp_Creator_2
             // bronze_traits
             // 
             this.bronze_traits.AutoSize = true;
-            this.bronze_traits.Location = new System.Drawing.Point(303, 196);
+            this.bronze_traits.Location = new System.Drawing.Point(301, 192);
             this.bronze_traits.Name = "bronze_traits";
             this.bronze_traits.Size = new System.Drawing.Size(220, 17);
             this.bronze_traits.TabIndex = 89;
@@ -391,7 +431,7 @@ namespace TFT_Comp_Creator_2
             this.max_comp_cost.Size = new System.Drawing.Size(120, 20);
             this.max_comp_cost.TabIndex = 83;
             this.max_comp_cost.Value = new decimal(new int[] {
-            90,
+            100,
             0,
             0,
             0});
@@ -436,7 +476,7 @@ namespace TFT_Comp_Creator_2
             // score_reset
             // 
             this.score_reset.AutoSize = true;
-            this.score_reset.Location = new System.Drawing.Point(607, 357);
+            this.score_reset.Location = new System.Drawing.Point(610, 374);
             this.score_reset.Name = "score_reset";
             this.score_reset.Size = new System.Drawing.Size(145, 17);
             this.score_reset.TabIndex = 80;
@@ -448,7 +488,7 @@ namespace TFT_Comp_Creator_2
             this.champion_optimizer.AutoSize = true;
             this.champion_optimizer.Checked = true;
             this.champion_optimizer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.champion_optimizer.Location = new System.Drawing.Point(589, 334);
+            this.champion_optimizer.Location = new System.Drawing.Point(592, 351);
             this.champion_optimizer.Name = "champion_optimizer";
             this.champion_optimizer.Size = new System.Drawing.Size(174, 17);
             this.champion_optimizer.TabIndex = 78;
@@ -590,7 +630,7 @@ namespace TFT_Comp_Creator_2
             // exclusion_allow_base_trait
             // 
             this.exclusion_allow_base_trait.AutoSize = true;
-            this.exclusion_allow_base_trait.Location = new System.Drawing.Point(589, 207);
+            this.exclusion_allow_base_trait.Location = new System.Drawing.Point(589, 192);
             this.exclusion_allow_base_trait.Name = "exclusion_allow_base_trait";
             this.exclusion_allow_base_trait.Size = new System.Drawing.Size(239, 17);
             this.exclusion_allow_base_trait.TabIndex = 67;
@@ -1309,7 +1349,7 @@ namespace TFT_Comp_Creator_2
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(880, 267);
             this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Spatula (wip)";
+            this.tabPage1.Text = "Emblems";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // spatula_default_to_include
@@ -1373,15 +1413,6 @@ namespace TFT_Comp_Creator_2
             this.include_spatula.TabIndex = 9;
             this.include_spatula.DoubleClick += new System.EventHandler(this.spatula_include_to_default_Click);
             // 
-            // setup
-            // 
-            this.setup.Location = new System.Drawing.Point(4, 22);
-            this.setup.Name = "setup";
-            this.setup.Size = new System.Drawing.Size(897, 472);
-            this.setup.TabIndex = 2;
-            this.setup.Text = "Setup";
-            this.setup.UseVisualStyleBackColor = true;
-            // 
             // status_text
             // 
             this.status_text.AutoSize = true;
@@ -1432,16 +1463,6 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // ignoreUnlock
-            // 
-            this.ignoreUnlock.AutoSize = true;
-            this.ignoreUnlock.Location = new System.Drawing.Point(589, 395);
-            this.ignoreUnlock.Name = "ignoreUnlock";
-            this.ignoreUnlock.Size = new System.Drawing.Size(142, 17);
-            this.ignoreUnlock.TabIndex = 100;
-            this.ignoreUnlock.Text = "Ignore unlock conditions";
-            this.ignoreUnlock.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1464,6 +1485,7 @@ namespace TFT_Comp_Creator_2
             this.tabControl1.ResumeLayout(false);
             this.tabRules.ResumeLayout(false);
             this.tabRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.traitBiasStrength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_upgrades_included)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_comp_cost)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_inactive_traits)).EndInit();
@@ -1588,7 +1610,6 @@ namespace TFT_Comp_Creator_2
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.NumericUpDown max_comp_cost;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.TabPage setup;
         private System.Windows.Forms.NumericUpDown min_upgrades_included;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button debugComp;
@@ -1603,7 +1624,8 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox random_traits;
         public System.Windows.Forms.CheckBox isSpatulaGolem;
         public System.Windows.Forms.CheckBox maximizeEmblem;
-        public System.Windows.Forms.CheckBox ignoreUnlock;
+        private System.Windows.Forms.NumericUpDown traitBiasStrength;
+        private System.Windows.Forms.Label label27;
     }
 }
 

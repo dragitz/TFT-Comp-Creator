@@ -64,8 +64,8 @@ namespace TFT_Comp_Creator_2
         public static void LoadDownloadedSet(JObject JDownload, JObject JDownload_planner)
         {
             // This must be changed every patch
-            string SetID = "16";
-            string SetName = "TFTSet16";
+            string SetID = "17";
+            string SetName = "TFTSet17";
             int i = 0;
 
             // Check validity for SetName and SetID
@@ -93,6 +93,8 @@ namespace TFT_Comp_Creator_2
             i = 0;
             foreach (var item in DownladedTraitList)
             {
+                //int(i);
+
                 Trait tr = new Trait();
                 tr.name = (string)JDownload["sets"][SetID]["traits"][i]["name"];
 
@@ -102,17 +104,20 @@ namespace TFT_Comp_Creator_2
                 int breakPoints = (int)JDownload["sets"][SetID]["traits"][i]["effects"].Count();
                 for (int q = 0; q < breakPoints; q++)
                 {
-                    int minValue = (int)JDownload["sets"][SetID]["traits"][i]["effects"][q]["minUnits"];
+                    int minValue = (int?)JDownload["sets"][SetID]["traits"][i]["effects"][q]["minUnits"] ?? 0;
                     tr.Breakpoints.Add(minValue);
                 }
 
                 // will populate later when iterating champions
                 tr.Champions = new List<string> { };
 
-                //TraitList[tr.name].Add(tr); // wrong way to do this (
-                TraitList.Add(tr.name, tr);
+                //TraitList[tr.name].Add(tr); // wrong way to do this
 
-                i++;
+                // don't add, override! this is because a trait might have different effects each game, but the champions in that trait remain identical
+                //TraitList.Add(tr.name, tr); 
+                TraitList[tr.name] = tr;
+
+                i++; // 119
             }
 
             // Iterate all trough champions
@@ -138,8 +143,22 @@ namespace TFT_Comp_Creator_2
                 }
                 else
                 {
+
+                    
                     Champ.planner_id = "";
-                    Print("invalid planner_id for champion: " + Champ.name + " - apiName: " + Champ.apiName);
+
+                    // Before printing out an error, make some checks to ensure it isn't a champion
+                    if (
+                        !Champ.apiName.Contains("_PVE_") && 
+                        !Champ.apiName.Contains("FakeUnit") && 
+                        Champ.cost <= 5 &&
+                        Champ.apiName != "TFT_TrainingDummy" &&
+                        Champ.apiName != "TFT_BlueGolem"
+                        )
+                    {
+                        Print("invalid planner_id for champion: " + Champ.name + " - apiName: " + Champ.apiName);
+                    }
+
                 }
 
 
@@ -177,32 +196,11 @@ namespace TFT_Comp_Creator_2
 
                 }
 
-                // Keep this empty, I'll manually fill it in the set.json file
-                // it's a new thing added to set 16, might remove it in later patches if unused (or null check it)
-                Champ.isLocked = false;
-                Champ.UnlockConditions = new UnlockConditions();
-                
-                Champ.UnlockConditions.Champions = new List<string> {};
-                Champ.UnlockConditions.minChampions = new List<int> {};
-
-                Champ.UnlockConditions.Traits = new List<string> { };
-                Champ.UnlockConditions.TraitMinBP = new List<int> { };
-
-                Champ.UnlockConditions.ChampTraitCount = new List<string> { };
-                Champ.UnlockConditions.minChampTraitCount = new List<int> { };
-
-                Champ.UnlockConditions.minLevel = 0;
-                Champ.UnlockConditions.isAnd = false;
-
-                //ChampionList.Add(Champ);
                 ChampionList.Add(Champ.name, Champ);
 
                 i++;
             }
             saveToJson();
-
-            Print("Unlock data must be manually set in the .json !!");
-            Print("Please use the one provided in the download or edit it yourself");
         }
 
 
@@ -281,29 +279,6 @@ namespace TFT_Comp_Creator_2
 
                 }
 
-                Champ.isLocked = (bool)Data["Champions"][champName]["isLocked"];
-                
-                Champ.UnlockConditions = new UnlockConditions();
-
-                // sorry for the ugly naming, it's my own pet project after all !
-                JArray unlockChampionsArray = (JArray)Data["Champions"][champName]["UnlockConditions"]["Champions"];
-                JArray unlockChampionsArrayminChampions = (JArray)Data["Champions"][champName]["UnlockConditions"]["minChampions"];
-                Champ.UnlockConditions.Champions = unlockChampionsArray.Select(x => (string)x).ToList();
-                Champ.UnlockConditions.minChampions = unlockChampionsArrayminChampions.Select(x => (int)x).ToList();
-
-                JArray unlockChampionsArrayTraits = (JArray)Data["Champions"][champName]["UnlockConditions"]["Traits"];
-                JArray unlockChampionsArrayTraitMinBP = (JArray)Data["Champions"][champName]["UnlockConditions"]["TraitMinBP"];
-                Champ.UnlockConditions.Traits = unlockChampionsArrayTraits.Select(x => (string)x).ToList();
-                Champ.UnlockConditions.TraitMinBP = unlockChampionsArrayTraitMinBP.Select(x => (int)x).ToList();
-
-                JArray unlockChampionsArrayChampTraitCount = (JArray)Data["Champions"][champName]["UnlockConditions"]["ChampTraitCount"];
-                JArray unlockChampionsArrayminChampionsChampTraitCount = (JArray)Data["Champions"][champName]["UnlockConditions"]["minChampTraitCount"];
-                Champ.UnlockConditions.ChampTraitCount = unlockChampionsArrayChampTraitCount.Select(x => (string)x).ToList();
-                Champ.UnlockConditions.minChampTraitCount = unlockChampionsArrayminChampionsChampTraitCount.Select(x => (int)x).ToList();
-
-                Champ.UnlockConditions.minLevel = (int)Data["Champions"][champName]["UnlockConditions"]["minLevel"];
-                Champ.UnlockConditions.isAnd = (bool)Data["Champions"][champName]["UnlockConditions"]["isAnd"];
-
 
                 //ChampionList.Add(Champ);
                 ChampionList.Add(Champ.name, Champ);
@@ -324,7 +299,7 @@ namespace TFT_Comp_Creator_2
             // If our custom file already exists, then load it
             if (File.Exists("set.json"))
             {
-                Print("Loading from set.json..." + Environment.NewLine);
+                Print("Loading from set.json...");
                 LoadSet();
                 return;
             }
