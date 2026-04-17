@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static TFT_Comp_Creator_2.Nodes;
 using static TFT_Comp_Creator_2.Scoring;
 using static TFT_Comp_Creator_2.Setup;
 using static TFT_Comp_Creator_2.Utility;
 using static TFT_Comp_Creator_2.VisualForms;
-using static TFT_Comp_Creator_2.Markov;
 
 namespace TFT_Comp_Creator_2
 {
@@ -122,8 +122,7 @@ namespace TFT_Comp_Creator_2
                     default_champion,
                     include_champion,
                     default_spatula,
-                    include_spatula,
-                    setList
+                    include_spatula
                 );
 
                 // Setup part 2
@@ -244,7 +243,6 @@ namespace TFT_Comp_Creator_2
 
         public void CreateButton_Click(object sender, EventArgs e)
         {
-
             CreateButton.Enabled = false;
             StopButton.Enabled = true;
 
@@ -275,7 +273,8 @@ namespace TFT_Comp_Creator_2
 
 
             // Default algo
-            greedyTraitSearch();
+            try { greedyTraitSearch(); } catch (Exception ex) { Print(ex.ToString()); }
+            
 
             // Markov
             for (int k = 0; k < default_trait.Items.Count; k++)
@@ -283,7 +282,7 @@ namespace TFT_Comp_Creator_2
                 string tempIncludeTrait = (string)default_trait.Items[k];
 
                 //Print(String.Join("-", tempIncludeTrait));
-                
+
 
             }
             //mk(include_champion, ChampionList, TraitList);
@@ -754,7 +753,7 @@ namespace TFT_Comp_Creator_2
             foreach (var champion in comp)
             {
                 int cost = (int)ChampionList[champion].cost;
-                Print(champion + "  " + cost);
+                //Print(champion + "  " + cost);
 
                 if ((int)ChampionList[champion].stats.range >= 4)
                     rangedAmount++;
@@ -802,6 +801,7 @@ namespace TFT_Comp_Creator_2
 
 
             PrintDebug("isBalanced: " + isCompBalanced(JTraits));
+            PrintDebug("isValid: " + CheckCompValidity(comp));
             int ActiveTraits = 0;
             int InactiveTraits = 0;
             foreach (dynamic Obj in JTraits.Properties())
@@ -835,10 +835,25 @@ namespace TFT_Comp_Creator_2
             PrintDebug("Score: " + score);
             //PrintComp(GetChampionsFromTrait("Bastion"), 0);
 
+            // compute max potential without a spatula
+            List<string> wantedTraitList = new List<string>();
+
+            foreach (dynamic item in include_trait.Items)
+            {
+                wantedTraitList.Add(item.ToString());
+            }
+
+            PrintDebug("aaa: " + hasCompBeenMaximized(JTraits,wantedTraitList));
+
         }
 
         private void getCompCode_Click(object sender, EventArgs e)
         {
+
+            // Max 10 units
+            // Starts with 02
+            // Then ends with the current set tag, eg TFTSet17
+            // 
             List<string> comp = compBox.Text.Split('-').ToList();
 
             if (comp.Count < 1)
@@ -850,13 +865,18 @@ namespace TFT_Comp_Creator_2
             string code = "02";
             foreach (string champion in comp)
             {
-                //Print(champion);
                 if (ChampionList[champion].planner_id == "")
                 {
-                    PrintDebug("No hex data available for current comp/set: " + champion);
+                    PrintDebug("No hex data available for " + champion);
                     return;
                 }
-                code += ChampionList[champion].planner_id;
+
+                int champId = int.Parse(ChampionList[champion].planner_id);
+
+                // force exactly 3 hex digits
+                string hex = champId.ToString("x").PadLeft(3, '0');
+
+                code += hex;
             }
 
             // comps can be up to 10 champions, if below, fill it with zeros
@@ -864,11 +884,16 @@ namespace TFT_Comp_Creator_2
             {
                 for (int i = 0; i < 10 - comp.Count; i++)
                 {
-                    code += "00";
+                    code += "000";
                 }
             }
-            code += "0" + setList.Text; // todo: use a global variable, user might change the text without applying new set
+            code += "TFTSet17"; // todo: use a global variable, user might change the text without applying new set
             PrintDebug(code);
+        }
+
+        private void clearDebug_Click(object sender, EventArgs e)
+        {
+            debugBox.Clear();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace TFT_Comp_Creator_2
         public static ListBox default_spatula = new ListBox();
         public static ListBox include_spatula = new ListBox();
 
-        public static ComboBox setList = new ComboBox();
+
 
 
         public static void SetFormSetup(
@@ -33,8 +33,7 @@ namespace TFT_Comp_Creator_2
             ListBox default_champion_,
             ListBox include_champion_,
             ListBox default_spatula_,
-            ListBox include_spatula_,
-            ComboBox setList_
+            ListBox include_spatula_
         )
         {
             exclude_trait = exclude_trait_;
@@ -45,7 +44,6 @@ namespace TFT_Comp_Creator_2
             include_champion = include_champion_;
             default_spatula = default_spatula_;
             include_spatula = include_spatula_;
-            setList = setList_;
         }
 
         public static void saveToJson()
@@ -78,7 +76,7 @@ namespace TFT_Comp_Creator_2
             Dictionary<string, string> plannerMap = new Dictionary<string, string>();
             for (int q = 0; q < plannerArr.Count; q++)
             {
-                
+
                 string apiName = (string)plannerArr[q]["character_id"];
                 string code = (string)plannerArr[q]["team_planner_code"];
 
@@ -144,13 +142,13 @@ namespace TFT_Comp_Creator_2
                 else
                 {
 
-                    
+
                     Champ.planner_id = "";
 
                     // Before printing out an error, make some checks to ensure it isn't a champion
                     if (
-                        !Champ.apiName.Contains("_PVE_") && 
-                        !Champ.apiName.Contains("FakeUnit") && 
+                        !Champ.apiName.Contains("_PVE_") &&
+                        !Champ.apiName.Contains("FakeUnit") &&
                         Champ.cost <= 5 &&
                         Champ.apiName != "TFT_TrainingDummy" &&
                         Champ.apiName != "TFT_BlueGolem"
@@ -223,11 +221,12 @@ namespace TFT_Comp_Creator_2
                 tr.Champions = traitJson["Champions"]?.Select(x => (string)x).ToList() ?? new List<string>();
 
                 int breakPoints = Data["Traits"][traitName]["Breakpoints"].Count();
-                
+
 
 
 
                 JArray championsArray = (JArray)Data["Traits"][traitName]["Champions"];
+                //Print(championsArray.Count + "  " + traitName);
                 tr.Champions = championsArray.Select(x => (string)x).ToList();
 
                 //TraitList[tr.name].Add(tr); // wrong way to do this (
@@ -266,7 +265,7 @@ namespace TFT_Comp_Creator_2
 
                 Champ.Traits = new List<string>();
                 dynamic CurrentChampionTraits = (JArray)Data["Champions"][champName]["Traits"];
-                
+
                 foreach (string CurrentTrait in CurrentChampionTraits)
                 {
                     Champ.Traits.Add(CurrentTrait);
@@ -274,7 +273,7 @@ namespace TFT_Comp_Creator_2
                     // Add current champion to the currently added trait
                     //TraitList[CurrentTrait].Champions.Add(Champ.name); // this only modifies the copy, not update
                     Trait t = TraitList[CurrentTrait];
-                    t.Champions.Add(Champ.name);
+                    //t.Champions.Add(Champ.name); // <-- duplicate bug?
                     TraitList[CurrentTrait] = t;
 
                 }
@@ -299,7 +298,6 @@ namespace TFT_Comp_Creator_2
             // If our custom file already exists, then load it
             if (File.Exists("set.json"))
             {
-                Print("Loading from set.json...");
                 LoadSet();
                 return;
             }
@@ -347,6 +345,7 @@ namespace TFT_Comp_Creator_2
                 int Amount = trait.Champions.Count;
                 if (Amount < 1)
                     continue;
+                
 
                 int bp_total = trait.Breakpoints.Count;
                 if (bp_total == 0)

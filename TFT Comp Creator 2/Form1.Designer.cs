@@ -136,6 +136,8 @@ namespace TFT_Comp_Creator_2
             this.CreateButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.label29 = new System.Windows.Forms.Label();
+            this.clearDebug = new System.Windows.Forms.Button();
             this.MenuTab.SuspendLayout();
             this.main.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -336,7 +338,8 @@ namespace TFT_Comp_Creator_2
             // mustMaxOutTraitLevelCurrent
             // 
             this.mustMaxOutTraitLevelCurrent.AutoSize = true;
-            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(302, 278);
+            this.mustMaxOutTraitLevelCurrent.Enabled = false;
+            this.mustMaxOutTraitLevelCurrent.Location = new System.Drawing.Point(301, 276);
             this.mustMaxOutTraitLevelCurrent.Name = "mustMaxOutTraitLevelCurrent";
             this.mustMaxOutTraitLevelCurrent.Size = new System.Drawing.Size(276, 17);
             this.mustMaxOutTraitLevelCurrent.TabIndex = 96;
@@ -346,11 +349,11 @@ namespace TFT_Comp_Creator_2
             // mustMaxOutTraitLevel
             // 
             this.mustMaxOutTraitLevel.AutoSize = true;
-            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(302, 258);
+            this.mustMaxOutTraitLevel.Location = new System.Drawing.Point(301, 258);
             this.mustMaxOutTraitLevel.Name = "mustMaxOutTraitLevel";
-            this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(247, 17);
+            this.mustMaxOutTraitLevel.Size = new System.Drawing.Size(198, 17);
             this.mustMaxOutTraitLevel.TabIndex = 95;
-            this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level if possible";
+            this.mustMaxOutTraitLevel.Text = "Included Traits must reach max level";
             this.mustMaxOutTraitLevel.UseVisualStyleBackColor = true;
             // 
             // goldTrait
@@ -973,6 +976,8 @@ namespace TFT_Comp_Creator_2
             // 
             // tabOptimize
             // 
+            this.tabOptimize.Controls.Add(this.clearDebug);
+            this.tabOptimize.Controls.Add(this.label29);
             this.tabOptimize.Controls.Add(this.debugBox);
             this.tabOptimize.Controls.Add(this.getCompCode);
             this.tabOptimize.Controls.Add(this.debugComp);
@@ -993,15 +998,15 @@ namespace TFT_Comp_Creator_2
             // 
             this.debugBox.BackColor = System.Drawing.SystemColors.Menu;
             this.debugBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.debugBox.Location = new System.Drawing.Point(19, 197);
+            this.debugBox.Location = new System.Drawing.Point(19, 141);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(780, 195);
+            this.debugBox.Size = new System.Drawing.Size(780, 277);
             this.debugBox.TabIndex = 10;
             this.debugBox.Text = "";
             // 
             // getCompCode
             // 
-            this.getCompCode.Location = new System.Drawing.Point(19, 171);
+            this.getCompCode.Location = new System.Drawing.Point(19, 73);
             this.getCompCode.Name = "getCompCode";
             this.getCompCode.Size = new System.Drawing.Size(75, 23);
             this.getCompCode.TabIndex = 9;
@@ -1011,7 +1016,7 @@ namespace TFT_Comp_Creator_2
             // 
             // debugComp
             // 
-            this.debugComp.Location = new System.Drawing.Point(226, 142);
+            this.debugComp.Location = new System.Drawing.Point(226, 73);
             this.debugComp.Name = "debugComp";
             this.debugComp.Size = new System.Drawing.Size(75, 23);
             this.debugComp.TabIndex = 8;
@@ -1022,7 +1027,7 @@ namespace TFT_Comp_Creator_2
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(16, 41);
+            this.label11.Location = new System.Drawing.Point(365, 52);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(190, 13);
             this.label11.TabIndex = 7;
@@ -1031,15 +1036,15 @@ namespace TFT_Comp_Creator_2
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(16, 18);
+            this.label9.Location = new System.Drawing.Point(365, 21);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(361, 13);
+            this.label9.Size = new System.Drawing.Size(341, 13);
             this.label9.TabIndex = 6;
-            this.label9.Text = "This tool will try to optimize the inserted comp by bruteforcing all champions.";
+            this.label9.Text = "This will try to optimize the inserted comp by bruteforcing all champions.";
             // 
             // OptimizeComp
             // 
-            this.OptimizeComp.Location = new System.Drawing.Point(19, 142);
+            this.OptimizeComp.Location = new System.Drawing.Point(368, 73);
             this.OptimizeComp.Name = "OptimizeComp";
             this.OptimizeComp.Size = new System.Drawing.Size(75, 23);
             this.OptimizeComp.TabIndex = 5;
@@ -1050,7 +1055,7 @@ namespace TFT_Comp_Creator_2
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 90);
+            this.label1.Location = new System.Drawing.Point(16, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(87, 13);
             this.label1.TabIndex = 4;
@@ -1058,7 +1063,7 @@ namespace TFT_Comp_Creator_2
             // 
             // compBox
             // 
-            this.compBox.Location = new System.Drawing.Point(19, 116);
+            this.compBox.Location = new System.Drawing.Point(19, 47);
             this.compBox.Name = "compBox";
             this.compBox.Size = new System.Drawing.Size(282, 20);
             this.compBox.TabIndex = 3;
@@ -1463,6 +1468,26 @@ namespace TFT_Comp_Creator_2
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(197, 125);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(415, 13);
+            this.label29.TabIndex = 11;
+            this.label29.Text = "NOTE: Be careful when you copy a code. Make sure you don\'t include empty spaces !" +
+    "";
+            // 
+            // clearDebug
+            // 
+            this.clearDebug.Location = new System.Drawing.Point(226, 99);
+            this.clearDebug.Name = "clearDebug";
+            this.clearDebug.Size = new System.Drawing.Size(75, 23);
+            this.clearDebug.TabIndex = 12;
+            this.clearDebug.Text = "clear";
+            this.clearDebug.UseVisualStyleBackColor = true;
+            this.clearDebug.Click += new System.EventHandler(this.clearDebug_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1626,6 +1651,8 @@ namespace TFT_Comp_Creator_2
         public System.Windows.Forms.CheckBox maximizeEmblem;
         private System.Windows.Forms.NumericUpDown traitBiasStrength;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Button clearDebug;
     }
 }
 

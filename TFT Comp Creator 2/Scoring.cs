@@ -97,7 +97,7 @@ namespace TFT_Comp_Creator_2
             mustMaxOutTraitLevel = mustMaxOutTraitLevel_;
             mustMaxOutTraitLevelCurrent = mustMaxOutTraitLevelCurrent_;
             isSpatulaGolem = isSpatulaGolem_;
-            
+
             traitBiasStength = traitBiasStength_;
         }
         public static double CalculateVerticalityScore(List<string> comp, JObject JTraits)
@@ -422,9 +422,19 @@ namespace TFT_Comp_Creator_2
             }
 
 
-            
+
 
             JTraits = GetJTraits(comp);
+
+            // Add spatula to jtraits
+            foreach (string trait in include_spatula.Items)
+            {
+                if (JTraits.ContainsKey(trait))
+                {
+                    JTraits[trait] = (int)JTraits[trait] + 1;
+                }
+                else { JTraits[trait] = 1; }
+            }
 
             double Verticality = CalculateVerticalityScore(comp, JTraits);
             if (Verticality >= 0.9 || Verticality <= 0.09)
@@ -468,27 +478,19 @@ namespace TFT_Comp_Creator_2
             
             // Ensure n amount of ranged & tank
             if (rangedAmount < Convert.ToInt32(minRanged.Value) || rangedAmount > Convert.ToInt32(maxRanged.Value)) { return false; }
+            
             if (tankAmount < Convert.ToInt32(minTank.Value) || tankAmount > Convert.ToInt32(maxTank.Value)) { return false; }
-
+            
             // Ensure all emblems can be used
             if (!isSpatulaGolem.Checked && !canSpatulaBeUsed(JTraits, comp) && include_spatula.Items.Count > 0)
                 return false;
 
-            // Add spatula to jtraits
-            foreach (string trait in include_spatula.Items)
-            {
-                if (JTraits.ContainsKey(trait))
-                {
-                    JTraits[trait] = (int)JTraits[trait] + 1;
-                }
-                else { JTraits[trait] = 1; }
-            }
             
             //
             // Check if comp is balanced
             if (no_error.Checked && !isCompBalanced(JTraits))
                 return false;
-            
+
 
             // Included / Excluded champion check
             if (exclude_champion.Items.Count > 0)
@@ -511,27 +513,31 @@ namespace TFT_Comp_Creator_2
                         return false;
                 }
             }
-
             
+            if (mustMaxOutTraitLevel.Checked)
+            {
+                // compute max potential without a spatula
+                List<string> wantedTraitList = new List<string>();
+
+                foreach (dynamic item in include_trait.Items)
+                    wantedTraitList.Add(item.ToString());
+
+                if (!hasCompBeenMaximized(JTraits, wantedTraitList))
+                    return false;
+
+            }
+
+            if (mustMaxOutTraitLevelCurrent.Checked)
+            {
+
+            }
+
             // Included / Excluded trait check
+
             foreach (string Trait in include_trait.Items)
             {
                 if (!isTraitActive(JTraits, Trait))
                     return false;
-
-                if (mustMaxOutTraitLevel.Checked)
-                {
-                    // compute max potential without a spatula
-                    List<string> wantedTraitList = new List<string>();
-
-                    foreach (dynamic item in include_trait.Items)
-                    {
-                        wantedTraitList.Add(item.ToString());
-                    }
-                    if (!isTraitMaxedOutNoSpatula(JTraits, wantedTraitList))
-                        return false;
-                    //int amount = JTraitsMaster["TraitChampions"]
-                }
             }
 
             foreach (string Trait in exclude_trait.Items)

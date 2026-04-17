@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using static TFT_Comp_Creator_2.Form1;
 using static TFT_Comp_Creator_2.Utility;
@@ -108,7 +107,7 @@ namespace TFT_Comp_Creator_2
             }
             else
             {
-                
+
             }
             Root = GetNextNode(Root, ChampionList);
             //Root = GetNextNodeSmart(Root, ChampionList);
@@ -123,12 +122,12 @@ namespace TFT_Comp_Creator_2
             seen.Clear();
             Node newRoot = BestNode;
             RecordVisits = 0;
-            
+
             // Now iterate from best
             int iterations = 2;
             ExpandNode(newRoot, ChampionList, iterations);
             GetHighestVisitedNode(newRoot);
-            
+
         }
 
         public static Node GetNextNode(Node node, Dictionary<string, Champion> ChampionList)
@@ -145,7 +144,7 @@ namespace TFT_Comp_Creator_2
 
                 // Only allow lvl 1 champions
                 string champion = ChampionListKeys[i];
-                if (ChampionList[champion].cost != 1) {  continue; }
+                if (ChampionList[champion].cost != 1) { continue; }
 
 
                 Node newNode = new Node();

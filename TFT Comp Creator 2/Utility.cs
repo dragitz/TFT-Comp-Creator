@@ -327,6 +327,38 @@ namespace TFT_Comp_Creator_2
             }
             return JTraits;
         }
+
+
+        public static bool hasCompBeenMaximized(JObject JTraits, List<string> wantedTraitList)
+        {
+            foreach (string trait in wantedTraitList) // 334
+            {
+                List<int> breakpoints = TraitList[trait].Breakpoints;
+                int maxTotalChamps = TraitList[trait].Champions.Count;
+
+                // Get the highest achievable breakpoint
+                int totalBP = breakpoints.Max(bp => (int)bp);
+
+                // Now include the emblems
+                int amountOfCurrentTrait = 0;
+
+                foreach (string emblem in include_spatula.Items)
+                {
+                    if (emblem == trait)
+                        amountOfCurrentTrait++;
+                }
+
+                //int result = (int)JTraits[trait];
+                int result = JTraits[trait]?.Value<int>() ?? 0;
+
+                // We haven't reached the wanted max bp
+                if (result < totalBP)
+                    return false;
+            }
+
+            return true;
+        }
+
         public static bool isTraitMaxedOutNoSpatula(JObject JTraits, List<string> wantedTraitList)
         {
             foreach (string trait in wantedTraitList)
@@ -618,9 +650,11 @@ namespace TFT_Comp_Creator_2
                 int totalPotential = comp.Count;
 
                 // Check if there's space to add more emblems
-                if (usedEmblems[included_spatula] + championsWithTrait > totalPotential)
+                int totalWithTrait = JTraits[included_spatula] != null ? (int)JTraits[included_spatula] : 0;
+
+                if (totalWithTrait > totalPotential)
                 {
-                    return false; // Not enough free slots
+                    return false;
                 }
             }
 
