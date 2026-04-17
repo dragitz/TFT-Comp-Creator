@@ -9,7 +9,7 @@ My goal with this project, is to **compute unique non meta comps** to explore an
 
 Bug testing is required !
 
-<img width="913" height="790" alt="image" src="https://github.com/user-attachments/assets/af2d0141-0958-4fa5-a655-d1faaba27093" />
+<img width="608" height="526" alt="image" src="https://github.com/user-attachments/assets/af2d0141-0958-4fa5-a655-d1faaba27093" />
 
 
 
